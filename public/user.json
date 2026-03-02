@@ -1,0 +1,48 @@
+{
+  "description": "📍坐标：浙江 · 杭州\n💻一个普普通通的程序猿，我就是一个破打工的啊💼...\n🎯理想是念头通达 | 学会独立思考 | 早日去码头整薯条🍟\n🎵兴趣爱好是唱跳、Rap和篮球🏀，没事喜欢写着写那的（虽然现在还在写 bug，但梦想不会迟到🌱）",
+  "techStack": [
+    {
+      "icon": "💻️",
+      "name": "前端基础",
+      "list": ["html", "javascript", "typescript", "ES6"]
+    },
+    {
+      "icon": "⚙️",
+      "name": "框架生态",
+      "list": ["react", "vue 2&3", "UniApp", "微信小程序开发"]
+    },
+    {
+      "icon": "🗺️",
+      "name": "GIS开发",
+      "list": [
+        "高德地图、百度地图",
+        "openLayers",
+        "CesiumJs",
+        "leaflet",
+        "MapBox GL"
+      ]
+    },
+    {
+      "icon": "🧱",
+      "name": "服务端",
+      "list": ["mysql", "node.js"]
+    },
+    {
+      "icon": "🎨",
+      "name": "组件库",
+      "list": [
+        "Antd",
+        "Element UI",
+        "naive UI",
+        "TDesign",
+        "ArcoDesign",
+        "Vant weapp"
+      ]
+    },
+    {
+      "icon": "🔧",
+      "name": "工程化能力",
+      "list": ["vite", "webpack", "rollup"]
+    }
+  ]
+}
