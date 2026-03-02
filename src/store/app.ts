@@ -34,6 +34,9 @@ const useAppStore = defineStore('app', () => {
     const handleMenuChange = (value: string) => {
         menuKey.value = value
     }
+    const gotoPage = (url: string) => {
+        handleMenuChange(url.replace('/', ''))
+    }
     const currentMenuComponent = computed(() => {
         let targetMenu: any = null
         APP_MENU.forEach((item) => {
@@ -61,6 +64,7 @@ const useAppStore = defineStore('app', () => {
         menuKey,
         handleMenuChange,
         currentMenuComponent,
+        gotoPage
     }
 })
 
