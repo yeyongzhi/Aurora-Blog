@@ -9,6 +9,23 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { FileClockIcon, NewspaperIcon } from 'lucide-vue-next'
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card'
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { Button } from '@/components/ui/button'
+import Tree from './Tree.vue'
+import { ChevronsUpIcon, ChevronsDownIcon } from 'lucide-vue-next'
 
 // 扩展插件
 dayjs.extend(utc);
@@ -94,6 +111,11 @@ const findTitleRange = (list: Array<any>, level: number, originResult: Array<any
     return result
 }
 
+
+const guideVisible = ref(true)
+const toggleGuideVisible = () => {
+    guideVisible.value = !guideVisible.value
+}
 const markdown_nav = computed(() => {
     if (!markdownContent.value) {
         return []
@@ -105,8 +127,8 @@ const markdown_nav = computed(() => {
     list = findTitleRange(markdownContent.value, 4, list)
     list = findTitleRange(markdownContent.value, 5, list)
     list = findTitleRange(markdownContent.value, 6, list)
-    // console.log("文章目录生成如下：")
-    // console.log(list)
+    console.log("文章目录生成如下：")
+    console.log(list)
     return list
 })
 
@@ -255,7 +277,7 @@ const articelTextTotal = computed(() => {
                 <!-- 图片 -->
                 <template v-else-if="item.type === 'img'">
                     <div class="single_img">
-                        
+
                         <p :title="item.content[1]">{{ item.content[1] }}</p>
                     </div>
                 </template>
@@ -297,6 +319,35 @@ const articelTextTotal = computed(() => {
                 </template>
             </template>
         </ScrollArea>
+        <!-- 目录 -->
+        <div class="absolute top-2 right-2">
+            <Card class="w-[300px] gap-4 py-4">
+                <CardHeader>
+                    <CardTitle>文章目录</CardTitle>
+                    <CardDescription>
+                        当前位置：
+                    </CardDescription>
+                    <CardAction>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <Button size="sm" variant="secondary" @click="toggleGuideVisible">
+                                        <ChevronsUpIcon class="size-4" v-if="guideVisible" />
+                                        <ChevronsDownIcon class="size-4" v-else />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    {{ guideVisible ? '收起' : '展开' }}菜单
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </CardAction>
+                </CardHeader>
+                <CardContent class="overflow-hidden" v-show="guideVisible">
+                    <Tree :data="markdown_nav" />
+                </CardContent>
+            </Card>
+        </div>
         <!-- 文档信息 -->
         <div class="absolute bottom-2 right-2 p-2 border text-xs rounded-md bg-muted">
             <p class="flex items-center mb-2">
