@@ -1,0 +1,11 @@
+[
+    {
+        "type": "feature",
+        "version": "1.0.0",
+        "date": "2026-03",
+        "description": "首次上线",
+        "content": [
+            { "type": "feature", "text": "初始版本V 1.0.0 正式上线咯" }
+        ]
+    }
+]

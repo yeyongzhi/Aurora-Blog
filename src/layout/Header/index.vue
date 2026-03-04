@@ -42,7 +42,7 @@ const appStore = useAppStore()
             </Popover>
             <Popover>
                 <PopoverTrigger asChild>
-                    <Button size="sm" variant="outline">
+                    <Button size="icon" variant="outline">
                         <Settings />
                     </Button>
                 </PopoverTrigger>

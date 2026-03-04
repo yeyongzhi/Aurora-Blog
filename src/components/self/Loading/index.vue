@@ -8,7 +8,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
     size: 8,
-    description: ''
+    description: '加载中...'
 })
 
 </script>

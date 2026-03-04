@@ -122,8 +122,8 @@ const markdown_nav = computed(() => {
     list = findTitleRange(markdownContent.value, 4, list)
     list = findTitleRange(markdownContent.value, 5, list)
     list = findTitleRange(markdownContent.value, 6, list)
-    console.log("文章目录生成如下：")
-    console.log(list)
+    // console.log("文章目录生成如下：")
+    // console.log(list)
     return list
 })
 
@@ -160,7 +160,7 @@ watch(() => path, async (newVal) => {
             markdownInfo.value = {
                 lastModified: localTime
             }
-            console.log(markdownInfo.value)
+            // console.log(markdownInfo.value)
         }
         if (result) {
             message.success("文章加载成功")
@@ -182,13 +182,13 @@ const scrollAreaRootRef = shallowRef<any>(null)
 const scrollToSection = () => {
     const decodedHash = decodeURIComponent(location.hash.substring(1));
     const element = document.getElementById('markdown_nav_' + decodedHash);
-    console.log(element)
+    // console.log(element)
     if (element) {
         const options = {
             top: element.getBoundingClientRect().top + scrollAreaRootRef.value.scrollTop - 100,
             behavior: 'smooth'
         }
-        console.log(options)
+        // console.log(options)
         scrollAreaRootRef.value.scrollTo(options);
     }
 }
@@ -230,7 +230,7 @@ const renderTitleId = (item: any) => {
 }
 
 const renderCode = (content: string[]) => {
-    console.log('First line:', JSON.stringify(content[0]))
+    // console.log('First line:', JSON.stringify(content[0]))
     const codeStr = content.join('\n')
     return codeStr
 }
@@ -299,7 +299,6 @@ const articelTextTotal = computed(() => {
                 </template>
                 <!-- 超链接 -->
                 <template v-else-if="item.type === 'link'">
-                    <!-- <a :href="item.content[2]">{{ item.content[1] }}</a> -->
                     <Tooltip :content="item.content[2]">
                         <Button class="px-0 py-0 font-bold" variant="link" @click="openTab(item.content[2])">
                             <LinkIcon class="inline-block size-4" />
