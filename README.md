@@ -11,6 +11,7 @@ pnpm dlx shadcn-vue@latest add button
 ## 📝资源链接
 
 【🎨UI库】：[Shadcn-vue 官方文档](https://www.shadcn-vue.com/docs/installation/vite)
+【图标库】：[Lucide Icons](https://lucide.dev/icons/?focus=)
 
 【✨️Toast弹窗】：[Shadcn-vue Sonner](https://www.shadcn-vue.com/docs/sonner)
 

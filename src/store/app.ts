@@ -7,7 +7,7 @@ import toast from '@/plugins/message'
 type ColorMode = 'light' | 'dark' | 'auto'
 
 const DEFAULT_MODE: ColorMode = 'light'
-const DEFAULT_MENU_KEY = 'note'
+const DEFAULT_MENU_KEY = 'nav'
 
 const useAppStore = defineStore('app', () => {
     const mode = useColorMode()
@@ -31,8 +31,23 @@ const useAppStore = defineStore('app', () => {
     }
 
     const menuKey = ref(DEFAULT_MENU_KEY)
+    const historyMenuList = ref<string[]>([])
     const handleMenuChange = (value: string) => {
         menuKey.value = value
+        historyMenuList.value.push(value)
+    }
+    const handleBack = () => {
+        if(historyMenuList.value.length === 0) {
+            return toast.warning('没有上一级了')
+        }
+    }
+    const handleForward = () => {
+        if(historyMenuList.value.length === 0) {
+            return toast.warning('没有下一级了')
+        }
+    }
+    const handleRefresh = () => {
+        window.location.reload()
     }
     const gotoPage = (url: string) => {
         handleMenuChange(url.replace('/', ''))
@@ -63,6 +78,9 @@ const useAppStore = defineStore('app', () => {
         handleModeChange,
         menuKey,
         handleMenuChange,
+        handleBack,
+        handleForward,
+        handleRefresh,
         currentMenuComponent,
         gotoPage
     }

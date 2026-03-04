@@ -1,15 +1,24 @@
 <script setup lang="ts" name="Home">
-import { onMounted, ref, computed } from 'vue';
+import {ref, computed } from 'vue';
+import useUserStore from '@/store/user';
 import TechStack from './components/TechStack.vue';
 import PersonalWorks from './components/PersonalWorks.vue';
 import Knowledge from './components/Knowledge.vue';
 import AboutMe from './components/AboutMe.vue';
 import { ScrollArea } from '@/components/ui/scroll-area'
 
-const uesrData = ref<any>(null)
+const userStore = useUserStore()
+
+const uesrData = computed(() => {
+    return userStore.userInfo || {
+        techStack: [],
+        personalWorks: [],
+        knowledge: [],
+    }
+})
 
 const techStackData = computed(() => {
-    return uesrData.value?.techStack || []
+    return uesrData.value.techStack || []
 })
 
 const personalWorksData = computed(() => {
@@ -18,14 +27,6 @@ const personalWorksData = computed(() => {
 
 const knowledgeData = computed(() => {
     return uesrData.value?.knowledge || []
-})
-
-onMounted(() => {
-    fetch('/user.json')
-        .then(response => response.json())
-        .then(data => {
-            uesrData.value = data
-        })
 })
 
 </script>

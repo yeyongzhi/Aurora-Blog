@@ -90,21 +90,3 @@ export function sum(a: number, b: number) {
     }
     return a + b;
 }
-
-/**
- * 学生初始化参数
- * @typedef {Object} StudentOptions
- * @property {string} name 学生姓名
- * @property {number} age 学生年龄
- */
-
-/**
- * @description 创建学生对象
- * @class
- * @param {StudentOptions} options - 学生对象的初始化参数
- */
-export function createStudent(options: any) {
-    console.log(options)
-}
-
-createStudent({ name: '张三', age: 18 }) // 正确

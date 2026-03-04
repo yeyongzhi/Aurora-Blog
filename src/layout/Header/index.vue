@@ -1,5 +1,6 @@
 <script setup lang="ts" name="Header">
 import Menu from './components/Menu.vue'
+import Avatar from './components/Avatar.vue'
 import {
     Popover,
     PopoverContent,
@@ -16,7 +17,9 @@ const appStore = useAppStore()
 
 <template>
     <div class="w-full h-[60px] border-b px-8 flex justify-between items-center">
-        <div>header</div>
+        <div>
+            <Avatar />
+        </div>
         <div class="flex justify-center items-center gap-x-4">
             <Menu />
             <Popover>

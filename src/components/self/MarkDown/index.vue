@@ -1,14 +1,14 @@
 <script setup lang="ts" name="MarkDown">
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ref, watch, computed, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, watch, computed, onMounted, onUnmounted, nextTick, shallowRef } from 'vue';
 import { formatMarkDown } from '@/utils/markdown'
 import message from '@/plugins/message'
 import { openTab, getMarkDownContent, scrollToTop, getArticleTextCount, getMarkDownInfo } from '@/utils/index'
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { FileClockIcon, NewspaperIcon } from 'lucide-vue-next'
+import { FileClockIcon, NewspaperIcon, LinkIcon } from 'lucide-vue-next'
 import {
     Card,
     CardAction,
@@ -17,14 +17,9 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from '@/components/ui/tooltip'
+import Tooltip from '@/components/self/Tooltip/index.vue'
 import { Button } from '@/components/ui/button'
-import Tree from './Tree.vue'
+import Tree from '../Tree/index.vue'
 import { ChevronsUpIcon, ChevronsDownIcon } from 'lucide-vue-next'
 
 // 扩展插件
@@ -132,10 +127,25 @@ const markdown_nav = computed(() => {
     return list
 })
 
-const selectTitleLevel = ref("")
-const handleNavClick = ({ option }: { option: any }) => {
-    selectTitleLevel.value = option.type
-    location.hash = `#${option.name}`
+const markdownNavCount = computed(() => {
+    if (!markdown_nav.value) {
+        return 0
+    }
+    let count = 0
+    const traverse = (items: any[]) => {
+        for (const item of items) {
+            count++
+            if (item.children) {
+                traverse(item.children)
+            }
+        }
+    }
+    traverse(markdown_nav.value)
+    return count
+})
+
+const handleNavClick = (name: string) => {
+    location.hash = `#${name}`
 }
 
 watch(() => path, async (newVal) => {
@@ -168,19 +178,44 @@ watch(() => path, async (newVal) => {
     }
 }, { immediate: true })
 
+const scrollAreaRootRef = shallowRef<any>(null)
 const scrollToSection = () => {
     const decodedHash = decodeURIComponent(location.hash.substring(1));
-    // const elements = document.getElementsByTagName(selectTitleLevel.value)
-    // console.log(elements)
     const element = document.getElementById('markdown_nav_' + decodedHash);
+    console.log(element)
     if (element) {
-        // 滚动到元素位置，并预留顶部间距
-        window.scrollTo({
-            top: element.getBoundingClientRect().top + window.scrollY - 65 - 30, // 50为顶部间距
+        const options = {
+            top: element.getBoundingClientRect().top + scrollAreaRootRef.value.scrollTop - 100,
             behavior: 'smooth'
-        });
+        }
+        console.log(options)
+        scrollAreaRootRef.value.scrollTo(options);
     }
 }
+
+const currentNavKey = ref("")
+
+const getCurrentNavName = (data: Array<any>, key: string) => {
+    let name = null
+    data.forEach((item: any) => {
+        if (item.key === key) {
+            name = item.name
+        }
+        if (item.children) {
+            name = getCurrentNavName(item.children, key)
+        }
+    })
+    return name
+}
+
+watch(() => currentNavKey.value, (newVal, _) => {
+    if (newVal) {
+        let name = getCurrentNavName(markdown_nav.value, newVal)
+        if (name) {
+            handleNavClick(name)
+        }
+    }
+})
 
 onMounted(() => {
     window.addEventListener('hashchange', scrollToSection);
@@ -227,7 +262,7 @@ const articelTextTotal = computed(() => {
             ...
         </template>
         <!-- 文章内容 -->
-        <ScrollArea class="w-full h-full text-4" v-else>
+        <ScrollArea ref="scrollAreaRootRef" class="w-full h-full text-4 pr-[350px]" v-else>
             <template v-for="(item, index) in markdownContent" :key="'md' + index">
                 <template v-if="item.type === 'h1'">
                     <h1 :class="`md_${item.type} mb-8 text-4xl font-extrabold tracking-tight text-balance`"
@@ -258,27 +293,25 @@ const articelTextTotal = computed(() => {
                 </template>
                 <!-- 引用 -->
                 <template v-else-if="item.type === 'quote'">
-                    <blockquote class="mt-6 border-l-2 pl-6 italic">
+                    <blockquote class="my-4 border-l-4 pl-6 italic">
                         <p class="text-4 leading-8 my-2" v-html="item.content"></p>
                     </blockquote>
                 </template>
                 <!-- 超链接 -->
                 <template v-else-if="item.type === 'link'">
                     <!-- <a :href="item.content[2]">{{ item.content[1] }}</a> -->
-                    <n-tooltip trigger="hover">
-                        <template #trigger>
-                            <span @click="openTab(item.content[2])">
-                                {{ item.content[1] }}
-                            </span>
-                        </template>
-                        👇点击前往
-                    </n-tooltip>
+                    <Tooltip :content="item.content[2]">
+                        <Button class="px-0 py-0 font-bold" variant="link" @click="openTab(item.content[2])">
+                            <LinkIcon class="inline-block size-4" />
+                            {{ item.content[1] }}
+                        </Button>
+                    </Tooltip>
                 </template>
                 <!-- 图片 -->
                 <template v-else-if="item.type === 'img'">
-                    <div class="single_img">
-
-                        <p :title="item.content[1]">{{ item.content[1] }}</p>
+                    <div class="my-4 w-full flex flex-col justify-center items-center">
+                        <img :src="getImageUrl(item.content[2])" alt="" class="h-auto rounded-md">
+                        <p class="my-2" :title="item.content[1]">{{ item.content[1] }}</p>
                     </div>
                 </template>
                 <!-- 无序列表 -->
@@ -325,26 +358,19 @@ const articelTextTotal = computed(() => {
                 <CardHeader>
                     <CardTitle>文章目录</CardTitle>
                     <CardDescription>
-                        当前位置：
+                        共 <span class="text-sm font-bold">{{ markdownNavCount }}</span> 个章节
                     </CardDescription>
                     <CardAction>
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger>
-                                    <Button size="sm" variant="secondary" @click="toggleGuideVisible">
-                                        <ChevronsUpIcon class="size-4" v-if="guideVisible" />
-                                        <ChevronsDownIcon class="size-4" v-else />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    {{ guideVisible ? '收起' : '展开' }}菜单
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
+                        <Tooltip :content="guideVisible ? '收起目录' : '展开目录'">
+                            <Button size="sm" variant="secondary" @click="toggleGuideVisible">
+                                <ChevronsUpIcon class="size-4" v-if="guideVisible" />
+                                <ChevronsDownIcon class="size-4" v-else />
+                            </Button>
+                        </Tooltip>
                     </CardAction>
                 </CardHeader>
-                <CardContent class="overflow-hidden" v-show="guideVisible">
-                    <Tree :data="markdown_nav" />
+                <CardContent class="mh-[400px] overflow-hidden" v-show="guideVisible">
+                    <Tree :data="markdown_nav" v-model:currentKey="currentNavKey" />
                 </CardContent>
             </Card>
         </div>
