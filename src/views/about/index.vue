@@ -65,7 +65,6 @@ const appStore = useAppStore()
                 </ItemContent>
                 <ItemActions>
                     <Button variant="secondary" size="sm" @click="appStore.handleMenuChange('contact')">
-                        <UserIcon class="size-4" />
                         联系方式
                     </Button>
                 </ItemActions>

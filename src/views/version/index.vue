@@ -1,15 +1,16 @@
 <script setup lang="ts" name="Version">
 import { ref, onMounted } from 'vue'
 import Loading from '@/components/self/Loading/index.vue'
+import Icon from '@/components/self/Icon/index.vue'
 import {
     Card,
     CardDescription,
     CardHeader,
     CardTitle,
-    CardContent
+    CardContent,
+    CardAction
 } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { UserIcon, BoxIcon, PhoneCallIcon, CpuIcon } from 'lucide-vue-next';
 
 interface VersionContentItem {
     type: string;
@@ -29,7 +30,6 @@ const versionList = ref<Array<VersionItem>>([])
 
 onMounted(async () => {
     try {
-
         const response = await fetch('/app/version.json')
         const data = await response.json()
         versionList.value = data
@@ -45,11 +45,15 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="w-full p-4 overflow-hidden">
+    <div class="w-full h-full p-4 overflow-hidden">
         <div v-if="loading" class="w-full h-full flex items-center justify-center">
             <Loading />
         </div>
-        <ScrollArea class="w-[50%]" v-else>
+        <ScrollArea class="pr-[50%] h-full" v-else>
+            <div class="mb-4">
+                <p class="text-lg font-bold ">版本更新记录 【共{{ versionList.length }}条】</p>
+                <p class="text-sm text-gray-500">有这个显得我比较专业，知豆不？</p>
+            </div>
             <Card v-for="item in versionList" :key="item.version" class="gap-2 py-4">
                 <CardHeader>
                     <CardTitle class="flex text-lg items-center">
@@ -58,6 +62,12 @@ onMounted(async () => {
                     <CardDescription>
                         {{ item.description }}
                     </CardDescription>
+                    <CardAction>
+                        <Icon name="FileCodeCornerIcon" background size="6" v-if="item.type === 'feature'" />
+                        <Icon name="BugIcon" background size="6" v-else-if="item.type === 'fix'" />
+                        <Icon name="HammerIcon" background size="6" v-else-if="item.type === 'refactor'" />
+                        <Icon name="MonitorIcon" background size="6" v-else />
+                    </CardAction>
                 </CardHeader>
                 <CardContent>
                     <ul class="ml-4 list-disc [&>li]:mt-2">

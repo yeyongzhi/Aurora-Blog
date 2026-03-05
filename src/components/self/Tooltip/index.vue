@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<TooltipProps>(), {
 </script>
 
 <template>
-    <div class="w-fit">
+    <div class="w-full">
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger class="w-full">

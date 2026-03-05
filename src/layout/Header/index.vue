@@ -1,13 +1,14 @@
 <script setup lang="ts" name="Header">
 import Menu from './components/Menu.vue'
 import Avatar from './components/Avatar.vue'
+import DateTime from './components/DateTime.vue'
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { SunIcon, MoonIcon, Laptop, Settings } from 'lucide-vue-next'
+import { SunIcon, MoonIcon, Laptop, Settings, ClockIcon } from 'lucide-vue-next'
 import themeColorData from '@/style/themeColor.json'
 import useAppStore from '@/store/app'
 
@@ -22,6 +23,7 @@ const appStore = useAppStore()
         </div>
         <div class="flex justify-center items-center gap-x-4">
             <Menu />
+            
             <Popover>
                 <PopoverTrigger asChild>
                     <Button size="icon" variant="outline">
@@ -38,6 +40,17 @@ const appStore = useAppStore()
                             {{ item.label }}
                         </Button>
                     </div>
+                </PopoverContent>
+            </Popover>
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Button size="icon" variant="outline">
+                        <ClockIcon />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent class="w-fit p-2" align="end">
+                    <p class="mb-2">当前日期时间</p>
+                    <DateTime />
                 </PopoverContent>
             </Popover>
             <Popover>

@@ -48,7 +48,7 @@ const APP_MENU: RouterMeta[] = [
                 component: defineAsyncComponent(() => import('@/views/version/index.vue')),
             },
             {
-                name: '联系',
+                name: '联系我',
                 key: 'contact',
                 component: defineAsyncComponent(() => import('@/views/contact/index.vue')),
             },
