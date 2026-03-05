@@ -34,6 +34,22 @@ const APP_MENU: RouterMeta[] = [
         component: defineAsyncComponent(() => import('@/views/alife/index.vue')),
     },
     {
+        name: '生活',
+        key: 'moreLife',
+        children: [
+            {
+                name: '🎯生活记录',
+                key: 'life',
+                component: defineAsyncComponent(() => import('@/views/life/index.vue')),
+            },
+            {
+                name: '💡思考',
+                key: 'think',
+                component: defineAsyncComponent(() => import('@/views/think/index.vue')),
+            },
+        ]
+    },
+    {
         name: '更多',
         key: 'more',
         children: [

@@ -254,6 +254,17 @@ const articelTextTotal = computed(() => {
     return getArticleTextCount(markdownContent.value)
 })
 
+const renderImgClassName = (content: string[]) => {
+    let classNames = []
+    if (content[3]) {
+        classNames.push(`w-${Number(content[3]) > 0 ? `[${content[3]}px]` : content[3]}`)
+    }
+    if (content[4]) {
+        classNames.push(`h-${Number(content[4]) > 0 ? `[${content[4]}px]` : content[4]}`)
+    }
+    return classNames.join(' ')
+}
+
 </script>
 
 <template>
@@ -308,9 +319,9 @@ const articelTextTotal = computed(() => {
                 </template>
                 <!-- 图片 -->
                 <template v-else-if="item.type === 'img'">
-                    <div class="my-4 w-full flex flex-col justify-center items-center">
-                        <img :src="getImageUrl(item.content[2])" alt="" class="h-auto rounded-md">
-                        <p class="my-2" :title="item.content[1]">{{ item.content[1] }}</p>
+                    <div class="w-fit my-4 flex flex-col justify-start items-center">
+                        <img :src="getImageUrl(item.content[2])" alt="" :class="`h-auto rounded-md ${renderImgClassName(item.content)}`">
+                        <p class="my-2 w-full text-center" :title="item.content[1]">{{ item.content[1] }}</p> 
                     </div>
                 </template>
                 <!-- 无序列表 -->

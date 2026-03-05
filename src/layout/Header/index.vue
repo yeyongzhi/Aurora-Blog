@@ -49,7 +49,7 @@ const appStore = useAppStore()
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent class="w-fit p-2" align="end">
-                    <p class="mb-2">当前日期时间</p>
+                    <p class="mb-2 text-sm">当前日期时间</p>
                     <DateTime />
                 </PopoverContent>
             </Popover>
@@ -60,7 +60,7 @@ const appStore = useAppStore()
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent class="w-fit p-2" align="end">
-                    <p class="mb-2">主题颜色</p>
+                    <p class="mb-2 text-sm">主题颜色</p>
                     <div class="w-60">
                         <div class="w-full flex flex-wrap gap-2">
                             <Button class="w-29 flex items-center justify-between gap-x-2" size="sm" variant="outline"

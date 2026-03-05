@@ -1,5 +1,6 @@
 const LINK_REGEXP = /(\[.*?\])\((.*?)\)/
-const IMG_REGEXP = /!\[(.*?)\]\((.*?)\)/
+// const IMG_REGEXP = /!\[(.*?)\]\((.*?)\)/
+const IMG_REGEXP = /!\[(.*?)\]\((.*?)\)(?:\(([^,]+),\s*([^)]+)\))?/;
 const UNORDERLIST_REGEXP = /^- (.*)$/
 const ORDERLIST_REGEXP = /^\d+\.\s(.*)$/
 
