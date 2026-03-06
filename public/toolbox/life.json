@@ -1,0 +1,174 @@
+[
+    {
+        "title": "阅读咨询",
+        "children": [
+            {
+                "name": "微信读书",
+                "icon": "https://rescdn.qqmail.com/node/wr/wrpage/style/images/independent/favicon/favicon_32h.png",
+                "descriptions": "微信读书提供海量正版书籍、小说、漫画、公众号、听书，多设备同步实现跨屏阅读。与微信好友一起发现更多精品好书，随时交流感想，让阅读不再孤独。",
+                "url": "https://weread.qq.com/"
+            },
+            {
+                "name": "掘金",
+                "icon": "https://lf-web-assets.juejin.cn/obj/juejin-web/xitu_juejin_web/static/favicons/favicon-32x32.png",
+                "descriptions": "掘金是面向全球中文开发者的技术内容分享与交流平台。我们通过技术文章、沸点、课程、直播等产品和服务，打造一个激发开发者创作灵感，激励开发者沉淀分享，陪伴开发者成长的综合类技术社区。",
+                "url": "https://juejin.cn/"
+            },
+            {
+                "name": "今日头条",
+                "icon": "https://lf3-static.bytednsdoc.com/obj/eden-cn/pipieh7nupabozups/toutiao_web_pc/tt-icon.png",
+                "descriptions": "今日头条是一个通用信息平台，致力于连接人与信息，让优质丰富的信息得到高效精准的分发，促使信息创造价值。",
+                "url": "https://www.toutiao.com/"
+            },
+            {
+                "name": "知乎",
+                "icon": "https://static.zhihu.com/heifetz/assets/apple-touch-icon-60.362a8eac.png",
+                "descriptions": "知乎，中文互联网高质量的问答社区和创作者聚集的原创内容平台，于 2011 年 1 月正式上线，以「让人们更好的分享知识、经验和见解，找到自己的解答」为品牌使命。知乎凭借认真、专业、友善的社区氛围、独特的产品机制以及结构化和易获得的优质内容，聚集了中文互联网科技、商业、影视、时尚、文化等领域最具创造力的人群，已成为综合性、全品类、在诸多领域具有关键影响力的知识分享社区和创作者聚集的原创内容平台，建立起了以社区驱动的内容变现商业模式。",
+                "url": "https://www.zhihu.com/"
+            }
+        ]
+    },
+    {
+        "title": "笔记灵感",
+        "children": [
+            {
+                "name": "语雀",
+                "icon": "https://mdn.alipayobjects.com/huamei_0prmtq/afts/img/A*sRUdR543RjcAAAAAAAAAAAAADvuFAQ/original",
+                "descriptions": "十万阿里人都在用的笔记与文档知识库，面向企业、组织或个人，提供全新的体系化知识管理，打造轻松流畅的工作协同。金融级数据安全、丰富的应用场景、强大的知识创作与管理，助力企业、个人轻松拥有云端知识库",
+                "url": "https://www.yuque.com/dashboard"
+            },
+            {
+                "name": "石墨文档",
+                "icon": "https://as.smgv.cn/static/lizard-one/assets/icons/favicon.f921e86f.ico",
+                "descriptions": "石墨文档是一款轻便、简洁的在线协作文档工具，PC端和移动端全覆盖，支持多人同时对文档编辑和评论，让你与他人轻松完成协作撰稿、方案讨论、会议记录和资料共享等工作。",
+                "url": "https://shimo.im/desktop"
+            },
+            {
+                "name": "有道云笔记",
+                "icon": "https://note.youdao.com/favicon.ico",
+                "descriptions": "有道云笔记是一款多平台记录工具，支持扫描、语音、Markdown、收藏等多种记录方式，内容多端实时同步。强大的AI工具带来全方位赋能，帮你提效减负；微信、微博等优质内容一键收藏到笔记，全面助力高效学习和工作。",
+                "url": "https://note.youdao.com/web"
+            }
+        ]
+    },
+    {
+        "title": "高效代办",
+        "children": [
+            {
+                "name": "滴答清单",
+                "icon": "https://dida365.com/static/img/pwa/icons-256.png",
+                "descriptions": "滴答清单，一个帮你高效完成任务和规划时间的应用，是一款拥有跨设备云同步、周期提醒、清单管理、清晰分类、协作和集成日历的应用，你可以在Web、Android、iPhone等设备上使用它。",
+                "url": "https://dida365.com/webapp"
+            },
+            {
+                "name": "板栗看板",
+                "icon": "https://cdn.banlikanban.com/static/icon-banli.ico",
+                "descriptions": "整合了协同办公软件,OA办公系统,移动办公,办公自动化,项目管理,任务管理,OKR,网盘,在线沟通,日历,简报,审批,企业管理,目标管理,团队协作,甘特图,流程自定义,统计报表,时间管理,计划管理等",
+                "url": "https://www.banlikanban.com/index"
+            }
+        ]
+    },
+    {
+        "title": "翻译工具",
+        "children": [
+            {
+                "name": "百度翻译",
+                "icon": "https://fanyi.baidu.com/favicon.ico",
+                "descriptions": "百度翻译-您的超级翻译伙伴（文本、文档翻译）",
+                "url": "https://fanyi.baidu.com/mtpe-individual/multimodal#/"
+            },
+            {
+                "name": "有道翻译",
+                "icon": "https://ydlunacommon-cdn.nosdn.127.net/31cf4b56e6c0b3af668aa079de1a898c.png",
+                "descriptions": "有道翻译_文本、文档、网页、在线即时翻译",
+                "url": "https://fanyi.youdao.com/#/TextTranslate"
+            }
+        ]
+    },
+    {
+        "title": "网盘大全",
+        "children": [
+            {
+                "name": "阿里云盘",
+                "icon": "https://img.alicdn.com/imgextra/i1/O1CN01JDQCi21Dc8EfbRwvF_!!6000000000236-73-tps-64-64.ico",
+                "descriptions": "阿里云盘 - 你的数字世界·阿里巴巴集团出品",
+                "url": "https://www.aliyundrive.com/drive/home"
+            },
+            {
+                "name": "夸克网盘",
+                "icon": "https://pan.quark.cn/favicon.ico",
+                "descriptions": "夸克网盘是夸克推出的一款云服务产品，功能包括云存储、高清看剧、文件在线解压、PDF一键转换等。通过夸克网盘可随时随地管理和使用照片、文档、手机资料，目前支持Android、iOS、PC、iPad。",
+                "url": "https://pan.quark.cn/list#/list/all"
+            },
+            {
+                "name": "百度网盘",
+                "icon": "https://nd-static.bdstatic.com/m-static/wp-brand/favicon.ico",
+                "descriptions": "百度网盘是一款国民级产品，已连续9年为超过7亿用户提供稳定、安全的个人云存储服务，已实现电脑、手机、电视等多种终端场景的覆盖和互联，并支持多类型文件的备份、分享、查看和处理",
+                "url": "https://pan.baidu.com/"
+            },
+            {
+                "name": "蓝奏云",
+                "icon": "https://up.woozooo.com/favicon.ico",
+                "descriptions": "快捷分享软件，app安装包",
+                "url": "https://up.woozooo.com/mydisk.php"
+            }
+        ]
+    },
+    {
+        "title": "网盘资源",
+        "children": [
+            {
+                "name": "阿里小站",
+                "icon": "https://pan666.net/favicon.ico",
+                "descriptions": "人人为我，我为人人的共享资源社区",
+                "url": "https://pan666.net/"
+            },
+            {
+                "name": "夸父资源社",
+                "icon": "https://www.kuafuzys.com/view/img/favicon.ico",
+                "descriptions": "夸父资源社-优质夸克网盘资源分享社区",
+                "url": "https://www.kuafuzys.com/"
+            }
+        ]
+    },
+    {
+        "title": "邮箱",
+        "children": [
+            {
+                "name": "QQ邮箱",
+                "icon": "https://mail.qq.com/zh_CN/htmledition/images/favicon/qqmail_favicon_32h.png",
+                "descriptions": "QQ邮箱，为亿万用户提供高效稳定便捷的电子邮件服务",
+                "url": "https://wx.mail.qq.com/login/loginpage?auth_type=3&login_exception=true"
+            },
+            {
+                "name": "新浪邮箱",
+                "icon": "https://m0.mail.sina.com.cn/favicon.ico",
+                "descriptions": "新浪邮箱",
+                "url": "https://m0.mail.sina.com.cn/classic/index.php"
+            },
+            {
+                "name": "网易邮箱",
+                "icon": "https://email.163.com/favicon.ico",
+                "descriptions": "网易免费邮箱 - 你的专业电子邮局",
+                "url": "https://email.163.com/"
+            }
+        ]
+    },
+    {
+        "title": "金三银四",
+        "children": [
+            {
+                "name": "BOSS直聘",
+                "icon": "https://www.zhipin.com/favicon.ico",
+                "descriptions": "BOSS直聘是权威领先的招聘网，开启人才网招聘求职新时代，招聘求职找工作，上BOSS直聘，直接谈！",
+                "url": "https://www.zhipin.com/"
+            },
+            {
+                "name": "智联招聘",
+                "icon": "https://common-bucket.zhaopin.cn/img/zhilian-ico/zhilian-ico-1.0.0.png",
+                "descriptions": "智联招聘求职招聘网站,为求职者提供2025年真实准确的全国求职招聘信息,海量的高薪职位招聘信息供求职者选择,找工作就上智联招聘！",
+                "url": "https://www.zhaopin.com/"
+            }
+        ]
+    }
+]

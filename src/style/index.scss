@@ -1,4 +1,59 @@
 html, body, #app {
     width: 100vw;
     height: 100vh;
+    font-family: 'OPPO-M';
+}
+
+@font-face {
+    font-family: 'Mi-Thin';
+    src: url('@/assets/font/mi/MiSans-Thin.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Mi-Light';
+    src: url('@/assets/font/mi/MiSans-Light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Mi-Normal';
+    src: url('@/assets/font/mi/MiSans-Normal.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Mi-Regular';
+    src: url('@/assets/font/mi/MiSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Mi-Bold';
+    src: url('@/assets/font/mi/MiSans-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'MovieFont';
+    src: url('@/assets/font/movie.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'OPPO-H';
+    src: url('@/assets/font/OPPOSans-H.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'OPPO-B';
+    src: url('@/assets/font/OPPOSans-B.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'OPPO-L';
+    src: url('@/assets/font/OPPOSans-L.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'OPPO-M';
+    src: url('@/assets/font/OPPOSans-M.ttf') format('truetype');
+}
+
+.movie_font {
+    font-family: "MovieFont";
 }

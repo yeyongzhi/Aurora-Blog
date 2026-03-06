@@ -34,6 +34,13 @@ const knowledgeData = computed(() => {
 <template>
     <ScrollArea class="w-full h-full p-4">
         <div class="w-full px-[25%]">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-5xl font-extrabold">{{ uesrData.name }}</p>
+                    <p class="text-3xl font-extrabold mt-8">{{ uesrData.signature }}</p>
+                </div>
+                <img src="../../assets/images/user/logo.png" alt="logo" class="size-[350px]"/>
+            </div>
             <h1 class="text-2xl font-extrabold">关于我</h1>
             <AboutMe :data="uesrData" />
             <h1 class="text-2xl font-extrabold">技术栈</h1>

@@ -11,12 +11,12 @@
 - 迄今为止看过的电影清单 xxx
 
 ## 应用设计
-![首页](./images/home.png)(300,auto)
-![列表清单页](./images/list.png)(300,auto)
-![个人中心页面](./images/my.png)(300,auto)
+![首页](./images/home.png)(500,auto)
+![列表清单页](./images/list.png)(500,auto)
+![个人中心页面](./images/my.png)(500,auto)
 
 ## 使用体验
-![小程序二维码](./images/code.jpg)
+![小程序二维码](./images/code.jpg)(300,auto)
 
 ## 写在最后
 欢迎体验使用，有各种建议、问题也欢迎交流讨论~

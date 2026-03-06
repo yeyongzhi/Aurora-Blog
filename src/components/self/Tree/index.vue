@@ -14,7 +14,7 @@ import TreeItem from './TreeItem.vue'
 
 export interface TreeItem {
     key: string
-    name: string
+    label: string
     children?: Array<TreeItem>
 }
 
@@ -38,7 +38,6 @@ const tree = ref<Array<TreeItem>>([])
 
 const initTree = (data: Array<TreeItem>) => {
     tree.value = data
-    console.log(tree.value)
 }
 
 watch(() => props.data, (newVal, _) => {

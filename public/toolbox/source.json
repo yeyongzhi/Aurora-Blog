@@ -1,0 +1,48 @@
+[
+    {
+        "title": "字体下载",
+        "children": [
+            {
+                "name": "font-China",
+                "icon": "https://font.chinaz.com/favicon.ico",
+                "descriptions": "中文字体提供:中文字体下载,中文字体下载大全,中文字体打包下载-font.chinaz.com。",
+                "url": "https://font.chinaz.com/zhongwenziti.html"
+            },
+            {
+                "name": "找字网",
+                "icon": "https://www.zhaozi.cn/favicon.ico",
+                "descriptions": "提供中英文免费字体下载、手写字体下载、书法字体下载、艺术字体下载、手机字体下载预览服务！字体商用在线全自动授权！老牌专业字体市场、字体网站。",
+                "url": "https://www.zhaozi.cn/s/freefont/"
+            }
+        ]
+    },
+    {
+        "title": "壁纸下载",
+        "children": [
+            {
+                "name": "wallhaven超清壁纸下载",
+                "icon": "https://wallhaven.cc/favicon.ico",
+                "descriptions": "Your source for the best high quality wallpapers on the Net!",
+                "url": "https://wallhaven.cc/"
+            },
+            {
+                "name": "极简壁纸",
+                "icon": "/images/icon/jijianbizhi.png",
+                "descriptions": "极简壁纸,4K高清电脑桌面壁纸图库,海量4K电脑壁纸,壁纸网站,美女,动漫,风景,4k高清,4k超清,电脑壁纸桌面。",
+                "url": "https://bz.zzzmh.cn/index"
+            },
+            {
+                "name": "致美化",
+                "icon": "https://zhutix.com/favicon.ico",
+                "descriptions": "致美化是国内专注于视觉美化的研究及交流平台，聚集了超过50万的活跃用户，你可以在此个性化你的设备，探索及下载丰富多彩的电脑主题、壁纸、图标、皮肤等酷炫的美化素材及教程。",
+                "url": "https://zhutix.com/"
+            },
+            {
+                "name": "Wallpaper Abyss",
+                "icon": "https://wall.alphacoders.com/favicon-32x32.png",
+                "descriptions": "Alpha Coders - Your Source For Desktop Wallpapers, Phone Wallpapers, Gifs, PFP, and More!",
+                "url": "https://wall.alphacoders.com/"
+            }
+        ]
+    }
+]

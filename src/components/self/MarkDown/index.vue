@@ -21,6 +21,13 @@ import Tooltip from '@/components/self/Tooltip/index.vue'
 import { Button } from '@/components/ui/button'
 import Tree from '../Tree/index.vue'
 import { ChevronsUpIcon, ChevronsDownIcon } from 'lucide-vue-next'
+// Using ES6 import syntax
+import hljs from 'highlight.js/lib/core';
+import javascript from 'highlight.js/lib/languages/javascript';
+import 'highlight.js/styles/atom-one-dark.css';
+
+// Then register the languages you need
+hljs.registerLanguage('javascript', javascript);
 
 // 扩展插件
 dayjs.extend(utc);
@@ -32,8 +39,10 @@ const markdownInfo = ref<any>({
 }) // 文章信息
 const markdownLoading = ref(false)
 
-const { path } = defineProps({
+const { path, showInfo, showGuide } = defineProps({
     path: { type: String, required: true, default: '' },
+    showInfo: { type: Boolean, default: true },
+    showGuide: { type: Boolean, default: true },
 })
 
 const copyCode = (content: string) => {
@@ -54,7 +63,7 @@ const findTitleRange = (list: Array<any>, level: number, originResult: Array<any
                 result.push({
                     ...list[i],
                     index: i,
-                    name: list[i].content.replace(/#/g, "").trim(),
+                    label: list[i].content.replace(/#/g, "").trim(),
                     key: `md_nav_${i}`
                 })
             } else {
@@ -83,7 +92,7 @@ const findTitleRange = (list: Array<any>, level: number, originResult: Array<any
                                 ...list[i],
                                 index: i,
                                 // children: [],
-                                name: list[i].content.replace(/#/g, "").trim(),
+                                label: list[i].content.replace(/#/g, "").trim(),
                                 key: `md_nav_${i}`
                             })
                         }
@@ -96,7 +105,7 @@ const findTitleRange = (list: Array<any>, level: number, originResult: Array<any
                         ...list[i],
                         index: i,
                         // children: [],
-                        name: list[i].content.replace(/#/g, "").trim(),
+                        label: list[i].content.replace(/#/g, "").trim(),
                         key: `md_nav_${i}`
                     })
                 }
@@ -152,8 +161,8 @@ watch(() => path, async (newVal) => {
     if (newVal && newVal !== "") {
         markdownLoading.value = true
         const result = await getMarkDownContent(newVal)
-        console.log("文章内容：")
-        console.log(result)
+        // console.log("文章内容：")
+        // console.log(result)
         const info = await getMarkDownInfo(newVal)
         if (info) {
             const localTime = dayjs(info).tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
@@ -165,7 +174,7 @@ watch(() => path, async (newVal) => {
         if (result) {
             message.success("文章加载成功")
             const data = formatMarkDown(result)
-            console.log(data)
+            // console.log(data)
             markdownContent.value = data;
         } else {
             message.error("未找到文章")
@@ -182,14 +191,12 @@ const scrollAreaRootRef = shallowRef<any>(null)
 const scrollToSection = () => {
     const decodedHash = decodeURIComponent(location.hash.substring(1));
     const element = document.getElementById('markdown_nav_' + decodedHash);
-    // console.log(element)
     if (element) {
         const options = {
-            top: element.getBoundingClientRect().top + scrollAreaRootRef.value.scrollTop - 100,
+            top: element.offsetTop,
             behavior: 'smooth'
         }
-        // console.log(options)
-        scrollAreaRootRef.value.scrollTo(options);
+        scrollAreaRootRef.value?.scrollTo(options);
     }
 }
 
@@ -199,7 +206,7 @@ const getCurrentNavName = (data: Array<any>, key: string) => {
     let name = null
     data.forEach((item: any) => {
         if (item.key === key) {
-            name = item.name
+            name = item.label
         }
         if (item.children) {
             name = getCurrentNavName(item.children, key)
@@ -210,7 +217,9 @@ const getCurrentNavName = (data: Array<any>, key: string) => {
 
 watch(() => currentNavKey.value, (newVal, _) => {
     if (newVal) {
+        console.log(newVal)
         let name = getCurrentNavName(markdown_nav.value, newVal)
+        console.log(name)
         if (name) {
             handleNavClick(name)
         }
@@ -219,6 +228,7 @@ watch(() => currentNavKey.value, (newVal, _) => {
 
 onMounted(() => {
     window.addEventListener('hashchange', scrollToSection);
+    hljs.highlightAll();
 })
 
 onUnmounted(() => {
@@ -230,7 +240,6 @@ const renderTitleId = (item: any) => {
 }
 
 const renderCode = (content: string[]) => {
-    // console.log('First line:', JSON.stringify(content[0]))
     const codeStr = content.join('\n')
     return codeStr
 }
@@ -300,7 +309,7 @@ const renderImgClassName = (content: string[]) => {
                         :id="renderTitleId(item)">{{ item.content.trim().replace(/#/g, "") }}</h6>
                 </template>
                 <template v-else-if="item.type === 'divider'">
-                    ----------------
+                    <div class="w-full my-4 h-[2px] bg-muted"></div>
                 </template>
                 <!-- 引用 -->
                 <template v-else-if="item.type === 'quote'">
@@ -311,8 +320,8 @@ const renderImgClassName = (content: string[]) => {
                 <!-- 超链接 -->
                 <template v-else-if="item.type === 'link'">
                     <Tooltip :content="item.content[2]">
-                        <Button class="px-0 py-0 font-bold" variant="link" @click="openTab(item.content[2])">
-                            <LinkIcon class="inline-block size-4" />
+                        <Button class="w-fit px-0 py-0 font-bold" variant="link" @click="openTab(item.content[2])">
+                            <LinkIcon class="size-4" />
                             {{ item.content[1] }}
                         </Button>
                     </Tooltip>
@@ -320,8 +329,11 @@ const renderImgClassName = (content: string[]) => {
                 <!-- 图片 -->
                 <template v-else-if="item.type === 'img'">
                     <div class="w-fit my-4 flex flex-col justify-start items-center">
-                        <img :src="getImageUrl(item.content[2])" alt="" :class="`h-auto rounded-md ${renderImgClassName(item.content)}`">
-                        <p class="my-2 w-full text-center" :title="item.content[1]">{{ item.content[1] }}</p> 
+                        <img :src="getImageUrl(item.content[2])" :alt="item.content[1]" :class="`rounded-md`" :style="{
+                            width: (Number(item.content[3]) > 0) ? `${item.content[3]}px` : item.content[3],
+                            height: (Number(item.content[4]) > 0) ? `${item.content[4]}px` : item.content[4]
+                        }">
+                        <p class="my-2 w-full text-center" :title="item.content[1]">{{ item.content[1] }}</p>
                     </div>
                 </template>
                 <!-- 无序列表 -->
@@ -351,7 +363,7 @@ const renderImgClassName = (content: string[]) => {
                 <!-- 代码片段 -->
                 <template v-else-if="item.type === 'code'">
                     <pre class="my-4 rounded bg-muted text-sm font-semibold">
-                        <code>{{ renderCode(item.content) }}</code>
+                        <code class="language-javascript">{{ renderCode(item.content) }}</code>
                     </pre>
                 </template>
                 <template v-else-if="item.type === 'text'">
@@ -363,7 +375,7 @@ const renderImgClassName = (content: string[]) => {
             </template>
         </ScrollArea>
         <!-- 目录 -->
-        <div class="absolute top-2 right-2">
+        <div class="absolute top-2 right-2" v-if="showGuide">
             <Card class="w-[300px] gap-4 py-4">
                 <CardHeader>
                     <CardTitle>文章目录</CardTitle>
@@ -385,7 +397,7 @@ const renderImgClassName = (content: string[]) => {
             </Card>
         </div>
         <!-- 文档信息 -->
-        <div class="absolute bottom-2 right-2 p-2 border text-xs rounded-md bg-muted">
+        <div class="absolute bottom-2 right-2 p-2 border text-xs rounded-md bg-muted" v-if="showInfo">
             <p class="flex items-center mb-2">
                 <FileClockIcon class="size-4 mr-2" />
                 最后修改时间：{{ markdownInfo.lastModified || '-' }}

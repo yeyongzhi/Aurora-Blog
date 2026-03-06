@@ -13,7 +13,12 @@ export interface UserInfo {
 
 const useUserStore = defineStore('user', () => {
     const userLoading = ref(false)
-    const userInfo = ref<UserInfo | null>(null)
+    const userInfo = ref<UserInfo>({
+        name: '',
+        signature: '',
+        province: '',
+        city: '',
+    })
 
     const getUserData = async () => {
         userLoading.value = true

@@ -5,30 +5,31 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 
 interface TooltipProps {
     content: string
+    disabled?: boolean
 }
 
 const props = withDefaults(defineProps<TooltipProps>(), {
-    content: ''
+    content: '',
+    disabled: false,
 })
 
 </script>
 
 <template>
-    <div class="w-full">
-        <TooltipProvider>
-            <Tooltip>
-                <TooltipTrigger class="w-full">
-                    <slot />
-                </TooltipTrigger>
-                <TooltipContent>
-                    {{ props.content || '' }}
-                </TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
-    </div>
+    <TooltipProvider>
+        <Tooltip>
+            <TooltipTrigger ref="triggerRef" as-child>
+                <slot />
+            </TooltipTrigger>
+            <TooltipContent>
+                {{ props.content || '' }}
+            </TooltipContent>
+        </Tooltip>
+    </TooltipProvider>
 </template>
 
 <style scoped lang="scss"></style>

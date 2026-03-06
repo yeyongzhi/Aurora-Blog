@@ -7,7 +7,7 @@ import toast from '@/plugins/message'
 type ColorMode = 'light' | 'dark' | 'auto'
 
 const DEFAULT_MODE: ColorMode = 'light'
-const DEFAULT_MENU_KEY = 'contact'
+const DEFAULT_MENU_KEY = 'nav'
 
 const useAppStore = defineStore('app', () => {
     const mode = useColorMode()

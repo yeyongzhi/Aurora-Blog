@@ -1,24 +1,20 @@
-<script setup lang="ts" name="Note">
+<script setup lang="ts" name="Life">
 import { onMounted, ref, watch } from 'vue'
 import { Button } from '@/components/ui/button'
 import { ChevronsRightIcon } from 'lucide-vue-next'
-import NoteSlideMenu from './components/SlideMenu.vue'
+import ArticleSlideMenu from '@/components/self/ArticleSlideMenu/index.vue'
 import Tree from '@/components/self/Tree/index.vue'
 import MarkDown from '@/components/self/MarkDown/index.vue'
-import { getFullPath, getMdPath } from './handle'
+import { getFullPath, getMdPath } from '@/utils/index'
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { type NoteTreeItem } from '@/types/Note'
 
-export interface NoteTreeItem {
-    key: string
-    label: string
-    default?: boolean
-    children?: Array<NoteTreeItem>
-}
+const BASE_ARTICLE_PATH = '/article/life'
 
 const treeData = ref<NoteTreeItem[]>([])
 const noteKey = ref<string>('')
@@ -41,17 +37,15 @@ const initTreeData = () => {
         .then(response => response.json())
         .then(data => {
             treeData.value = data
+            console.log(treeData.value)
             findDefaultArticle(treeData.value)
         })
 }
 
 watch(noteKey, (newKey) => {
     if (newKey && newKey !== "") {
-        console.log("新的文章key" + newKey)
         const fullPath = getFullPath(treeData.value, newKey)
-        console.log("新的文章路径" + fullPath)
-        const mdPath = getMdPath(fullPath)
-        console.log("新的文章md路径" + mdPath)
+        const mdPath = getMdPath(BASE_ARTICLE_PATH, fullPath)
         articlePath.value = mdPath
     }
 }, { immediate: true })
@@ -74,9 +68,9 @@ onMounted(() => {
 
 <template>
     <div class="w-full h-full p-4 flex justify-center gap-x-4">
-        <NoteSlideMenu v-show="slideMenuVisible" :visible="slideMenuVisible" @toggle="toggleSlideMenu" :treeData="treeData">
-            <Tree :currentKey="noteKey" :data="treeData" @articleChanged="handleArticleChanged" />
-        </NoteSlideMenu>
+        <ArticleSlideMenu v-show="slideMenuVisible" :visible="slideMenuVisible" @toggle="toggleSlideMenu" :treeData="treeData">
+            <Tree v-model:currentKey="noteKey" :data="treeData" @articleChanged="handleArticleChanged" />
+        </ArticleSlideMenu>
         <div class="border flex-1 rounded-xl p-4">
             <div class="mb-4" v-if="!slideMenuVisible" >
                 <TooltipProvider>
@@ -92,7 +86,7 @@ onMounted(() => {
                     </Tooltip>
                 </TooltipProvider>
             </div>
-            <MarkDown :path="articlePath" />
+            <MarkDown :path="articlePath" :showInfo="false" />
         </div>
     </div>
 </template>

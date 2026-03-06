@@ -1,10 +1,11 @@
 <script setup lang="ts" name="TreeItem">
+import { ref } from 'vue'
 import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
 } from '@/components/ui/collapsible'
-import { ChevronRightIcon } from 'lucide-vue-next'
+import { ChevronRightIcon, ChevronDownIcon } from 'lucide-vue-next'
 import type { TreeItem } from './index.vue'
 
 export interface TreeItemProps {
@@ -21,28 +22,32 @@ const emit = defineEmits<{
 const updateCurrentKey = (key: string) => {
     emit('update:currentKey', key)
 }
+
+const isExpanded = ref(true)
+
 </script>
 
 <template>
-    <div class="text-sm flex flex-col">
+    <div class="text-sm flex flex-col mb-1">
         <div
             v-if="!item.children || item.children.length === 0"
             :class="['flex items-center justify-between cursor-pointer px-2 py-1 rounded-md', currentKey === item.key ? 'bg-primary text-primary-foreground' : 'hover:bg-accent']"
             @click="updateCurrentKey(item.key)"
         >
             <div class="flex items-center">
-                <span class="ml-2">{{ item.name }}</span>
+                <span class="ml-2">{{ item.label }}</span>
             </div>
         </div>
-        <Collapsible v-else :defaultOpen="true">
+        <Collapsible v-else :defaultOpen="true" v-model:open="isExpanded">
             <CollapsibleTrigger>
                 <div class="flex items-center">
-                    <ChevronRightIcon class="size-4" />
-                    <span class="ml-2">{{ item.name }}</span>
+                    <ChevronDownIcon v-if="isExpanded" class="size-4" />
+                    <ChevronRightIcon v-else class="size-4" />
+                    <span class="ml-2">{{ item.label }}</span>
                 </div>
             </CollapsibleTrigger>
             <CollapsibleContent>
-                <div class="mt-2 flex flex-col gap-y-2 pl-4">
+                <div class="flex flex-col pl-4">
                     <TreeItem
                         v-for="child in item.children"
                         :key="child.key"

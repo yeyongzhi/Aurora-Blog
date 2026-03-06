@@ -120,6 +120,12 @@
       "name": "browser-localstorge",
       "description": "一个浏览器本地存储化工具包",
       "link": "https://www.npmjs.com/package/browser-localstorge"
+    },
+    {
+      "icon": "😀",
+      "name": "emoji-collection",
+      "description": "这是一个基于 Vue3 和 shadcn ui 的 emoji 选择器",
+      "link": "https://yeyongzhi.github.io/emoji-collection/"
     }
   ]
 }

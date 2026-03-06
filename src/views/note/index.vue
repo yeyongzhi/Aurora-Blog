@@ -74,7 +74,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="w-full h-full p-4 flex justify-center gap-x-4">
+    <div class="w-full h-full p-4 flex justify-center gap-x-4 overflow-hidden">
         <NoteSlideMenu v-show="slideMenuVisible" :visible="slideMenuVisible" @toggle="toggleSlideMenu" :treeData="treeData">
             <Tree :currentKey="noteKey" :data="treeData" @articleChanged="handleArticleChanged" />
         </NoteSlideMenu>

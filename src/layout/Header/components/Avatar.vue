@@ -23,8 +23,8 @@ const user = computed(() => {
         <img class="size-10 rounded-full" :src="AvatarImg" />
         <div class="font-bold text-base">{{ user.name }}</div>
         <div class="flex justify-center items-center gap-x-2">
-            <Tooltip content="刷新" @click="appStore.handleRefresh">
-                <Button size="sm" variant="secondary">
+            <Tooltip content="刷新">
+                <Button size="sm" variant="secondary" @click="appStore.handleRefresh">
                     <RefreshCcwIcon />
                 </Button>
             </Tooltip>
