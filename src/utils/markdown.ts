@@ -176,19 +176,52 @@ export function identifyLine(text: string) {
     }
 }
 
-function handleLineText(content: string) {
-    const boldRegex = /(\*\*|__)(.*?)(\*\*|__)/g;
-    const italicRegex = /(\*|_)(.*?)(\*|_)/g;
-    const strikethroughRegex = /~~(.*?)~~/g;
-    const inlineCodeRegex = /`(.*?)`/g;
+// function handleLineText(content: string) {
+//     const boldRegex = /(\*\*|__)(.*?)(\*\*|__)/g;
+//     const italicRegex = /(\*|_)(.*?)(\*|_)/g;
+//     const strikethroughRegex = /~~(.*?)~~/g;
+//     const inlineCodeRegex = /`(.*?)`/g;
 
-    let htmlText = content
+//     let htmlText = content
+//         .replace(boldRegex, "<strong>$2</strong>")
+//         .replace(italicRegex, "<em>$2</em>")
+//         .replace(strikethroughRegex, "<del>$1</del>")
+//         .replace(inlineCodeRegex, "<code class='mx-2 rounded bg-muted px-2 py-1 text-base font-bold'>$1</code>");
+
+//     return htmlText
+// }
+
+function handleLineText(content: string) {
+    // 1. 首先转义 HTML 特殊字符，防止被浏览器解析为标签或被过滤
+    const escapeHtml = (text: string) => {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    };
+
+    // 注意：这里我们假设 content 是纯文本，需要先转义
+    // 如果你的 content 已经包含了一些合法的 HTML 标签需要保留，这个方案需要调整（只转义 Markdown 部分）
+    // 但对于纯文本记录思考的场景，全量转义是最安全的。
+    
+    let safeContent = escapeHtml(content);
+
+    // 2. 然后应用 Markdown 正则
+    // 此时 < 和 > 已经变成了 &lt; 和 &gt;，正则匹配完全不受影响，且生成的 HTML 是安全的
+    const boldRegex = /(\*\*|__)([\s\S]*?)\1/g;
+    const italicRegex = /([*_])([\s\S]*?)\1/g;
+    const strikethroughRegex = /~~([\s\S]*?)~~/g;
+    const inlineCodeRegex = /`([\s\S]*?)`/g;
+
+    let htmlText = safeContent
         .replace(boldRegex, "<strong>$2</strong>")
         .replace(italicRegex, "<em>$2</em>")
         .replace(strikethroughRegex, "<del>$1</del>")
         .replace(inlineCodeRegex, "<code class='mx-2 rounded bg-muted px-2 py-1 text-base font-bold'>$1</code>");
 
-    return htmlText
+    return htmlText;
 }
 
 export function getContinuousRangeIndex(content: Array<any>, start: number) {

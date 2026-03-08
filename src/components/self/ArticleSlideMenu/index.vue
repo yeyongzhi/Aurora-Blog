@@ -10,12 +10,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from '@/components/ui/tooltip'
+import Tooltip from '@/components/self/Tooltip/index.vue'
 import { type NoteTreeItem } from '@/views/note/index.vue'
 
 interface Props {
@@ -58,16 +53,11 @@ const emits = defineEmits(['toggle'])
             </CardDescription>
             <CardAction>
                 <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger>
-                            <Button size="sm" variant="secondary" @click="emits('toggle')">
-                                <ChevronsLeftIcon class="size-4" v-if="props.visible" />
-                                <ChevronsRightIcon class="size-4" v-else />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            {{ props.visible ? '收起' : '展开' }}菜单
-                        </TooltipContent>
+                    <Tooltip :content="props.visible ? '收起' : '展开'">
+                        <Button size="sm" variant="secondary" @click="emits('toggle')">
+                            <ChevronsLeftIcon class="size-4" v-if="props.visible" />
+                            <ChevronsRightIcon class="size-4" v-else />
+                        </Button>
                     </Tooltip>
                 </TooltipProvider>
             </CardAction>

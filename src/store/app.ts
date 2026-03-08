@@ -7,7 +7,7 @@ import toast from '@/plugins/message'
 type ColorMode = 'light' | 'dark' | 'auto'
 
 const DEFAULT_MODE: ColorMode = 'light'
-const DEFAULT_MENU_KEY = 'nav'
+const DEFAULT_MENU_KEY = 'home'
 
 const useAppStore = defineStore('app', () => {
     const mode = useColorMode()
@@ -31,20 +31,26 @@ const useAppStore = defineStore('app', () => {
     }
 
     const menuKey = ref(DEFAULT_MENU_KEY)
-    const historyMenuList = ref<string[]>([])
+    const historyMenuList = ref<string[]>([DEFAULT_MENU_KEY])
+    const historyMenuIndex = ref(0)
     const handleMenuChange = (value: string) => {
         menuKey.value = value
         historyMenuList.value.push(value)
+        historyMenuIndex.value = historyMenuIndex.value + 1
     }
     const handleBack = () => {
-        if(historyMenuList.value.length === 0) {
+        if(historyMenuList.value.length === 1) {
             return toast.warning('没有上一级了')
         }
+        historyMenuIndex.value = historyMenuIndex.value - 1
+        menuKey.value = historyMenuList.value[historyMenuIndex.value] || DEFAULT_MENU_KEY
     }
     const handleForward = () => {
-        if(historyMenuList.value.length === 0) {
+        if(historyMenuList.value.length === 1) {
             return toast.warning('没有下一级了')
         }
+        historyMenuIndex.value = historyMenuIndex.value + 1
+        menuKey.value = historyMenuList.value[historyMenuIndex.value] || DEFAULT_MENU_KEY
     }
     const handleRefresh = () => {
         window.location.reload()
