@@ -6,12 +6,7 @@ import NoteSlideMenu from './components/SlideMenu.vue'
 import Tree from './components/Tree.vue'
 import MarkDown from '@/components/self/MarkDown/index.vue'
 import { getFullPath, getMdPath } from './handle'
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from '@/components/ui/tooltip'
+import Tooltip from '@/components/self/Tooltip/index.vue'
 
 export interface NoteTreeItem {
     key: string
@@ -75,21 +70,17 @@ onMounted(() => {
 
 <template>
     <div class="w-full h-full p-4 flex justify-center gap-x-4 overflow-hidden">
-        <NoteSlideMenu v-show="slideMenuVisible" :visible="slideMenuVisible" @toggle="toggleSlideMenu" :treeData="treeData">
+        <NoteSlideMenu v-show="slideMenuVisible" :visible="slideMenuVisible" @toggle="toggleSlideMenu"
+            :treeData="treeData">
             <Tree :currentKey="noteKey" :data="treeData" @articleChanged="handleArticleChanged" />
         </NoteSlideMenu>
         <div class="border flex-1 rounded-xl p-4">
-            <div class="mb-4" v-if="!slideMenuVisible" >
+            <div class="mb-4" v-if="!slideMenuVisible">
                 <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger>
-                            <Button size="sm" variant="secondary" @click="toggleSlideMenu">
-                                <ChevronsRightIcon class="size-4"/>
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            展开菜单
-                        </TooltipContent>
+                    <Tooltip content="展开菜单">
+                        <Button size="sm" variant="secondary" @click="toggleSlideMenu">
+                            <ChevronsRightIcon class="size-4" />
+                        </Button>
                     </Tooltip>
                 </TooltipProvider>
             </div>

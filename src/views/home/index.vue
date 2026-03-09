@@ -74,10 +74,10 @@ const knowledgeData = computed(() => {
 
 @keyframes float {
     0%, 100% {
-        transform: translateY(0px);
+        transform: translateY(10px);
     }
     50% {
-        transform: translateY(-15px);
+        transform: translateY(-10px);
     }
 }
 

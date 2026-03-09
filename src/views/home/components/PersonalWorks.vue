@@ -8,6 +8,10 @@ import {
     ItemMedia,
     ItemTitle,
 } from '@/components/ui/item'
+import { openTab } from '@/utils';
+import useAppStore from '@/store/app';
+
+const appStore = useAppStore();
 
 interface PersonalWorkItem {
     icon: string;
@@ -25,6 +29,15 @@ const props = withDefaults(defineProps<Props>(), {
     data: () => []
 })
 
+const handleClick = (item: PersonalWorkItem) => {
+    if (item.routePath) {
+        appStore.gotoPage(item.routePath)
+    } else if (item.link) {
+        openTab(item.link)
+    }
+}
+
+
 </script>
 
 <template>
@@ -40,7 +53,7 @@ const props = withDefaults(defineProps<Props>(), {
                 </ItemDescription>
             </ItemContent>
             <ItemActions>
-                <Button size="sm">
+                <Button size="sm" @click="handleClick(item)">
                     去看看
                 </Button>
             </ItemActions>

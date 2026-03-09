@@ -48,12 +48,12 @@
     "children": [
       {
         "key": "AntfuCode",
-        "label": "Antfu代码风格学习",
-        "default": true
+        "label": "Antfu代码风格学习"
       },
       {
         "key": "vue_ref",
-        "label": "vue Ref"
+        "label": "vue Ref",
+        "default": true
       },
       {
         "key": "vue_watch",

@@ -362,7 +362,7 @@ const renderImgClassName = (content: string[]) => {
                 </template>
                 <!-- 代码片段 -->
                 <template v-else-if="item.type === 'code'">
-                    <pre class="my-4 rounded bg-muted text-sm font-semibold">
+                    <pre class="my-4 rounded bg-muted text-sm font-semibold whitespace-break-spaces">
                         <code class="language-javascript">{{ renderCode(item.content) }}</code>
                     </pre>
                 </template>
