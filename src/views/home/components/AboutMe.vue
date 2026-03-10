@@ -1,15 +1,5 @@
 <script setup lang="ts" name="AboutMe">
 import { computed } from 'vue'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import {
-    Item,
-    ItemActions,
-    ItemContent,
-    ItemDescription,
-    ItemMedia,
-    ItemTitle,
-} from '@/components/ui/item'
 import { Badge } from '@/components/ui/badge'
 
 interface Props {

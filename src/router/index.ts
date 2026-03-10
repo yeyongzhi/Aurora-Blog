@@ -1,80 +1,105 @@
 import { defineAsyncComponent } from "vue";
 
 interface RouterMeta {
-    name: string;
-    key: string;
-    component?: Function;
-    children?: RouterMeta[];
+  name: string;
+  key: string;
+  component?: Function;
+  children?: RouterMeta[];
 }
 
 const APP_MENU: RouterMeta[] = [
-    {
-        name: '前端导航',
-        key: 'nav',
-        component: defineAsyncComponent(() => import('@/views/nav/index.vue')),
-    },
-    {
-        name: '主页',
-        key: 'home',
-        component: defineAsyncComponent(() => import('@/views/home/index.vue')),
-    },
-    {
-        name: '笔记',
-        key: 'note',
-        component: defineAsyncComponent(() => import('@/views/note/index.vue')),
-    },
-    {
-        name: '面经',
-        key: 'interview',
-        component: defineAsyncComponent(() => import('@/views/interview/index.vue')),
-    },
-    {
-        name: 'A Life清单',
-        key: 'alife',
-        component: defineAsyncComponent(() => import('@/views/alife/index.vue')),
-    },
-    {
-        name: '生活',
-        key: 'moreLife',
-        children: [
-            {
-                name: '生活记录',
-                key: 'life',
-                component: defineAsyncComponent(() => import('@/views/life/index.vue')),
-            },
-            {
-                name: '思考',
-                key: 'think',
-                component: defineAsyncComponent(() => import('@/views/think/index.vue')),
-            },
-            {
-                name: '工具箱',
-                key: 'toolbox',
-                component: defineAsyncComponent(() => import('@/views/toolbox/index.vue')),
-            }
-        ]
-    },
-    {
-        name: '更多',
-        key: 'more',
-        children: [
-            {
-                name: '关于',
-                key: 'about',
-                component: defineAsyncComponent(() => import('@/views/about/index.vue')),
-            },
-            {
-                name: '版本日志',
-                key: 'version',
-                component: defineAsyncComponent(() => import('@/views/version/index.vue')),
-            },
-            {
-                name: '联系我',
-                key: 'contact',
-                component: defineAsyncComponent(() => import('@/views/contact/index.vue')),
-            },
-        ]
-    },
-]
+  {
+    name: "前端导航",
+    key: "nav",
+    component: defineAsyncComponent(() => import("@/views/nav/index.vue")),
+  },
+  {
+    name: "主页",
+    key: "home",
+    component: defineAsyncComponent(() => import("@/views/home/index.vue")),
+  },
+  {
+    name: "生活",
+    key: "moreLife",
+    children: [
+      {
+        name: "生活记录",
+        key: "life",
+        component: defineAsyncComponent(() => import("@/views/life/index.vue")),
+      },
+      {
+        name: "思考",
+        key: "think",
+        component: defineAsyncComponent(
+          () => import("@/views/think/index.vue"),
+        ),
+      },
+    ],
+  },
+  {
+    name: "知识库",
+    key: "moreKnowledge",
+    children: [
+      {
+        name: "笔记",
+        key: "note",
+        component: defineAsyncComponent(() => import("@/views/note/index.vue")),
+      },
+      {
+        name: "面经",
+        key: "interview",
+        component: defineAsyncComponent(
+          () => import("@/views/interview/index.vue"),
+        ),
+      },
+      {
+        name: "A Life清单",
+        key: "alife",
+        component: defineAsyncComponent(
+          () => import("@/views/alife/index.vue"),
+        ),
+      },
+      {
+        name: "工具箱",
+        key: "toolbox",
+        component: defineAsyncComponent(
+          () => import("@/views/toolbox/index.vue"),
+        ),
+      },
+      {
+        name: "代码",
+        key: "code",
+        component: defineAsyncComponent(() => import("@/views/code/index.vue")),
+      },
+    ],
+  },
+  {
+    name: "更多",
+    key: "more",
+    children: [
+      {
+        name: "关于",
+        key: "about",
+        component: defineAsyncComponent(
+          () => import("@/views/about/index.vue"),
+        ),
+      },
+      {
+        name: "版本日志",
+        key: "version",
+        component: defineAsyncComponent(
+          () => import("@/views/version/index.vue"),
+        ),
+      },
+      {
+        name: "联系我",
+        key: "contact",
+        component: defineAsyncComponent(
+          () => import("@/views/contact/index.vue"),
+        ),
+      },
+    ],
+  },
+];
 
-export default APP_MENU
+export default APP_MENU;

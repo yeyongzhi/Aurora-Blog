@@ -21,17 +21,39 @@ import Tooltip from '@/components/self/Tooltip/index.vue'
 import { Button } from '@/components/ui/button'
 import Tree from '../Tree/index.vue'
 import { ChevronsUpIcon, ChevronsDownIcon } from 'lucide-vue-next'
+import useAppStore from '@/store/app'
 // Using ES6 import syntax
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
-import 'highlight.js/styles/atom-one-dark.css';
+import python from 'highlight.js/lib/languages/python';
+import java from 'highlight.js/lib/languages/java';
+import cpp from 'highlight.js/lib/languages/cpp';
+import csharp from 'highlight.js/lib/languages/csharp';
+import go from 'highlight.js/lib/languages/go';
+import rust from 'highlight.js/lib/languages/rust';
+import typescript from 'highlight.js/lib/languages/typescript';
+import html from 'highlight.js/lib/languages/xml';
+import css from 'highlight.js/lib/languages/css';
+import sql from 'highlight.js/lib/languages/sql';
+import 'highlight.js/styles/github.css';
 
-// Then register the languages you need
 hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('python', python);
+hljs.registerLanguage('java', java);
+hljs.registerLanguage('cpp', cpp);
+hljs.registerLanguage('csharp', csharp);
+hljs.registerLanguage('go', go);
+hljs.registerLanguage('rust', rust);
+hljs.registerLanguage('html', html);
+hljs.registerLanguage('css', css);
+hljs.registerLanguage('sql', sql);
 
 // 扩展插件
 dayjs.extend(utc);
 dayjs.extend(timezone);
+
+const appStore = useAppStore()
 
 const markdownContent = ref<any>(null)
 const markdownInfo = ref<any>({
@@ -239,9 +261,15 @@ const renderTitleId = (item: any) => {
     return 'markdown_nav_' + item.content.replace(/#/g, "").trim()
 }
 
-const renderCode = (content: string[]) => {
+const renderCode = (content: string[], lang: string = 'javascript') => {
     const codeStr = content.join('\n')
-    return codeStr
+    try {
+        const result = hljs.highlight(codeStr, { language: lang })
+        return result.value
+    } catch (error) {
+        const result = hljs.highlight(codeStr, { language: 'javascript' })
+        return result.value
+    }
 }
 
 const getImageUrl = (url: string) => {
@@ -285,7 +313,7 @@ const renderImgClassName = (content: string[]) => {
         <ScrollArea ref="scrollAreaRootRef" class="w-full h-full text-4 pr-[350px]" v-else>
             <template v-for="(item, index) in markdownContent" :key="'md' + index">
                 <template v-if="item.type === 'h1'">
-                    <h1 :class="`md_${item.type} mb-8 text-4xl font-extrabold tracking-tight text-balance`"
+                    <h1 :class="`md_${item.type} mb-8 text-4xl font-extrabold text-balance`"
                         :id="renderTitleId(item)">{{ item.content.trim().replace(/#/g, "") }}</h1>
                 </template>
                 <template v-else-if="item.type === 'h2'">
@@ -362,9 +390,7 @@ const renderImgClassName = (content: string[]) => {
                 </template>
                 <!-- 代码片段 -->
                 <template v-else-if="item.type === 'code'">
-                    <pre class="my-4 rounded bg-muted text-sm font-semibold whitespace-break-spaces">
-                        <code class="language-javascript">{{ renderCode(item.content) }}</code>
-                    </pre>
+                    <pre class="p-4 my-4 rounded bg-muted text-sm font-semibold whitespace-break-spaces"><code :class="`language-${item.lang || 'javascript'}`" v-html="renderCode(item.content, item.lang || 'javascript')"></code></pre>
                 </template>
                 <template v-else-if="item.type === 'text'">
                     <p class="text-4 leading-8" v-html="item.content"></p>
