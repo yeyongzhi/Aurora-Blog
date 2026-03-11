@@ -2,8 +2,6 @@
 import { FolderCode } from 'lucide-vue-next'
 import {
     Empty,
-    EmptyContent,
-    EmptyDescription,
     EmptyHeader,
     EmptyMedia,
     EmptyTitle,

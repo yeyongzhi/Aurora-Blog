@@ -2,8 +2,6 @@
 import { ref, watch } from 'vue'
 import {
     Empty,
-    EmptyContent,
-    EmptyDescription,
     EmptyHeader,
     EmptyMedia,
     EmptyTitle,

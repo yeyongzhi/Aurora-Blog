@@ -5,7 +5,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { ref, onMounted, onUnmounted, watch } from 'vue'
 
 interface TooltipProps {
     content: string

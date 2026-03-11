@@ -70,7 +70,7 @@ export function formatMarkDown(str: string) {
                 fn()
             }
         } else if (c.type === 'code') {
-            const range = getContinuousRangeIndex2(content, i)
+            const range: any = getContinuousRangeIndex2(content, i)
             result.push({
                 type: c.type,
                 content: content.slice(range[0], range[1] + 1).map(item => item.content)
@@ -81,7 +81,7 @@ export function formatMarkDown(str: string) {
             }
         } else if (c.type === 'todo') {
             const regex = /^- \[([xX ])\]\s*(.*)$/;
-            const range = getContinuousRangeIndex(content, i)
+            const range: any = getContinuousRangeIndex(content, i)
             result.push({
                 type: c.type,
                 content: content.slice(range[0], range[1] + 1).map(item => {
@@ -97,7 +97,7 @@ export function formatMarkDown(str: string) {
                 fn()
             }
         } else if (c.type === 'quote') {
-            const range = getQuoteRangeIndex(content, i)
+            const range: any = getQuoteRangeIndex(content, i)
             result.push({
                 type: c.type,
                 content: content.slice(range[0], range[1] + 1).map((item, index) => {
@@ -146,7 +146,7 @@ export function identifyLine(text: string) {
     }
     if (text.match(LINK_REGEXP)) {
         type = 'link' // 链接
-        const match = text.match(LINK_REGEXP);
+        const match: any = text.match(LINK_REGEXP);
         if (match && match.index !== undefined) {
             const otherTextBefore = text.substring(0, match.index); // 匹配之前的其他文本
             const otherTextAfter = text.substring(match.index + match[0].length); // 匹配之后的其他文本
@@ -233,7 +233,7 @@ export function getContinuousRangeIndex(content: Array<any>, start: number) {
     return [start, end - 1]
 }
 
-export function getContinuousRangeIndex2(content: Array<any>, start: number) {
+export function getContinuousRangeIndex2(content: Array<any>, start: number): number[] {
     const type = content[start].type
     let end = start
     while (end === start || (end < content.length - 1 && content[end].type !== type)) {

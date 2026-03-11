@@ -21,7 +21,6 @@ import Tooltip from '@/components/self/Tooltip/index.vue'
 import { Button } from '@/components/ui/button'
 import Tree from '../Tree/index.vue'
 import { ChevronsUpIcon, ChevronsDownIcon } from 'lucide-vue-next'
-import useAppStore from '@/store/app'
 // Using ES6 import syntax
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -53,8 +52,6 @@ hljs.registerLanguage('sql', sql);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const appStore = useAppStore()
-
 const markdownContent = ref<any>(null)
 const markdownInfo = ref<any>({
     lastModified: '',
@@ -67,15 +64,15 @@ const { path, showInfo, showGuide } = defineProps({
     showGuide: { type: Boolean, default: true },
 })
 
-const copyCode = (content: string) => {
-    navigator.clipboard.writeText(content)
-        .then(() => {
-            message.success("复制成功")
-        })
-        .catch(() => {
-            message.error("复制出错，请重试")
-        });
-}
+// const copyCode = (content: string) => {
+//     navigator.clipboard.writeText(content)
+//         .then(() => {
+//             message.success("复制成功")
+//         })
+//         .catch(() => {
+//             message.error("复制出错，请重试")
+//         });
+// }
 
 const findTitleRange = (list: Array<any>, level: number, originResult: Array<any> = []) => {
     let result: any[] = originResult
@@ -277,30 +274,12 @@ const getImageUrl = (url: string) => {
     return basePath + url.replace(".", "")
 }
 
-const getEmptyDescription = computed(() => {
-    if (Array.isArray(markdownContent) && markdownContent.length === 0) {
-        return '暂无内容'
-    }
-    return `【${path}】: 找不到文章~`
-})
-
 const articelTextTotal = computed(() => {
     if (!markdownContent.value) {
         return '-'
     }
     return getArticleTextCount(markdownContent.value)
 })
-
-const renderImgClassName = (content: string[]) => {
-    let classNames = []
-    if (content[3]) {
-        classNames.push(`w-${Number(content[3]) > 0 ? `[${content[3]}px]` : content[3]}`)
-    }
-    if (content[4]) {
-        classNames.push(`h-${Number(content[4]) > 0 ? `[${content[4]}px]` : content[4]}`)
-    }
-    return classNames.join(' ')
-}
 
 </script>
 
