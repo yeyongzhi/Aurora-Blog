@@ -10,7 +10,8 @@ import {
     ItemTitle,
 } from '@/components/ui/item'
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { UserIcon, BoxIcon, PhoneCallIcon, CpuIcon } from 'lucide-vue-next';
+import { UserIcon, BoxIcon, PhoneCallIcon, CpuIcon, ChevronsLeftRightEllipsisIcon } from 'lucide-vue-next';
+import { openTab } from '@/utils';
 
 const appStore = useAppStore()
 
@@ -26,7 +27,7 @@ const appStore = useAppStore()
                 <ItemContent>
                     <ItemTitle>应用介绍</ItemTitle>
                     <ItemDescription>
-                        <p>这是我的个人芝士🧀博客，里面主要记录自己的一些学习、成长等东西。啥都会写一点。</p>
+                        <p>这是我的个人芝士博客，里面主要记录自己的一些学习、成长等东西。啥都会写一点。</p>
                         <p>欢迎观看，一起学习进步，go go go！</p>
                     </ItemDescription>
                 </ItemContent>
@@ -52,7 +53,7 @@ const appStore = useAppStore()
                     
                 </ItemActions>
             </Item>
-            <Item variant="outline">
+            <Item variant="outline" class="mb-4">
                 <ItemMedia variant="icon" class="size-12">
                     <PhoneCallIcon class="size-6" />
                 </ItemMedia>
@@ -66,6 +67,22 @@ const appStore = useAppStore()
                 <ItemActions>
                     <Button variant="secondary" size="sm" @click="appStore.handleMenuChange('contact')">
                         联系方式
+                    </Button>
+                </ItemActions>
+            </Item>
+            <Item variant="outline">
+                <ItemMedia variant="icon" class="size-12">
+                    <ChevronsLeftRightEllipsisIcon class="size-6" />
+                </ItemMedia>
+                <ItemContent>
+                    <ItemTitle>GitHub</ItemTitle>
+                    <ItemDescription>
+                        <p>欢迎点点Star⭐️</p>
+                    </ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                    <Button variant="secondary" size="sm" @click="openTab('https://github.com/yeyongzhi/Aurora-Blog')">
+                        点击前往
                     </Button>
                 </ItemActions>
             </Item>

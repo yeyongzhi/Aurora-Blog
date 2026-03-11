@@ -23,12 +23,12 @@ const APP_MENU: RouterMeta[] = [
     key: "moreLife",
     children: [
       {
-        name: "生活记录",
+        name: "生活记🎨",
         key: "life",
         component: defineAsyncComponent(() => import("@/views/life/index.vue")),
       },
       {
-        name: "思考",
+        name: "思考中🧠",
         key: "think",
         component: defineAsyncComponent(
           () => import("@/views/think/index.vue"),
@@ -41,16 +41,28 @@ const APP_MENU: RouterMeta[] = [
     key: "moreKnowledge",
     children: [
       {
-        name: "笔记",
+        name: "笔记本🗒️",
         key: "note",
         component: defineAsyncComponent(() => import("@/views/note/index.vue")),
       },
       {
-        name: "面经",
+        name: "面试题🗃️",
         key: "interview",
         component: defineAsyncComponent(
           () => import("@/views/interview/index.vue"),
         ),
+      },
+      {
+        name: "工具箱⚙️",
+        key: "toolbox",
+        component: defineAsyncComponent(
+          () => import("@/views/toolbox/index.vue"),
+        ),
+      },
+      {
+        name: "代码包📦️",
+        key: "code",
+        component: defineAsyncComponent(() => import("@/views/code/index.vue")),
       },
       {
         name: "A Life清单",
@@ -59,18 +71,6 @@ const APP_MENU: RouterMeta[] = [
           () => import("@/views/alife/index.vue"),
         ),
       },
-      {
-        name: "工具箱",
-        key: "toolbox",
-        component: defineAsyncComponent(
-          () => import("@/views/toolbox/index.vue"),
-        ),
-      },
-      {
-        name: "代码",
-        key: "code",
-        component: defineAsyncComponent(() => import("@/views/code/index.vue")),
-      },
     ],
   },
   {
@@ -78,21 +78,21 @@ const APP_MENU: RouterMeta[] = [
     key: "more",
     children: [
       {
-        name: "关于",
+        name: "应用介绍🎯",
         key: "about",
         component: defineAsyncComponent(
           () => import("@/views/about/index.vue"),
         ),
       },
       {
-        name: "版本日志",
+        name: "版本日志🖨️",
         key: "version",
         component: defineAsyncComponent(
           () => import("@/views/version/index.vue"),
         ),
       },
       {
-        name: "联系我",
+        name: "联系我们☎️",
         key: "contact",
         component: defineAsyncComponent(
           () => import("@/views/contact/index.vue"),
