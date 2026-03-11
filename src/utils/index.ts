@@ -12,8 +12,8 @@ export function scrollToTop() {
 export async function getMarkDownContent(markdown_path: string) {
     let data = null
     try {
-        const path = (import.meta.env.NODE_ENV === "production") ? "/Aurora-Blog" + markdown_path : markdown_path
-        const response = await fetch(path);
+        const fullPath = import.meta.env.BASE_URL + markdown_path.replace(/^\/+/, '');
+        const response = await fetch(fullPath);
         const contentType = response.headers.get('Content-Type')
         // let lastModified = response.headers.get('Last-Modified') || new Date().toLocaleDateString();
         // lastModified = new Date(lastModified).toLocaleDateString('zh-CN', {
@@ -46,8 +46,8 @@ export async function getMarkDownContent(markdown_path: string) {
 export async function getMarkDownInfo(markdown_path: string) {
     let lastModified = null
     try {
-        const path = (import.meta.env.NODE_ENV === "production") ? "/Aurora-Blog" + markdown_path : markdown_path
-        const response = await fetch(path);
+        const fullPath = import.meta.env.BASE_URL + markdown_path.replace(/^\/+/, '');
+        const response = await fetch(fullPath);
         lastModified = response.headers.get('Last-Modified') || null;
         if (!lastModified) {
             return null;
