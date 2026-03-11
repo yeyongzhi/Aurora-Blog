@@ -139,7 +139,7 @@ export function getMdPath(basePath: string, fullPath: string) {
 }
 
 export async function getFetchData(url: string) {
-    const path = (import.meta.env.NODE_ENV === "production") ? "/Aurora-Blog" + url : url
-    const res = await fetch(path).then(response => response.json())
+    const fullPath = import.meta.env.BASE_URL + url.replace(/^\/+/, '');
+    const res = await fetch(fullPath).then(response => response.json())
     return res
 }
