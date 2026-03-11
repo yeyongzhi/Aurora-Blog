@@ -11,6 +11,7 @@ import {
     CardAction
 } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { getFetchData } from '@/utils/index'
 
 interface VersionContentItem {
     type: string;
@@ -30,8 +31,7 @@ const versionList = ref<Array<VersionItem>>([])
 
 onMounted(async () => {
     try {
-        const response = await fetch('/app/version.json')
-        const data = await response.json()
+        const data = await getFetchData('/app/version.json')
         versionList.value = data
     } catch (error) {
         console.error('获取版本信息失败:', error)

@@ -7,6 +7,7 @@ import Tree from './components/Tree.vue'
 import MarkDown from '@/components/self/MarkDown/index.vue'
 import { getFullPath, getMdPath } from './handle'
 import Tooltip from '@/components/self/Tooltip/index.vue'
+import { getFetchData } from '@/utils/index'
 
 export interface NoteTreeItem {
     key: string
@@ -31,14 +32,14 @@ const findDefaultArticle = (data: Array<NoteTreeItem>) => {
     })
 }
 
-const initTreeData = () => {
-    fetch('/note.json')
-        .then(response => response.json())
-        .then(data => {
-            treeData.value = data
-            console.log(treeData.value)
-            findDefaultArticle(treeData.value)
-        })
+const initTreeData = async () => {
+    try {
+        const data = await getFetchData('/note.json')
+        treeData.value = data
+        findDefaultArticle(treeData.value)
+    } catch (error) {
+        console.error('获取笔记目录失败:', error)
+    }
 }
 
 watch(noteKey, (newKey) => {

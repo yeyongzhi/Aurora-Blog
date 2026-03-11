@@ -9,6 +9,7 @@ import { getFullPath, getMdPath } from '@/utils/index'
 import Tooltip from '@/components/self/Tooltip/index.vue'
 import Empty from '@/components/self/Empty/index.vue'
 import { type NoteTreeItem } from '@/types/Note'
+import { getFetchData } from '@/utils/index'
 
 const BASE_ARTICLE_PATH = '/article/think'
 
@@ -28,13 +29,14 @@ const findDefaultArticle = (data: Array<NoteTreeItem>) => {
     })
 }
 
-const initTreeData = () => {
-    fetch('/think.json')
-        .then(response => response.json())
-        .then(data => {
-            treeData.value = data
-            findDefaultArticle(treeData.value)
-        })
+const initTreeData = async () => {
+    try {
+        const data = await getFetchData('/think.json')
+        treeData.value = data
+        findDefaultArticle(treeData.value)
+    } catch (error) {
+        console.error('获取思考目录失败:', error)
+    }
 }
 
 watch(noteKey, (newKey) => {

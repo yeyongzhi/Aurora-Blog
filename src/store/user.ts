@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { getFetchData } from '@/utils/index'
 
 export interface UserInfo {
     name: string;
@@ -22,12 +23,9 @@ const useUserStore = defineStore('user', () => {
 
     const getUserData = async () => {
         userLoading.value = true
-        fetch('/user.json')
-        .then(response => response.json())
-        .then(data => {
-            userInfo.value = data
-            userLoading.value = false
-        })
+        const data = await getFetchData('/user.json')
+        userInfo.value = data
+        userLoading.value = false
     }
 
     return {

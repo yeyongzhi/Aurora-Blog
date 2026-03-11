@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/tabs'
 import NavItem from '@/views/nav/components/NavItem.vue'
 import type { ToolBoxItem } from '@/types/ToolBox'
+import { getFetchData } from '@/utils/index'
 
 const tabs = ref<Array<{
     label: string
@@ -24,15 +25,16 @@ const tabs = ref<Array<{
 }>>([])
 const tabKey = ref<string>("")
 
-onMounted(() => {
-    fetch('/toolbox/index.json')
-        .then(response => response.json())
-        .then(data => {
-            tabs.value = data
-            if (tabs.value.length > 0) {
-                tabKey.value = (tabs.value[0] as any).key
-            }
-        })
+onMounted(async () => {
+    try {
+        const data = await getFetchData('/toolbox/index.json')
+        tabs.value = data
+        if (tabs.value.length > 0) {
+            tabKey.value = (tabs.value[0] as any).key
+        }
+    } catch (error) {
+        console.error('获取工具盒子分类失败:', error)
+    }
 })
 
 const content = ref<Record<string, Array<ToolBoxItem>>>({})
@@ -42,15 +44,16 @@ const showContent = computed(() => {
     return content.value[tabKey.value] || []
 })
 
-const getTabContent = (key: string) => {
+const getTabContent = async (key: string) => {
     contentLoading.value = true
-    fetch(`/toolbox/${key}.json`)
-        .then(response => response.json())
-        .then(data => {
-            content.value[key] = data || []
-        }).finally(() => {
-            contentLoading.value = false
-        })
+    try {
+        const data = await getFetchData(`/toolbox/${key}.json`)
+        content.value[key] = data || []
+    } catch (error) {
+        console.error(`获取工具盒子${key}分类失败:`, error)
+    } finally {
+        contentLoading.value = false
+    }
 }
 
 watch(tabKey, (newKey) => {

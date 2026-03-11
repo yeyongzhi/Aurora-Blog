@@ -12,7 +12,8 @@ export function scrollToTop() {
 export async function getMarkDownContent(markdown_path: string) {
     let data = null
     try {
-        const response = await fetch(markdown_path);
+        const path = (import.meta.env.NODE_ENV === "production") ? "/Aurora-Blog" + markdown_path : markdown_path
+        const response = await fetch(path);
         const contentType = response.headers.get('Content-Type')
         // let lastModified = response.headers.get('Last-Modified') || new Date().toLocaleDateString();
         // lastModified = new Date(lastModified).toLocaleDateString('zh-CN', {
@@ -45,7 +46,8 @@ export async function getMarkDownContent(markdown_path: string) {
 export async function getMarkDownInfo(markdown_path: string) {
     let lastModified = null
     try {
-        const response = await fetch(markdown_path);
+        const path = (import.meta.env.NODE_ENV === "production") ? "/Aurora-Blog" + markdown_path : markdown_path
+        const response = await fetch(path);
         lastModified = response.headers.get('Last-Modified') || null;
         if (!lastModified) {
             return null;
@@ -134,4 +136,10 @@ export const getFullPath = (data: Array<NoteTreeItem>, path: string) => {
 
 export function getMdPath(basePath: string, fullPath: string) {
     return `${basePath}/${fullPath}.md`
+}
+
+export async function getFetchData(url: string) {
+    const path = (import.meta.env.NODE_ENV === "production") ? "/Aurora-Blog" + url : url
+    const res = await fetch(path).then(response => response.json())
+    return res
 }

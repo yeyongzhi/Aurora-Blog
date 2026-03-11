@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card'
 import NavItem from './components/NavItem.vue'
 import { ref, onMounted } from 'vue'
+import { getFetchData } from '@/utils/index'
 
 export interface LinkItem {
     name: string;
@@ -30,12 +31,13 @@ interface NavItem {
 
 const navData = ref<Array<NavItem>>([])
 
-onMounted(() => {
-    fetch('/nav.json')
-        .then(response => response.json())
-        .then(data => {
-            navData.value = data
-        })
+onMounted(async () => {
+    try {
+        const data = await getFetchData('/nav.json')
+        navData.value = data
+    } catch (error) {
+        console.error('获取导航栏数据失败:', error)
+    }
 })
 </script>
 

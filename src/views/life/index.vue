@@ -13,6 +13,7 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { type NoteTreeItem } from '@/types/Note'
+import { getFetchData } from '@/utils/index'
 
 const BASE_ARTICLE_PATH = '/article/life'
 
@@ -32,14 +33,15 @@ const findDefaultArticle = (data: Array<NoteTreeItem>) => {
     })
 }
 
-const initTreeData = () => {
-    fetch('/life.json')
-        .then(response => response.json())
-        .then(data => {
-            treeData.value = data
-            console.log(treeData.value)
-            findDefaultArticle(treeData.value)
-        })
+const initTreeData = async () => {
+    try {
+        const data = await getFetchData('/life.json')
+        treeData.value = data
+        console.log(treeData.value)
+        findDefaultArticle(treeData.value)
+    } catch (error) {
+        console.error('获取生活笔记目录失败:', error)
+    }
 }
 
 watch(noteKey, (newKey) => {

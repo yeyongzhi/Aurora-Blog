@@ -8,6 +8,7 @@ import MarkDown from '@/components/self/MarkDown/index.vue'
 import { getFullPath, getMdPath } from '@/utils/index'
 import Tooltip from '@/components/self/Tooltip/index.vue'
 import { type NoteTreeItem } from '@/types/Note'
+import { getFetchData } from '@/utils/index'
 
 const BASE_ARTICLE_PATH = '/article/interview'
 
@@ -27,14 +28,14 @@ const findDefaultArticle = (data: Array<NoteTreeItem>) => {
     })
 }
 
-const initTreeData = () => {
-    fetch('/interview.json')
-        .then(response => response.json())
-        .then(data => {
-            treeData.value = data
-            console.log(treeData.value)
-            findDefaultArticle(treeData.value)
-        })
+const initTreeData = async () => {
+    try {
+        const data = await getFetchData('/interview.json')
+        treeData.value = data
+        findDefaultArticle(treeData.value)
+    } catch (error) {
+        console.error('获取面试笔记目录失败:', error)
+    }
 }
 
 watch(noteKey, (newKey) => {
