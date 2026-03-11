@@ -1,0 +1,22 @@
+[
+    {
+        "label": "生活常用",
+        "key": "life"
+    },
+    {
+        "label": "娱乐",
+        "key": "play"
+    },
+    {
+        "label": "资源大全",
+        "key": "source"
+    },
+    {
+        "label": "学习进步",
+        "key": "study"
+    },
+    {
+        "label": "其他",
+        "key": "other"
+    }
+]

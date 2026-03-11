@@ -1,0 +1,131 @@
+{
+  "name": "彼得一激灵",
+  "signature": "Hello, Aurora 🚀...",
+  "province": "浙江",
+  "city": "杭州",
+  "userTag": [
+    "就当我是00后(99)",
+    "程序猿【切图仔】",
+    "语雀重度使用者",
+    "INFJ 绿老头"
+  ],
+  "description": "💻一个普普通通的程序猿，我就是一个破打工的啊💼...\n🎯理想是念头通达 | 学会独立思考 | 早日去码头整薯条🍟\n🎵兴趣爱好是唱跳、Rap和篮球🏀，没事喜欢写着写那的（虽然现在还在写 bug，但梦想不会迟到🌱）",
+  "techStack": [
+    {
+      "icon": "💻️",
+      "name": "前端基础",
+      "data": ["html", "javascript", "typescript", "ES6"]
+    },
+    {
+      "icon": "⚙️",
+      "name": "框架生态",
+      "data": ["react", "vue 2&3", "UniApp", "微信小程序开发"]
+    },
+    {
+      "icon": "🗺️",
+      "name": "GIS开发",
+      "data": [
+        "高德地图、百度地图",
+        "openLayers",
+        "CesiumJs",
+        "leaflet",
+        "MapBox GL"
+      ]
+    },
+    {
+      "icon": "🧱",
+      "name": "服务端",
+      "data": ["mysql", "node.js", "目前还是个纯前端..."]
+    },
+    {
+      "icon": "🎨",
+      "name": "组件库",
+      "data": [
+        "Antd",
+        "Element UI",
+        "naive UI",
+        "TDesign",
+        "Vant weapp"
+      ]
+    },
+    {
+      "icon": "🔧",
+      "name": "工程化能力",
+      "data": ["vite", "webpack", "rollup"]
+    }
+  ],
+  "knowledge": [
+    {
+      "icon": "🧭",
+      "title": "前端导航",
+      "badge": 20,
+      "descriptions": "前端开发必备链接合集，涉及开发、数据处理、地图等一系列工具...赶紧码住",
+      "link": {
+        "url": "/nav",
+        "text": "前端导航合集"
+      }
+    },
+    {
+      "icon": "📦️",
+      "title": "百宝工具箱",
+      "descriptions": "一些个人收藏许久的压箱底的网站合集，方方面面都有，非常好用值得收藏！",
+      "link": {
+        "url": "/toolbox",
+        "text": "打开宝箱"
+      }
+    },
+    {
+      "icon": "🖱️",
+      "title": "代码片段",
+      "descriptions": "你也不用去问AI了，最常用的代码基本都在这里了，自取即可，取餐码：CTBZ",
+      "link": {
+        "url": "/code",
+        "text": "给我三个键"
+      }
+    },
+    {
+      "icon": "🎯",
+      "title": "生活记录",
+      "descriptions": "一些琐碎的日常记录，肯定要养成记录的习惯，你说呢？",
+      "link": {
+        "url": "/life",
+        "text": "瞧一瞧"
+      }
+    },
+    {
+      "icon": "💡",
+      "title": "思考",
+      "descriptions": "多思考，多沉淀，多学习，多进步，拥抱一切变化~",
+      "link": {
+        "url": "/think",
+        "text": "灵感迸现"
+      }
+    }
+  ],
+  "personalWorks": [
+    {
+      "icon": "📃",
+      "name": "A Life清单",
+      "description": "一款个人开发的微信小程序，已上线，欢迎体验",
+      "routePath": "/alife"
+    },
+    {
+      "icon": "🔧",
+      "name": "js2geohash",
+      "description": "将gis坐标值快捷转换为geohash值的工具函数",
+      "link": "https://www.npmjs.com/package/js2geohash"
+    },
+    {
+      "icon": "🌏️",
+      "name": "browser-localstorge",
+      "description": "一个浏览器本地存储化工具包",
+      "link": "https://www.npmjs.com/package/browser-localstorge"
+    },
+    {
+      "icon": "😀",
+      "name": "emoji-collection",
+      "description": "这是一个基于 Vue3 和 shadcn ui 的 emoji 选择器",
+      "link": "https://yeyongzhi.github.io/emoji-collection/"
+    }
+  ]
+}

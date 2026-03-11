@@ -1,0 +1,33 @@
+[
+    {
+        "key": "yearSummary",
+        "label": "年度总结",
+        "children": [
+            {
+                "key": "2025Summary",
+                "label": "2025年度总结",
+                "default": true
+            }
+        ]
+    },
+    {
+        "key": "hobby",
+        "label": "兴趣爱好",
+        "children": [
+            {
+                "key": "DIY_computer",
+                "label": "DIY主机"
+            }
+        ]
+    },
+    {
+        "key": "concert",
+        "label": "耳机不如live",
+        "children": [
+            {
+                "key": "joker_xue",
+                "label": "至今0人走出天外来物"
+            }
+        ]
+    }
+]

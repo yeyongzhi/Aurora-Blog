@@ -1,0 +1,40 @@
+[
+    {
+        "key": "basic",
+        "label": "基础面经",
+        "children": [
+            {
+                "key": "html",
+                "label": "HTML",
+                "default": true
+            },
+            {
+                "key": "js",
+                "label": "JavaScript"
+            },
+            {
+                "key": "css",
+                "label": "CSS"
+            }
+        ]
+    },
+    {
+        "key": "advanced",
+        "label": "进阶",
+        "description": "这些才是程序猿的进阶技能",
+        "children": [
+            {
+                "key": "react",
+                "label": "React"
+            },
+            {
+                "key": "vue3",
+                "label": "Vue3🔥"
+            }
+        ]
+    },
+    {
+        "key": "interview",
+        "label": "面试真实总结"
+    }
+]

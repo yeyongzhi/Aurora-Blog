@@ -1,0 +1,27 @@
+[
+    {
+        "key": "js",
+        "label": "JavaScript",
+        "children": [
+            {
+                "key": "jsTools",
+                "label": "工具类函数",
+                "default": true
+            }
+        ]
+    },
+    {
+        "key": "browser",
+        "label": "浏览器"
+    },
+    {
+        "key": "gis",
+        "label": "GIS🌏️",
+        "children": [
+            {
+                "key": "ol",
+                "label": "OpenLayers"
+            }
+        ]
+    }
+]
