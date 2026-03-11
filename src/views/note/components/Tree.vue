@@ -2,8 +2,6 @@
 import { ref, watch } from 'vue'
 import {
     Empty,
-    EmptyContent,
-    EmptyDescription,
     EmptyHeader,
     EmptyMedia,
     EmptyTitle,
@@ -14,7 +12,7 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from '@/components/ui/collapsible'
-import { FolderCode, FolderIcon, ChevronsDownIcon, ChevronsUpIcon, FileTextIcon } from 'lucide-vue-next'
+import { FolderCode, FolderIcon, FileTextIcon } from 'lucide-vue-next'
 
 export interface TreeItem {
     key: string

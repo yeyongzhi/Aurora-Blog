@@ -1,7 +1,7 @@
 <script setup lang="ts" name="NoteSlideMenu">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { Button } from '@/components/ui/button'
-import { ListChevronsDownUpIcon, ListChevronsUpDownIcon, ChevronsLeftIcon, ChevronsRightIcon } from 'lucide-vue-next'
+import { ChevronsLeftIcon, ChevronsRightIcon } from 'lucide-vue-next'
 import {
     Card,
     CardAction,

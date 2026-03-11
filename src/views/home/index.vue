@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Home">
-import {ref, computed } from 'vue';
+import { computed } from 'vue';
 import useUserStore from '@/store/user';
 import TechStack from './components/TechStack.vue';
 import PersonalWorks from './components/PersonalWorks.vue';
