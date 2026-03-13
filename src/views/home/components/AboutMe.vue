@@ -23,7 +23,7 @@ const defcription = computed(() => {
 </script>
 
 <template>
-    <div class="flex flex-col gap-4 my-4">
+    <div class="flex flex-col gap-4 mb-8 mt-4">
         <div class="flex items-center gap-x-2">
             <span class="text-xl">📍</span>
             <div>{{ aboutMeData.province }} · {{ aboutMeData.city }}</div>

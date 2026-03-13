@@ -41,7 +41,7 @@ const handleClick = (item: PersonalWorkItem) => {
 </script>
 
 <template>
-    <div class="flex flex-col gap-4 my-4">
+    <div class="flex flex-col gap-4 mb-8 mt-4">
         <Item variant="muted" v-for="item in props.data" :key="item.name">
             <ItemMedia variant="icon" class="size-12">
                 <span class="text-2xl">{{ item.icon }}</span>

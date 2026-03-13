@@ -270,8 +270,12 @@ const renderCode = (content: string[], lang: string = 'javascript') => {
 }
 
 const getImageUrl = (url: string) => {
+    if (url.startsWith('http') || url.startsWith('data:')) {
+        return url
+    }
     const basePath = path.substring(0, path.lastIndexOf("/"))
-    return basePath + url.replace(".", "")
+    const cleanUrl = url.startsWith('./') ? url.substring(2) : url
+    return `${import.meta.env.BASE_URL}${basePath}/${cleanUrl}`
 }
 
 const articelTextTotal = computed(() => {

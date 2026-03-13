@@ -60,16 +60,19 @@ onMounted(async () => {
                         <span>V {{ item.version }}</span>
                     </CardTitle>
                     <CardDescription>
-                        {{ item.description }}
+                        <p v-if="item.date">发布日期：{{ item.date }}</p>
                     </CardDescription>
                     <CardAction>
-                        <Icon name="FileCodeCornerIcon" background size="6" v-if="item.type === 'feature'" />
-                        <Icon name="BugIcon" background size="6" v-else-if="item.type === 'fix'" />
-                        <Icon name="HammerIcon" background size="6" v-else-if="item.type === 'refactor'" />
-                        <Icon name="MonitorIcon" background size="6" v-else />
+                        <div>
+                            <Icon name="FileCodeCornerIcon" background size="6" v-if="item.type === 'feature'" />
+                            <Icon name="BugIcon" background size="6" v-else-if="item.type === 'fix'" />
+                            <Icon name="HammerIcon" background size="6" v-else-if="item.type === 'refactor'" />
+                            <Icon name="MonitorIcon" background size="6" v-else />
+                        </div>
                     </CardAction>
                 </CardHeader>
                 <CardContent>
+                    <p v-if="item.description">{{ item.description }}</p>
                     <ul class="ml-4 list-disc [&>li]:mt-2">
                         <li v-for="(desc, dIndex) in item.content" :key="dIndex">{{ desc.text }}</li>
                     </ul>

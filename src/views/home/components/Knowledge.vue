@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-    <div class="grid grid-cols-3 gap-4 my-4">
+    <div class="grid grid-cols-3 gap-4 mb-8 mt-4">
         <Card v-for="item in props.data" :key="item.title" class="gap-4 py-4">
             <CardHeader>
                 <CardTitle class="flex text-lg items-center">

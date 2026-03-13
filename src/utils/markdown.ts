@@ -192,7 +192,40 @@ export function identifyLine(text: string) {
 // }
 
 function handleLineText(content: string) {
-    // 1. 首先转义 HTML 特殊字符，防止被浏览器解析为标签或被过滤
+    // 1. 转义 HTML，但保留 <u> 和 </u> 不被转义
+    const escapeHtmlExceptU = (text: string) => {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, function(match, offset, str) {
+                // 检查是否是 <u> 或 </u> 的开头
+                const after = str.slice(offset, offset + 4);
+                if (after === '<u>') return '<u>';       // 保留
+                if (after === '</u') return '</u';       // 注意：这里先不补 >，后面统一处理
+                return "&lt;";
+            })
+            .replace(/>/g, function(match, offset, str) {
+                // 防止 </u 后面的 > 被转义
+                const before = str.slice(Math.max(0, offset - 3), offset + 1);
+                if (before === '</u>') return '</u>';    // 补全 </u>
+                return "&gt;";
+            })
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    };
+
+    // 但上面逻辑较复杂，容易出错。更可靠的方式：先提取 <u>...</u>，再转义其余部分。
+    // 下面采用“占位符”方法，更清晰安全：
+    
+    const placeholderMap: string[] = [];
+    let processed = content;
+
+    // Step 1: 提取所有 <u>...</u> 标签（非贪婪匹配）
+    processed = processed.replace(/<u>([\s\S]*?)<\/u>/g, (match) => {
+        placeholderMap.push(match); // 保存原始标签
+        return `__U_PLACEHOLDER_${placeholderMap.length - 1}__`;
+    });
+
+    // Step 2: 对其余内容进行 HTML 转义
     const escapeHtml = (text: string) => {
         return text
             .replace(/&/g, "&amp;")
@@ -201,24 +234,25 @@ function handleLineText(content: string) {
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     };
+    let safeContent = escapeHtml(processed);
 
-    // 注意：这里我们假设 content 是纯文本，需要先转义
-    // 如果你的 content 已经包含了一些合法的 HTML 标签需要保留，这个方案需要调整（只转义 Markdown 部分）
-    // 但对于纯文本记录思考的场景，全量转义是最安全的。
-    
-    let safeContent = escapeHtml(content);
+    // Step 3: 把 <u>...</u> 占位符还原（注意：这些标签本身是 HTML，不需要转义）
+    safeContent = safeContent.replace(/__U_PLACEHOLDER_(\d+)__/g, (_: any, index: number) => {
+        return placeholderMap[Number(index)] || "";
+    });
 
-    // 2. 然后应用 Markdown 正则
-    // 此时 < 和 > 已经变成了 &lt; 和 &gt;，正则匹配完全不受影响，且生成的 HTML 是安全的
+    // Step 4: 应用其他 Markdown 语法（注意：此时 <u> 已恢复，但其他文本已转义，安全）
+    const highlightRegex = /==([\s\S]*?)==/g;         // ==highlight==
+    const strikethroughRegex = /~~([\s\S]*?)~~/g;     // ~~strikethrough~~
     const boldRegex = /(\*\*|__)([\s\S]*?)\1/g;
-    const italicRegex = /([*_])([\s\S]*?)\1/g;
-    const strikethroughRegex = /~~([\s\S]*?)~~/g;
+    const italicRegex = /([*_])(?!\1)([\s\S]*?)\1/g;
     const inlineCodeRegex = /`([\s\S]*?)`/g;
 
     let htmlText = safeContent
+        .replace(highlightRegex, "<mark>$1</mark>")
+        .replace(strikethroughRegex, "<del>$1</del>")
         .replace(boldRegex, "<strong>$2</strong>")
         .replace(italicRegex, "<em>$2</em>")
-        .replace(strikethroughRegex, "<del>$1</del>")
         .replace(inlineCodeRegex, "<code class='mx-2 rounded bg-muted px-2 py-1 text-base font-bold'>$1</code>");
 
     return htmlText;
