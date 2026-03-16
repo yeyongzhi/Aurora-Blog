@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Contact">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Icon from '@/components/self/Icon/index.vue'
 import {
     Card,
@@ -29,11 +29,19 @@ import {
 } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { openTab } from '@/utils';
+import useAppStore from '@/store/app'
 
 import XhsIcon from '@/assets/images/social/xhs.png'
 import JuejinIcon from '@/assets/images/social/juejin.png'
 import WyyIcon from '@/assets/images/social/wyy.png'
 import YuequeIcon from '@/assets/images/social/yuque.png'
+import GithubIcon from '@/assets/images/social/github.png'
+import GithubDarkIcon from '@/assets/images/social/github_dark.png'
+import GiteeIcon from '@/assets/images/social/gitee.png'
+import CSDNIcon from '@/assets/images/social/csdn.png'
+import NpmIcon from '@/assets/images/social/npm.png'
+
+const appStore = useAppStore()
 
 const socialAccountData = ref([
     {
@@ -66,27 +74,27 @@ const socialAccountData = ref([
     },
 ])
 
-const codeRepositoryData = ref([
+const codeRepositoryData = computed(() => [
     {
-        iconUrl: '',
+        iconUrl: appStore.mode === 'dark' ? GithubDarkIcon : GithubIcon,
         name: 'GitHub',
         description: '',
         link: "https://github.com/yeyongzhi",
     },
     {
-        iconUrl: '',
+        iconUrl: GiteeIcon,
         name: 'Gitee',
         description: '',
         link: "https://gitee.com/AuroraO23",
     },
     {
-        iconUrl: '',
+        iconUrl: CSDNIcon,
         name: 'CSDN',
         description: '',
         link: "https://blog.csdn.net/Aurora_1970s?type=blog",
     },
     {
-        iconUrl: '',
+        iconUrl: NpmIcon,
         name: 'Npm 主页',
         description: '',
         link: "https://www.npmjs.com/settings/aurora_/packages",
@@ -185,7 +193,7 @@ const codeRepositoryData = ref([
                     <CardContent>
                         <Item variant="muted" v-for="item in codeRepositoryData" :key="item.name" class="mb-4">
                             <ItemMedia variant="icon" class="size-10">
-
+                                <img :src="item.iconUrl" class="object-cover">
                             </ItemMedia>
                             <ItemContent>
                                 <ItemTitle class="font-bold text-base">{{ item.name }}</ItemTitle>

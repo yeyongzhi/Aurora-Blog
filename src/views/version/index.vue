@@ -60,7 +60,7 @@ onMounted(async () => {
                         <span>V {{ item.version }}</span>
                     </CardTitle>
                     <CardDescription>
-                        <p v-if="item.date">发布日期：{{ item.date }}</p>
+                        <p v-if="item.date">【发布日期】{{ item.date }}</p>
                     </CardDescription>
                     <CardAction>
                         <div>

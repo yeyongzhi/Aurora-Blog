@@ -193,25 +193,25 @@ export function identifyLine(text: string) {
 
 function handleLineText(content: string) {
     // 1. 转义 HTML，但保留 <u> 和 </u> 不被转义
-    const escapeHtmlExceptU = (text: string) => {
-        return text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, function(match, offset, str) {
-                // 检查是否是 <u> 或 </u> 的开头
-                const after = str.slice(offset, offset + 4);
-                if (after === '<u>') return '<u>';       // 保留
-                if (after === '</u') return '</u';       // 注意：这里先不补 >，后面统一处理
-                return "&lt;";
-            })
-            .replace(/>/g, function(match, offset, str) {
-                // 防止 </u 后面的 > 被转义
-                const before = str.slice(Math.max(0, offset - 3), offset + 1);
-                if (before === '</u>') return '</u>';    // 补全 </u>
-                return "&gt;";
-            })
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    };
+    // const escapeHtmlExceptU = (text: string) => {
+    //     return text
+    //         .replace(/&/g, "&amp;")
+    //         .replace(/</g, function(_, offset, str) {
+    //             // 检查是否是 <u> 或 </u> 的开头
+    //             const after = str.slice(offset, offset + 4);
+    //             if (after === '<u>') return '<u>';       // 保留
+    //             if (after === '</u') return '</u';       // 注意：这里先不补 >，后面统一处理
+    //             return "&lt;";
+    //         })
+    //         .replace(/>/g, function(_, offset, str) {
+    //             // 防止 </u 后面的 > 被转义
+    //             const before = str.slice(Math.max(0, offset - 3), offset + 1);
+    //             if (before === '</u>') return '</u>';    // 补全 </u>
+    //             return "&gt;";
+    //         })
+    //         .replace(/"/g, "&quot;")
+    //         .replace(/'/g, "&#039;");
+    // };
 
     // 但上面逻辑较复杂，容易出错。更可靠的方式：先提取 <u>...</u>，再转义其余部分。
     // 下面采用“占位符”方法，更清晰安全：
