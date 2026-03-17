@@ -389,7 +389,7 @@ const articelTextTotal = computed(() => {
                 <!-- 代码片段 -->
                 <template v-else-if="item.type === 'code'">
                     <pre
-                        class="p-4 my-4 rounded bg-muted text-sm font-semibold whitespace-break-spaces"><code :class="`language-${item.lang || 'javascript'}`" v-html="renderCode(item.content, item.lang || 'javascript')"></code></pre>
+                        class="p-4 my-4 rounded-md bg-muted text-sm font-semibold whitespace-break-spaces"><code :class="`language-${item.lang || 'javascript'}`" v-html="renderCode(item.content, item.lang || 'javascript')"></code></pre>
                 </template>
                 <template v-else-if="item.type === 'text'">
                     <p class="text-4 leading-8" v-html="item.content"></p>

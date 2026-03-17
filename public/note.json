@@ -1,5 +1,15 @@
 [
   {
+    "key": "AI",
+    "label": "AI",
+    "children": [
+      {
+        "key": "Skill",
+        "label": "Agent Skill"
+      }
+    ]
+  },
+  {
     "key": "git",
     "label": "git",
     "children": [
@@ -153,5 +163,15 @@
     "key": "cesium",
     "label": "Cesium",
     "children": []
+  },
+  {
+    "key": "duyijiaoyu",
+    "label": "袁老师大师课🎯",
+    "children": [
+      {
+        "key": "frontEnd_future",
+        "label": "前端职业的未来———AI的危与机"
+      }
+    ]
   }
 ]
