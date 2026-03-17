@@ -1,14 +1,15 @@
 <script setup lang="ts" name="MarkDown">
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area';
+import Icon from '@/components/self/Icon/index.vue'
 import { ref, watch, computed, onMounted, onUnmounted, nextTick, shallowRef } from 'vue';
 import { formatMarkDown } from '@/utils/markdown'
 import message from '@/plugins/message'
-import { openTab, getMarkDownContent, scrollToTop, getArticleTextCount, getMarkDownInfo } from '@/utils/index'
+import { openTab, getMarkDownContent, getArticleTextCount, getMarkDownInfo } from '@/utils/index'
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { FileClockIcon, NewspaperIcon, LinkIcon } from 'lucide-vue-next'
+import { LinkIcon } from 'lucide-vue-next'
 import {
     Card,
     CardAction,
@@ -17,6 +18,11 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 import Tooltip from '@/components/self/Tooltip/index.vue'
 import { Button } from '@/components/ui/button'
 import Tree from '../Tree/index.vue'
@@ -207,6 +213,15 @@ watch(() => path, async (newVal) => {
 }, { immediate: true })
 
 const scrollAreaRootRef = shallowRef<any>(null)
+
+const scrollToTop = () => {
+    const options = {
+        top: 0,
+        behavior: 'smooth'
+    }
+    scrollAreaRootRef.value?.scrollTo(options);
+}
+
 const scrollToSection = () => {
     const decodedHash = decodeURIComponent(location.hash.substring(1));
     const element = document.getElementById('markdown_nav_' + decodedHash);
@@ -296,8 +311,8 @@ const articelTextTotal = computed(() => {
         <ScrollArea ref="scrollAreaRootRef" class="w-full h-full text-4 pr-[350px]" v-else>
             <template v-for="(item, index) in markdownContent" :key="'md' + index">
                 <template v-if="item.type === 'h1'">
-                    <h1 :class="`md_${item.type} mb-8 text-4xl font-extrabold text-balance`"
-                        :id="renderTitleId(item)">{{ item.content.trim().replace(/#/g, "") }}</h1>
+                    <h1 :class="`md_${item.type} mb-8 text-4xl font-extrabold text-balance`" :id="renderTitleId(item)">
+                        {{ item.content.trim().replace(/#/g, "") }}</h1>
                 </template>
                 <template v-else-if="item.type === 'h2'">
                     <h2 :class="`md_${item.type} my-6 scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0`"
@@ -373,7 +388,8 @@ const articelTextTotal = computed(() => {
                 </template>
                 <!-- 代码片段 -->
                 <template v-else-if="item.type === 'code'">
-                    <pre class="p-4 my-4 rounded bg-muted text-sm font-semibold whitespace-break-spaces"><code :class="`language-${item.lang || 'javascript'}`" v-html="renderCode(item.content, item.lang || 'javascript')"></code></pre>
+                    <pre
+                        class="p-4 my-4 rounded bg-muted text-sm font-semibold whitespace-break-spaces"><code :class="`language-${item.lang || 'javascript'}`" v-html="renderCode(item.content, item.lang || 'javascript')"></code></pre>
                 </template>
                 <template v-else-if="item.type === 'text'">
                     <p class="text-4 leading-8" v-html="item.content"></p>
@@ -405,17 +421,32 @@ const articelTextTotal = computed(() => {
                 </CardContent>
             </Card>
         </div>
-        <!-- 文档信息 -->
-        <div class="absolute bottom-2 right-2 p-2 border text-xs rounded-md bg-muted" v-if="showInfo">
-            <p class="flex items-center mb-2">
-                <FileClockIcon class="size-4 mr-2" />
-                最后修改时间：{{ markdownInfo.lastModified || '-' }}
-            </p>
-            <p class="flex items-center">
-                <NewspaperIcon class="size-4 mr-2" />
-                全文字数统计：{{ articelTextTotal }}
-            </p>
+        <!-- 回到顶部 -->
+        <div class="absolute bottom-2 right-2 p-2 border text-xs rounded-md bg-muted">
+            <Tooltip content="回到顶部">
+                <Icon name="ArrowUpIcon" size="2" class="cursor-pointer" @click="scrollToTop" />
+            </Tooltip>
         </div>
+        <Popover>
+            <PopoverTrigger as-child>
+                <div class="absolute bottom-2 right-16 p-2 border text-xs rounded-md bg-muted" v-if="showInfo">
+                    <Icon name="BookMarkedIcon" size="2" class="cursor-pointer" />
+                </div>
+            </PopoverTrigger>
+            <PopoverContent>
+                <div class="text-xs p-0">
+                    <p class="flex items-center mb-2">
+                        <Icon name="FileClockIcon" size="4" class="mr-1" />
+                        最后修改时间：{{ markdownInfo.lastModified || '-' }}
+                    </p>
+                    <p class="flex items-center">
+                        <Icon name="NewspaperIcon" size="4" class="mr-1" />
+                        全文字数统计：{{ articelTextTotal }}
+                    </p>
+                </div>
+            </PopoverContent>
+        </Popover>
+
     </div>
 </template>
 
