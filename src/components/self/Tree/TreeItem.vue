@@ -28,7 +28,7 @@ const isExpanded = ref(true)
 </script>
 
 <template>
-    <div class="text-sm flex flex-col mb-1">
+    <div class="text-sm flex flex-col">
         <div
             v-if="!item.children || item.children.length === 0"
             :class="['flex items-center justify-between cursor-pointer px-2 py-1 rounded-md', currentKey === item.key ? 'bg-primary text-primary-foreground' : 'hover:bg-accent']"

@@ -73,7 +73,7 @@ watch(() => props.data, (newVal, _) => {
             </Empty>
         </div>
         <ScrollArea class="w-full h-full rounded-md border" v-else>
-            <div class="px-4 py-2 text-sm mb-2 flex flex-col" v-for="item in tree" :key="item.key">
+            <div class="px-4 py-2 text-sm flex flex-col" v-for="item in tree" :key="item.key">
                 <Collapsible :defaultOpen="true">
                     <CollapsibleTrigger>
                         <div class="flex items-center">

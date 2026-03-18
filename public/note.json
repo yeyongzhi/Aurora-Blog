@@ -5,7 +5,8 @@
     "children": [
       {
         "key": "Skill",
-        "label": "Agent Skill"
+        "label": "Agent Skill",
+        "default": true
       }
     ]
   },
@@ -62,8 +63,7 @@
       },
       {
         "key": "vue_ref",
-        "label": "vue Ref",
-        "default": true
+        "label": "vue Ref"
       },
       {
         "key": "vue_watch",
