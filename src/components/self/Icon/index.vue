@@ -26,7 +26,7 @@ const icon = computed(() => {
         <Button variant="secondary" v-if="background">
             <component :class="`size-${props.size}`" :is="icon" />
         </Button>
-        <component :is="icon" v-else />
+        <component :is="icon" :class="`size-${props.size}`" v-else />
     </span>
 </template>
 

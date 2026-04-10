@@ -54,7 +54,7 @@ onMounted(async () => {
                 <p class="text-lg font-bold ">版本更新记录 【共{{ versionList.length }}条】</p>
                 <p class="text-sm text-gray-500">有这个显得我比较专业，知豆不？</p>
             </div>
-            <Card v-for="item in versionList" :key="item.version" class="gap-2 py-4">
+            <Card v-for="item in versionList" :key="item.version" class="gap-2 py-4 mb-4">
                 <CardHeader>
                     <CardTitle class="flex text-lg items-center">
                         <span>V {{ item.version }}</span>
@@ -73,7 +73,7 @@ onMounted(async () => {
                 </CardHeader>
                 <CardContent>
                     <p v-if="item.description">{{ item.description }}</p>
-                    <ul class="ml-4 list-disc [&>li]:mt-2">
+                    <ul class="ml-4 list-disc [&>li]:mt-2 text-sm">
                         <li v-for="(desc, dIndex) in item.content" :key="dIndex">{{ desc.text }}</li>
                     </ul>
                 </CardContent>

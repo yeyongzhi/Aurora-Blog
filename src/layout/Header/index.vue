@@ -2,14 +2,14 @@
 import Menu from './components/Menu.vue'
 import Avatar from './components/Avatar.vue'
 import DateTime from './components/DateTime.vue'
+import SystemSetting from './components/SystemSetting.vue'
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { SunIcon, MoonIcon, Laptop, Settings, ClockIcon } from 'lucide-vue-next'
-import themeColorData from '@/style/themeColor.json'
+import { SunIcon, MoonIcon, Laptop, ClockIcon } from 'lucide-vue-next'
 import useAppStore from '@/store/app'
 
 const appStore = useAppStore()
@@ -23,7 +23,6 @@ const appStore = useAppStore()
         </div>
         <div class="flex justify-center items-center gap-x-4">
             <Menu />
-            
             <Popover>
                 <PopoverTrigger asChild>
                     <Button size="icon" variant="outline">
@@ -53,25 +52,7 @@ const appStore = useAppStore()
                     <DateTime />
                 </PopoverContent>
             </Popover>
-            <Popover>
-                <PopoverTrigger asChild>
-                    <Button size="icon" variant="outline">
-                        <Settings />
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent class="w-fit p-2" align="end">
-                    <p class="mb-2 text-sm">主题颜色</p>
-                    <div class="w-60">
-                        <div class="w-full flex flex-wrap gap-2">
-                            <Button class="w-29 flex items-center justify-between gap-x-2" size="sm" variant="outline"
-                                v-for="item in themeColorData" :key="item.color">
-                                <div class="w-2 h-2 rounded-full" :style="{ backgroundColor: item.color }"></div>
-                                {{ item.name }}
-                            </Button>
-                        </div>
-                    </div>
-                </PopoverContent>
-            </Popover>
+            <SystemSetting />
         </div>
     </div>
 </template>

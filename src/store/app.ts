@@ -1,13 +1,18 @@
 import { defineStore } from 'pinia'
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { useColorMode } from '@vueuse/core'
 import APP_MENU from '@/router/index'
 import toast from '@/plugins/message'
+import { hexToOklch } from '@/utils/color'
 
 type ColorMode = 'light' | 'dark' | 'auto'
 
 const DEFAULT_MODE: ColorMode = 'light'
-const DEFAULT_MENU_KEY = 'home'
+const localSettingInfo = localStorage.getItem(import.meta.env.VITE_APP_SYSTEM_SETTING_KEY)
+const localSettingInfoValue = (localSettingInfo && localSettingInfo !== '') ? JSON.parse(localSettingInfo) : {}
+const isRememberMenu = localSettingInfoValue.rememberMenu || false
+const DEFAULT_MENU_KEY = isRememberMenu ? localSettingInfoValue.rememberMenuKey || 'home' : 'home'
+export const DEFAULT_THEME_COLOR = '#000000'
 
 const useAppStore = defineStore('app', () => {
     const mode = useColorMode()
@@ -74,8 +79,30 @@ const useAppStore = defineStore('app', () => {
         return targetMenu?.component || null
     })
 
+    const themeColor = ref(localStorage.getItem('themeColor') || DEFAULT_THEME_COLOR)
+    
+    const updateThemeColor = (color: string) => {
+        themeColor.value = color
+        localStorage.setItem('themeColor', color)
+        const oklchColor = hexToOklch(color)
+        document.documentElement.style.setProperty('--primary', oklchColor)
+        document.documentElement.style.setProperty('--ring', oklchColor)
+    }
+
+    watch(themeColor, (newColor) => {
+        const oklchColor = hexToOklch(newColor)
+        document.documentElement.style.setProperty('--primary', oklchColor)
+        document.documentElement.style.setProperty('--ring', oklchColor)
+    })
+
     onMounted(() => {
         mode.value = DEFAULT_MODE
+        const savedColor = localStorage.getItem('themeColor')
+        if (savedColor && savedColor !== DEFAULT_THEME_COLOR) {
+            updateThemeColor(savedColor)
+        } else {
+            updateThemeColor(DEFAULT_THEME_COLOR)
+        }
     })
 
     return {
@@ -88,7 +115,9 @@ const useAppStore = defineStore('app', () => {
         handleForward,
         handleRefresh,
         currentMenuComponent,
-        gotoPage
+        gotoPage,
+        themeColor,
+        updateThemeColor
     }
 })
 
