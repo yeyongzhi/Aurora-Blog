@@ -6,5 +6,14 @@
         "content": [
             { "type": "feature", "text": "初始版本V 1.0.0 正式上线" }
         ]
+    },
+    {
+        "type": "feature",
+        "version": "1.0.1",
+        "date": "2026-04-10",
+        "content": [
+            { "type": "feature", "text": "新增菜单记忆功能" },
+            { "type": "feature", "text": "新增主题配置功能" }
+        ]
     }
 ]

@@ -7,6 +7,10 @@
         "key": "Skill",
         "label": "Agent Skill",
         "default": true
+      },
+      {
+        "key": "Prompt",
+        "label": "Prompt"
       }
     ]
   },
