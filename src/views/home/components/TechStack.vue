@@ -27,7 +27,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 <template>
   <div class="grid grid-cols-3 gap-4 mb-8 mt-4">
-    <Card v-for="item in props.data" :key="item.name" class="gap-4 py-4">
+    <Card
+      v-for="item in props.data"
+      :key="item.name"
+      class="border-2 gap-4 py-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-2 hover:border-primary cursor-pointer"
+    >
       <CardHeader>
         <CardTitle class="flex text-lg items-center">
           <span class="mr-2 text-2xl">{{ item.icon }}</span>
