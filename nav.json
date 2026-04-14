@@ -46,12 +46,6 @@
                 "descriptions": "由腾讯公司全链路自研，在高质量内容创作、数理逻辑、代码生成和多轮对话上性能表现卓越，处于业界领先水平。混元API支持AI搜索联网插件，通过整合腾讯优质的内容生态（如微信公众号、视频号等），提供强大的时新、深度内容获取和AI问答能力。"
             },
             {
-                "name": "问小白",
-                "icon": "https://wy-static.wenxiaobai.com/wenxiaobai-web/production/3.7.3/_next/static/media/new_favicon.6d31cfe4.png",
-                "url": "https://www.wenxiaobai.com/",
-                "descriptions": "deepseek 满血版R1🔥🔥🔥"
-            },
-            {
                 "name": "灵犀AI（WPS）",
                 "icon": "https://qn.cache.wpscdn.cn/copilot/copilot/assets/logo_lx-Cg3dcATH.png",
                 "url": "https://lingxi.wps.cn/",
