@@ -4,9 +4,17 @@
     "label": "AI",
     "children": [
       {
-        "key": "Skill",
-        "label": "Agent Skill",
+        "key": "LLM",
+        "label": "LLM【大语言模型】",
         "default": true
+      },
+      {
+        "key": "Token",
+        "label": "Token"
+      },
+      {
+        "key": "Skill",
+        "label": "Agent Skill"
       },
       {
         "key": "Prompt",

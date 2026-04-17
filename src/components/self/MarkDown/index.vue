@@ -339,7 +339,7 @@ const articelTextTotal = computed(() => {
                 </template>
                 <!-- 引用 -->
                 <template v-else-if="item.type === 'quote'">
-                    <blockquote class="my-4 border-l-4 pl-6 italic">
+                    <blockquote class="my-4 border-l-4 pl-2 italic">
                         <p class="text-4 leading-8 my-2" v-html="item.content"></p>
                     </blockquote>
                 </template>
