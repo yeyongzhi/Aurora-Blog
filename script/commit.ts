@@ -211,7 +211,7 @@ function renderCommitTypeMenu(selectedIndex: number): number {
       const isActive = index === selectedIndex;
       const prefix = isActive ? pc.green('❯') : pc.dim(' ');
       const typeText = `${type.emoji} ${type.value}`;
-      const detail = `${type.label} - ${type.description}`;
+      const detail = `${type.label}【${type.description}】`;
 
       return `${prefix} ${isActive ? pc.green(typeText) : pc.white(typeText)} ${pc.dim(detail)}`;
     }),
@@ -298,12 +298,12 @@ async function inputCommitMessage(type: CommitType): Promise<string> {
   while (true) {
     const message = (
       await askQuestion(
-        pc.yellow(`请输入提交说明（将生成 ${type.value}: xxx）: `),
+        pc.yellow(`请输入提交说明（将生成 ${type.emoji}${type.value}: xxx）: `),
       )
     ).trim();
 
     if (message) {
-      return `${type.value}: ${message}`;
+      return `${type.emoji}${type.value}: ${message}`;
     }
 
     printWarning('提交说明不能为空。');
