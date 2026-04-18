@@ -1,9 +1,11 @@
 import { spawnSync } from 'node:child_process';
 import { stdin as input, stdout as output } from 'node:process';
+import { emitKeypressEvents } from 'node:readline';
 import { createInterface } from 'node:readline/promises';
 import pc from 'picocolors';
 
 type CommitType = {
+  emoji: string;
   value: string;
   label: string;
   description: string;
@@ -22,22 +24,19 @@ type PushTarget = {
 };
 
 const COMMIT_TYPES: CommitType[] = [
-  { value: 'feat', label: '功能开发', description: '新增功能或页面能力' },
-  { value: 'fix', label: '问题修复', description: '修复 bug 或异常行为' },
-  { value: 'docs', label: '文档更新', description: '修改文档、注释或说明' },
-  { value: 'style', label: '样式优化', description: '样式、格式、UI 微调' },
-  { value: 'refactor', label: '代码重构', description: '重构实现但不改变功能' },
-  { value: 'perf', label: '性能优化', description: '提升性能或减少开销' },
-  { value: 'test', label: '测试相关', description: '新增或调整测试' },
-  { value: 'build', label: '构建调整', description: '构建脚本或依赖流程变更' },
-  { value: 'chore', label: '杂项维护', description: '杂项更新、清理或维护' },
-  { value: 'ci', label: '持续集成', description: 'CI/CD 配置调整' },
-  { value: 'revert', label: '回滚提交', description: '回滚历史提交' },
+  { emoji: '✨', value: 'feat', label: '功能开发', description: '新增功能或页面能力' },
+  { emoji: '🐛', value: 'fix', label: '问题修复', description: '修复 bug 或异常行为' },
+  { emoji: '📝', value: 'docs', label: '文档更新', description: '修改文档、注释或说明' },
+  { emoji: '🎨', value: 'style', label: '样式优化', description: '样式、格式、UI 微调' },
+  { emoji: '♻️', value: 'refactor', label: '代码重构', description: '重构实现但不改变功能' },
+  { emoji: '⚡', value: 'perf', label: '性能优化', description: '提升性能或减少开销' },
+  { emoji: '🏗️', value: 'build', label: '构建调整', description: '构建脚本或依赖流程变更' },
+  { emoji: '🔧', value: 'chore', label: '杂项维护', description: '杂项更新、清理或维护' },
+  { emoji: '🤖', value: 'ci', label: '持续集成', description: 'CI/CD 配置调整' },
+  { emoji: '⏪️', value: 'revert', label: '回滚提交', description: '回滚历史提交' },
 ];
 
 const CONFLICT_STATUSES = new Set(['DD', 'AU', 'UD', 'UA', 'DU', 'AA', 'UU']);
-
-const rl = createInterface({ input, output });
 
 function printTitle(message: string) {
   console.log(`\n${pc.bold(pc.cyan(message))}`);
@@ -79,6 +78,16 @@ function runGit(args: string[], inherit = false): string {
   }
 
   return (result.stdout ?? '').trim();
+}
+
+async function askQuestion(question: string): Promise<string> {
+  const rl = createInterface({ input, output });
+
+  try {
+    return await rl.question(question);
+  } finally {
+    rl.close();
+  }
 }
 
 function getStatusEntries(): StatusEntry[] {
@@ -173,9 +182,7 @@ async function askYesNo(question: string, defaultValue = true): Promise<boolean>
   const suffix = defaultValue ? '[Y/n]' : '[y/N]';
 
   while (true) {
-    const answer = (await rl.question(
-      pc.yellow(`${question} ${suffix} `),
-    )).trim();
+    const answer = (await askQuestion(pc.yellow(`${question} ${suffix} `))).trim();
 
     if (!answer) {
       return defaultValue;
@@ -195,33 +202,105 @@ async function askYesNo(question: string, defaultValue = true): Promise<boolean>
   }
 }
 
-async function chooseCommitType(): Promise<CommitType> {
-  printTitle('选择 Commit 类型');
-  COMMIT_TYPES.forEach((type, index) => {
-    console.log(
-      `${pc.cyan(`${index + 1}. ${type.value}`)} ${pc.white(type.label)} ${pc.dim(
-        `- ${type.description}`,
-      )}`,
-    );
-  });
+function renderCommitTypeMenu(selectedIndex: number): number {
+  const lines = [
+    '',
+    pc.bold(pc.cyan('选择 Commit 类型')),
+    pc.dim('使用 ↑ / ↓ 切换，按 Enter 确认'),
+    ...COMMIT_TYPES.map((type, index) => {
+      const isActive = index === selectedIndex;
+      const prefix = isActive ? pc.green('❯') : pc.dim(' ');
+      const typeText = `${type.emoji} ${type.value}`;
+      const detail = `${type.label} - ${type.description}`;
 
-  while (true) {
-    const answer = (await rl.question(pc.yellow('\n请输入类型编号: '))).trim();
-    const selectedIndex = Number(answer) - 1;
+      return `${prefix} ${isActive ? pc.green(typeText) : pc.white(typeText)} ${pc.dim(detail)}`;
+    }),
+  ];
 
-    if (Number.isInteger(selectedIndex) && COMMIT_TYPES[selectedIndex]) {
-      return COMMIT_TYPES[selectedIndex];
+  output.write(`\r${lines.join('\n')}\n`);
+  return lines.length;
+}
+
+function clearRenderedLines(lineCount: number) {
+  for (let index = 0; index < lineCount; index += 1) {
+    output.write('\x1b[2K');
+
+    if (index < lineCount - 1) {
+      output.write('\x1b[1A');
     }
-
-    printWarning('编号无效，请重新输入。');
   }
+
+  output.write('\r');
+}
+
+async function chooseCommitType(): Promise<CommitType> {
+  if (!input.isTTY || !output.isTTY) {
+    throw new Error('当前终端不支持上下键选择，请在交互式终端中运行。');
+  }
+
+  return await new Promise<CommitType>((resolve, reject) => {
+    let selectedIndex = 0;
+    let renderedLines = 0;
+
+    const cleanup = () => {
+      input.off('keypress', onKeypress);
+      input.setRawMode(false);
+      output.write('\x1b[?25h');
+    };
+
+    const rerender = () => {
+      if (renderedLines > 0) {
+        clearRenderedLines(renderedLines);
+      }
+
+      renderedLines = renderCommitTypeMenu(selectedIndex);
+    };
+
+    const onKeypress = (_value: string, key: { ctrl?: boolean; name?: string }) => {
+      if (key.ctrl && key.name === 'c') {
+        cleanup();
+        reject(new Error('操作已取消'));
+        return;
+      }
+
+      if (key.name === 'up') {
+        selectedIndex =
+          (selectedIndex - 1 + COMMIT_TYPES.length) % COMMIT_TYPES.length;
+        rerender();
+        return;
+      }
+
+      if (key.name === 'down') {
+        selectedIndex = (selectedIndex + 1) % COMMIT_TYPES.length;
+        rerender();
+        return;
+      }
+
+      if (key.name === 'return') {
+        clearRenderedLines(renderedLines);
+        cleanup();
+        printInfo(
+          `已选择类型: ${pc.green(`${COMMIT_TYPES[selectedIndex].emoji} ${COMMIT_TYPES[selectedIndex].value}`)}`,
+        );
+        resolve(COMMIT_TYPES[selectedIndex]);
+      }
+    };
+
+    emitKeypressEvents(input);
+    input.setRawMode(true);
+    output.write('\x1b[?25l');
+    input.on('keypress', onKeypress);
+    rerender();
+  });
 }
 
 async function inputCommitMessage(type: CommitType): Promise<string> {
   while (true) {
-    const message = (await rl.question(
-      pc.yellow(`请输入提交说明（将生成 ${type.value}: xxx）: `),
-    )).trim();
+    const message = (
+      await askQuestion(
+        pc.yellow(`请输入提交说明（将生成 ${type.value}: xxx）: `),
+      )
+    ).trim();
 
     if (message) {
       return `${type.value}: ${message}`;
@@ -303,10 +382,7 @@ async function handlePushStep() {
     return;
   }
 
-  const shouldPush = await askYesNo(
-    `是否推送到 ${pushTarget.label}？`,
-    false,
-  );
+  const shouldPush = await askYesNo(`是否推送到 ${pushTarget.label}？`, false);
 
   if (!shouldPush) {
     printInfo('已跳过 push。');
@@ -329,16 +405,13 @@ async function main() {
 }
 
 process.on('SIGINT', () => {
-  rl.close();
   printWarning('\n操作已取消。');
   process.exit(1);
 });
 
 try {
   await main();
-  rl.close();
 } catch (error) {
-  rl.close();
   const message = error instanceof Error ? error.message : '发生未知错误';
   printError(message);
   process.exit(1);
