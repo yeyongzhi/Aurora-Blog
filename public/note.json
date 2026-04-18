@@ -10,7 +10,11 @@
       },
       {
         "key": "Token",
-        "label": "Token"
+        "label": "Token【词元】"
+      },
+      {
+        "key": "Context",
+        "label": "Context【上下文】"
       },
       {
         "key": "Skill",
@@ -18,7 +22,7 @@
       },
       {
         "key": "Prompt",
-        "label": "Prompt"
+        "label": "Prompt【提示词】"
       }
     ]
   },
