@@ -83,7 +83,7 @@ watch(() => props.data, (newVal, _) => {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                         <div class="mt-2 flex flex-col gap-y-2 pl-4" v-if="item.children && item.children.length > 0">
-                            <div :class="`rounded-md border px-2 py-1 text-sm flex items-center justify-between cursor-pointer ${props.currentKey === child.key ? 'bg-primary text-primary-foreground' : ''}`"
+                            <div :class="`rounded-md border px-2 py-1 text-sm flex items-center justify-between cursor-pointer ${props.currentKey === child.key ? 'bg-primary text-primary-foreground' : 'text-card-foreground hover:bg-accent hover:text-accent-foreground'}`"
                                 v-for="child in item.children" :key="child.key"
                                 @click="handleArticleChanged(child.key)">
                                 <div class="flex items-center">
@@ -92,7 +92,7 @@ watch(() => props.data, (newVal, _) => {
                                 </div>
                             </div>
                         </div>
-                        <div v-else class="mt-2 text-center text-sm text-gray-500">暂无数据</div>
+                        <div v-else class="mt-2 text-center text-sm">暂无数据</div>
                     </CollapsibleContent>
                 </Collapsible>
             </div>

@@ -26,6 +26,7 @@
     "vue-sonner": "^2.0.9"
   },
   "devDependencies": {
+    "@inquirer/prompts": "^8.5.2",
     "@types/node": "^24.10.15",
     "@vitejs/plugin-vue": "^6.0.2",
     "@vue/tsconfig": "^0.8.1",
