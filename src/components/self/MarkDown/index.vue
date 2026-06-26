@@ -5,7 +5,7 @@ import Icon from '@/components/self/Icon/index.vue'
 import { ref, watch, computed, onMounted, onUnmounted, nextTick, shallowRef } from 'vue';
 import { formatMarkDown } from '@/utils/markdown'
 import message from '@/plugins/message'
-import { openTab, getMarkDownContent, getArticleTextCount, getMarkDownInfo } from '@/utils/index'
+import { openTab, getMarkDownData, getArticleTextCount } from '@/utils/index'
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -185,21 +185,17 @@ const handleNavClick = (name: string) => {
 watch(() => path, async (newVal) => {
     if (newVal && newVal !== "") {
         markdownLoading.value = true
-        const result = await getMarkDownContent(newVal)
-        // console.log("文章内容：")
-        // console.log(result)
-        const info = await getMarkDownInfo(newVal)
-        if (info) {
-            const localTime = dayjs(info).tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
+        // 一次 fetch 同时获取内容和修改时间，避免重复请求同一文件
+        const { content, lastModified } = await getMarkDownData(newVal)
+        if (lastModified) {
+            const localTime = dayjs(lastModified).tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
             markdownInfo.value = {
                 lastModified: localTime
             }
-            // console.log(markdownInfo.value)
         }
-        if (result) {
+        if (content) {
             message.success("文章加载成功")
-            const data = formatMarkDown(result)
-            // console.log(data)
+            const data = formatMarkDown(content)
             markdownContent.value = data;
         } else {
             message.error("未找到文章")

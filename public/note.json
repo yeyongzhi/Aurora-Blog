@@ -4,6 +4,16 @@
     "label": "AI",
     "children": [
       {
+        "key": "helloAgents",
+        "label": "【Hello-Agents】阅读笔记",
+        "children": [
+          {
+            "key": "chapter1",
+            "label": "【第一章】初识智能体"
+          }
+        ]
+      },
+      {
         "key": "LLM",
         "label": "LLM【大语言模型】",
         "default": true

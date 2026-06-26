@@ -50,7 +50,7 @@ const emits = defineEmits(['toggle'])
 </script>
 
 <template>
-    <Card class="w-[300px] gap-4 py-4">
+    <Card class="w-[350px] gap-4 py-4">
         <CardHeader>
             <CardTitle>菜单导航</CardTitle>
             <CardDescription>

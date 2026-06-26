@@ -8,54 +8,46 @@ export function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// 根据路径获取markdown文件内容
-export async function getMarkDownContent(markdown_path: string) {
-    let data = null
+// 根据路径获取markdown文件内容和元信息（合并为一次请求，避免重复 fetch 同一文件）
+export async function getMarkDownData(markdown_path: string): Promise<{
+    content: string | null
+    lastModified: string | null
+}> {
     try {
         const fullPath = import.meta.env.BASE_URL + markdown_path.replace(/^\/+/, '');
         const response = await fetch(fullPath);
-        const contentType = response.headers.get('Content-Type')
-        // let lastModified = response.headers.get('Last-Modified') || new Date().toLocaleDateString();
-        // lastModified = new Date(lastModified).toLocaleDateString('zh-CN', {
-        //     year: 'numeric',
-        //     month: '2-digit',
-        //     day: '2-digit'
-        // });
-        // console.log(lastModified)
+
+        const contentType = response.headers.get('Content-Type');
+        // 非 markdown 文件返回空
         if (!contentType?.includes("text/markdown")) {
-            return null;
+            return { content: null, lastModified: null };
         }
-        data = await response.text()
+
+        const content = await response.text();
+        const lastModified = response.headers.get('Last-Modified') || null;
+
+        return {
+            content: content && content.length > 0 ? content : '',
+            lastModified,
+        };
     } catch (err) {
-        console.error("md文件读取出错")
-        return null;
-    }
-    if (data && data.length > 0) {
-        // const result = formatMarkDown(data)
-        return data
-    } else {
-        return ""
+        console.error("md文件读取出错", err);
+        return { content: null, lastModified: null };
     }
 }
 
+// 根据路径获取markdown文件内容（保留旧接口，内部调用合并后的函数）
+export async function getMarkDownContent(markdown_path: string) {
+    const { content } = await getMarkDownData(markdown_path);
+    return content;
+}
+
 /**
- * 根据文章路径获取文章信息
- * @param {string} markdown_path 
- * @returns 
+ * 根据文章路径获取文章信息（保留旧接口，内部调用合并后的函数）
  */
 export async function getMarkDownInfo(markdown_path: string) {
-    let lastModified = null
-    try {
-        const fullPath = import.meta.env.BASE_URL + markdown_path.replace(/^\/+/, '');
-        const response = await fetch(fullPath);
-        lastModified = response.headers.get('Last-Modified') || null;
-        if (!lastModified) {
-            return null;
-        }
-    } catch (err) {
-        return null;
-    }
-    return lastModified
+    const { lastModified } = await getMarkDownData(markdown_path);
+    return lastModified;
 }
 
 /**
