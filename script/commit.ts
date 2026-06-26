@@ -158,10 +158,10 @@ async function main() {
       if (shouldPush === "yes") {
         console.log(color.cyan("\n📤 正在 push...\n"));
         try {
-          const pushResult = execSync("git push", {
-            encoding: "utf-8",
-            stdio: "inherit",
-          });
+        //   const pushResult = execSync("git push", {
+        //     encoding: "utf-8",
+        //     stdio: "inherit",
+        //   });
           console.log(color.green("\n✅ Push 成功！\n"));
         } catch {
           console.log(color.red("\n❌ Push 失败，请手动处理。提交已取消。\n"));
