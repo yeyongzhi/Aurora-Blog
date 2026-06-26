@@ -16,11 +16,21 @@
     },
     {
         "key": "gis",
-        "label": "GIS🌏️",
+        "label": "GIS🗺️",
         "children": [
             {
                 "key": "ol",
                 "label": "OpenLayers"
+            }
+        ]
+    },
+    {
+        "key": "ci",
+        "label": "CI🌐",
+        "children": [
+            {
+                "key": "git",
+                "label": "git规范脚本"
             }
         ]
     }
