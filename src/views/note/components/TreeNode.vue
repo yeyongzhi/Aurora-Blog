@@ -1,5 +1,4 @@
 <script setup lang="ts" name="TreeNode">
-import { ref } from 'vue'
 import { FolderIcon, FileTextIcon } from 'lucide-vue-next'
 import {
     Collapsible,
