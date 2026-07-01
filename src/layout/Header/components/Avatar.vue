@@ -16,11 +16,15 @@ const user = computed(() => {
     }
 })
 
+const goHome = () => {
+    appStore.handleMenuChange('home')
+}
+
 </script>
 
 <template>
     <div class="flex justify-center items-center gap-x-4">
-        <img class="size-10 rounded-full" :src="AvatarImg" />
+        <img class="size-10 rounded-full cursor-pointer" :src="AvatarImg" @click="goHome" />
         <div class="font-bold text-base">{{ user.name }}</div>
         <div class="flex justify-center items-center gap-x-2">
             <Tooltip content="刷新">

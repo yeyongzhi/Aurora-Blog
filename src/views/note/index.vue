@@ -75,7 +75,7 @@ onMounted(() => {
             :treeData="treeData">
             <Tree :currentKey="noteKey" :data="treeData" @articleChanged="handleArticleChanged" />
         </NoteSlideMenu>
-        <div class="border flex-1 rounded-xl p-4">
+        <div class="border flex-1 rounded-xl p-4 bg-card">
             <div class="mb-4" v-if="!slideMenuVisible">
                 <TooltipProvider>
                     <Tooltip content="展开菜单">

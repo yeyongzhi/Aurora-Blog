@@ -1,5 +1,6 @@
 <script setup lang="ts" name="TreeNode">
-import { FolderIcon, FileTextIcon } from 'lucide-vue-next'
+import { ref } from 'vue'
+import { FolderIcon, FileTextIcon, ChevronRightIcon } from 'lucide-vue-next'
 import {
     Collapsible,
     CollapsibleContent,
@@ -35,36 +36,41 @@ const isLeafNode = (node: TreeItem) => {
 const handleArticleChanged = (key: string) => {
     emit('articleChanged', key)
 }
+
+// 文件夹展开/折叠状态，顶层文件夹（depth=0）默认展开
+const isFolderOpen = ref(props.depth < 1)
 </script>
 
 <template>
-    <!-- 叶子节点：渲染为可点击的文章卡片 -->
+    <!-- 叶子节点：渲染为可点击的文章条目 -->
     <div
         v-if="isLeafNode(node)"
         :class="[
-            'rounded-md border px-2 py-1 text-sm flex items-center justify-between cursor-pointer transition-colors',
+            'flex items-center gap-2 px-2 py-2 text-sm rounded-md cursor-pointer transition-all duration-200 border-l-2',
             currentKey === node.key
-                ? 'bg-primary text-primary-foreground'
-                : 'text-card-foreground hover:bg-accent hover:text-accent-foreground',
+                ? 'bg-primary/10 dark:bg-primary/20 text-accent-foreground border-l-primary font-medium'
+                : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground border-l-transparent font-normal',
         ]"
         @click="handleArticleChanged(node.key)"
     >
-        <div class="flex items-center">
-            <FileTextIcon class="size-4" />
-            <span class="ml-2">{{ node.label }}</span>
-        </div>
+        <FileTextIcon class="size-4 shrink-0" />
+        <span class="truncate">{{ node.label }}</span>
     </div>
 
     <!-- 非叶子节点：渲染为可折叠分类，递归渲染子节点 -->
-    <Collapsible v-else :defaultOpen="depth < 1">
+    <Collapsible v-else v-model:open="isFolderOpen">
         <CollapsibleTrigger class="w-full">
-            <div class="flex items-center py-1 hover:text-primary cursor-pointer">
-                <FolderIcon class="size-4" />
-                <span class="ml-2">{{ node.label }}</span>
+            <div class="flex items-center gap-2 w-full px-2 py-2 text-sm rounded-md cursor-pointer transition-all duration-200 hover:bg-accent hover:text-accent-foreground font-medium text-foreground">
+                <ChevronRightIcon
+                    class="size-4 shrink-0 text-muted-foreground transition-transform duration-200"
+                    :class="{ 'rotate-90': isFolderOpen }"
+                />
+                <FolderIcon class="size-4 shrink-0" />
+                <span class="truncate">{{ node.label }}</span>
             </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
-            <div class="mt-2 flex flex-col gap-y-2 pl-4">
+            <div class="mt-1 flex flex-col gap-y-1 pl-4">
                 <!-- 关键：组件引用自身，实现递归渲染，支持任意深度 -->
                 <TreeNode
                     v-for="child in node.children"

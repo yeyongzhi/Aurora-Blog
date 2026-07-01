@@ -18,9 +18,7 @@ const appStore = useAppStore()
 
 <template>
     <div class="w-full h-[60px] border-b px-8 flex justify-between items-center">
-        <div>
-            <Avatar />
-        </div>
+        <Avatar />
         <div class="flex justify-center items-center gap-x-4">
             <Menu />
             <Popover>

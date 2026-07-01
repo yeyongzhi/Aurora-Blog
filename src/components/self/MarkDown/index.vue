@@ -342,10 +342,10 @@ const articelTextTotal = computed(() => {
                 <!-- 超链接 -->
                 <template v-else-if="item.type === 'link'">
                     <Tooltip :content="item.content[2]">
-                        <Button class="w-fit px-0 py-0 font-bold" variant="link" @click="openTab(item.content[2])">
+                        <div class="flex justify-start items-center w-fit px-0 py-0 font-bold cursor-pointer hover:underline underline-offset-2" @click="openTab(item.content[2])">
                             <LinkIcon class="size-4" />
-                            {{ item.content[1] }}
-                        </Button>
+                            <span class="ml-1">{{ item.content[1] }}</span>
+                        </div>
                     </Tooltip>
                 </template>
                 <!-- 图片 -->

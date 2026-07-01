@@ -9,14 +9,14 @@
         "children": [
           {
             "key": "chapter1",
-            "label": "【第一章】初识智能体"
+            "label": "【第一章】初识智能体",
+            "default": true
           }
         ]
       },
       {
         "key": "LLM",
-        "label": "LLM【大语言模型】",
-        "default": true
+        "label": "LLM【大语言模型】"
       },
       {
         "key": "Token",
