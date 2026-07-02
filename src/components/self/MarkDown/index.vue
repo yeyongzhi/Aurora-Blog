@@ -420,13 +420,13 @@ const articelTextTotal = computed(() => {
         <!-- 回到顶部 -->
         <div class="absolute bottom-2 right-2 p-2 border text-xs rounded-md bg-muted">
             <Tooltip content="回到顶部">
-                <Icon name="ArrowUpIcon" size="2" class="cursor-pointer" @click="scrollToTop" />
+                <Icon name="ArrowUpIcon" size="4" class="cursor-pointer" @click="scrollToTop" />
             </Tooltip>
         </div>
         <Popover>
             <PopoverTrigger as-child>
                 <div class="absolute bottom-2 right-16 p-2 border text-xs rounded-md bg-muted" v-if="showInfo">
-                    <Icon name="BookMarkedIcon" size="2" class="cursor-pointer" />
+                    <Icon name="BookMarkedIcon" size="4" class="cursor-pointer" />
                 </div>
             </PopoverTrigger>
             <PopoverContent>

@@ -1,6 +1,6 @@
 <script setup lang="ts" name="TreeNode">
-import { ref } from 'vue'
-import { FolderIcon, FileTextIcon, ChevronRightIcon } from 'lucide-vue-next'
+import { ref, inject, watch } from 'vue'
+import { Folder, FolderOpen, FileTextIcon, ChevronRightIcon } from 'lucide-vue-next'
 import {
     Collapsible,
     CollapsibleContent,
@@ -37,8 +37,21 @@ const handleArticleChanged = (key: string) => {
     emit('articleChanged', key)
 }
 
-// 文件夹展开/折叠状态，顶层文件夹（depth=0）默认展开
-const isFolderOpen = ref(props.depth < 1)
+// 从父组件注入全局展开/折叠控制
+const expandControl = inject<{ isAllExpanded: { value: boolean }; toggleVersion: { value: number } } | null>('expandAllControl', null)
+
+// 文件夹初始默认全部展开
+const isFolderOpen = ref(true)
+
+// 监听全局一键展开/折叠：当父组件触发切换时，同步状态
+if (expandControl) {
+    watch(
+        () => expandControl.toggleVersion.value,
+        () => {
+            isFolderOpen.value = expandControl.isAllExpanded.value
+        },
+    )
+}
 </script>
 
 <template>
@@ -65,7 +78,8 @@ const isFolderOpen = ref(props.depth < 1)
                     class="size-4 shrink-0 text-muted-foreground transition-transform duration-200"
                     :class="{ 'rotate-90': isFolderOpen }"
                 />
-                <FolderIcon class="size-4 shrink-0" />
+                <FolderOpen v-if="isFolderOpen" class="size-4 shrink-0" />
+                <Folder v-else class="size-4 shrink-0" />
                 <span class="truncate">{{ node.label }}</span>
             </div>
         </CollapsibleTrigger>

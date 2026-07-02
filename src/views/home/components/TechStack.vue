@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
     <Card
       v-for="item in props.data"
       :key="item.name"
-      class="border-2 gap-4 py-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-2 hover:border-primary cursor-pointer"
+      class="gap-4 py-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary cursor-pointer"
     >
       <CardHeader>
         <CardTitle class="flex text-lg items-center">

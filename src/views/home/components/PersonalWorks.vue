@@ -42,7 +42,7 @@ const handleClick = (item: PersonalWorkItem) => {
 
 <template>
     <div class="flex flex-col gap-4 mb-8 mt-4">
-        <Item variant="muted" v-for="item in props.data" :key="item.name">
+        <Item variant="muted" v-for="item in props.data" :key="item.name" class="transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary cursor-pointer">
             <ItemMedia variant="icon" class="size-12">
                 <span class="text-2xl">{{ item.icon }}</span>
             </ItemMedia>

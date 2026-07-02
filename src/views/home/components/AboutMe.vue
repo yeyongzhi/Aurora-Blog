@@ -32,7 +32,7 @@ const defcription = computed(() => {
             <p v-for="item in defcription" :key="item">{{ item }}</p>
         </div>
         <div class="flex items-center gap-x-2">
-            <Badge class="py-2 px-2" variant="secondary" v-for="tag in aboutMeData.userTag" :key="tag">
+            <Badge class="py-2 px-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary cursor-pointer" variant="secondary" v-for="tag in aboutMeData.userTag" :key="tag">
                 {{ tag }}
             </Badge>
         </div>
