@@ -1,8 +1,8 @@
 <script setup lang="ts" name="TodayCalendar">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { CalendarCheckIcon, CalendarDaysIcon, ClockIcon } from 'lucide-vue-next'
 import type { DateValue } from '@internationalized/date'
-import { getLocalTimeZone, today as getToday } from '@internationalized/date'
+import { CalendarDate, getLocalTimeZone, today as getToday } from '@internationalized/date'
 import { Button } from '@/components/ui/button'
 import {
     Card,
@@ -14,20 +14,27 @@ import {
 import { Calendar } from '@/components/ui/calendar'
 
 const todayValue = getToday(getLocalTimeZone())
-const selectedDate = ref<DateValue | undefined>(todayValue)
+const selectedDate = shallowRef<CalendarDate>(todayValue)
 const currentTime = ref(new Date())
 const weekMap = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
 let timer: any = null
 
-const toNativeDate = (date: DateValue) => new Date(date.year, date.month - 1, date.day)
+const toCalendarDate = (date: DateValue) => new CalendarDate(date.year, date.month, date.day)
+const toNativeDate = (date: CalendarDate) => new Date(date.year, date.month - 1, date.day)
+const getWeekText = (date: CalendarDate) => weekMap[toNativeDate(date).getDay()] ?? ''
 
-const selectedDateValue = computed(() => selectedDate.value || todayValue)
 const todayInfo = computed(() => ({
-    year: selectedDateValue.value.year,
-    month: selectedDateValue.value.month,
-    date: selectedDateValue.value.day,
-    week: weekMap[toNativeDate(selectedDateValue.value).getDay()],
+    year: selectedDate.value.year,
+    month: selectedDate.value.month,
+    date: selectedDate.value.day,
+    week: getWeekText(selectedDate.value),
 }))
+const calendarValue = computed<DateValue>({
+    get: () => selectedDate.value,
+    set: date => {
+        selectedDate.value = toCalendarDate(date)
+    },
+})
 const currentTimeText = computed(() => currentTime.value.toLocaleTimeString('zh-CN', {
     hour12: false,
     hour: '2-digit',
@@ -53,7 +60,8 @@ const todayMetaList = computed(() => [
     },
 ])
 
-const isSelectedToday = computed(() => selectedDateValue.value.compare(todayValue) === 0)
+const isSelectedToday = computed(() => selectedDate.value.compare(todayValue) === 0)
+const getCalendarTitle = (date: Pick<DateValue, 'year' | 'month'>) => `${date.year} 年 ${date.month} 月`
 
 const handleBackToday = () => {
     selectedDate.value = todayValue
@@ -108,14 +116,14 @@ onBeforeUnmount(() => {
                 </div>
             </div>
             <Calendar
-                v-model="selectedDate"
+                v-model:value="calendarValue"
                 locale="zh-CN"
                 fixed-weeks
                 class="flex h-full w-full flex-col rounded-lg border [&_[data-slot=calendar-cell-trigger]]:h-9 [&_[data-slot=calendar-cell-trigger]]:w-full"
             >
                 <template #calendar-heading="{ date }">
                     <div class="text-center text-sm font-medium mt-1">
-                        {{ date.year }} 年 {{ date.month }} 月
+                        {{ getCalendarTitle(date) }}
                     </div>
                 </template>
             </Calendar>

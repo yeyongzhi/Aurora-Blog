@@ -5,7 +5,7 @@ import WelcomeHero from './components/WelcomeHero.vue'
 import TodayCalendar from './components/TodayCalendar.vue'
 import Weather from './components/Weather.vue'
 import WritingHeatmap from './components/WritingHeatmap.vue'
-import WelcomeModuleGrid from './components/WelcomeModuleGrid.vue'
+// import WelcomeModuleGrid from './components/WelcomeModuleGrid.vue'
 import FeaturedContent from './components/FeaturedContent.vue'
 
 const appStore = useAppStore()
