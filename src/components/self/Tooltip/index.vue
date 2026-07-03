@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<TooltipProps>(), {
             <TooltipTrigger ref="triggerRef" as-child>
                 <slot />
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent class="max-w-80 whitespace-pre-line break-words">
                 {{ props.content || '' }}
             </TooltipContent>
         </Tooltip>

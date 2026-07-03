@@ -5,7 +5,7 @@ import { ChevronsRightIcon } from 'lucide-vue-next'
 import NoteSlideMenu from './components/SlideMenu.vue'
 import Tree from './components/Tree.vue'
 import MarkDown from '@/components/self/MarkDown/index.vue'
-import { getFullPath, getMdPath } from './handle'
+import { getFullPath, getMdPath } from '@/utils/index'
 import Tooltip from '@/components/self/Tooltip/index.vue'
 import { getFetchData } from '@/utils/index'
 
@@ -47,7 +47,7 @@ watch(noteKey, (newKey) => {
         console.log("新的文章key" + newKey)
         const fullPath = getFullPath(treeData.value, newKey)
         console.log("新的文章路径" + fullPath)
-        const mdPath = getMdPath(fullPath)
+        const mdPath = getMdPath('/article/note', fullPath)
         console.log("新的文章md路径" + mdPath)
         articlePath.value = mdPath
     }

@@ -5,11 +5,15 @@
   "type": "module",
   "scripts": {
     "commit": "tsx script/commit.ts",
+    "generate:writing-heatmap": "tsx script/generateWritingHeatmap.ts",
     "dev": "vite",
+    "prebuild": "tsx script/generateWritingHeatmap.ts",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@internationalized/date": "^3.12.2",
+    "@lucide/vue": "^1.23.0",
     "@tailwindcss/vite": "^4.2.1",
     "@vueuse/core": "^14.2.1",
     "class-variance-authority": "^0.7.1",
