@@ -116,7 +116,7 @@ onBeforeUnmount(() => {
                 </div>
             </div>
             <Calendar
-                v-model:value="calendarValue"
+                v-model="calendarValue"
                 locale="zh-CN"
                 fixed-weeks
                 class="flex h-full w-full flex-col rounded-lg border [&_[data-slot=calendar-cell-trigger]]:h-9 [&_[data-slot=calendar-cell-trigger]]:w-full"

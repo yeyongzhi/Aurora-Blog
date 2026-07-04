@@ -5,7 +5,11 @@ import WelcomeHero from './components/WelcomeHero.vue'
 import TodayCalendar from './components/TodayCalendar.vue'
 import Weather from './components/Weather.vue'
 import WritingHeatmap from './components/WritingHeatmap.vue'
-// import WelcomeModuleGrid from './components/WelcomeModuleGrid.vue'
+import TodayPoetry from './components/TodayPoetry.vue'
+import QuoteCard from './components/QuoteCard.vue'
+import DailyNews from './components/DailyNews.vue'
+import AiNews from './components/AiNews.vue'
+import TodayInHistory from './components/TodayInHistory.vue'
 import FeaturedContent from './components/FeaturedContent.vue'
 
 const appStore = useAppStore()
@@ -32,12 +36,21 @@ const goNotes = () => {
                 <TodayCalendar />
                 <Weather />
             </div>
-            <div class="grid grid-cols-2 gap-8 max-xl:grid-cols-1">
+            <div class="grid grid-cols-2 gap-8 max-xl:grid-cols-1 h-[500px] overflow-hidden">
                 <WritingHeatmap />
                 <FeaturedContent />
             </div>
-            <!-- <WelcomeModuleGrid /> -->
-            <!-- <WelcomeQuickStart /> -->
+            <div class="grid grid-cols-2 gap-8 max-xl:grid-cols-1 h-[460px] overflow-hidden">
+                <div class="flex flex-col gap-8 h-full overflow-hidden">
+                    <TodayPoetry class="flex-1" />
+                    <QuoteCard class="flex-1" />
+                </div>
+                <DailyNews />
+            </div>
+            <div class="grid grid-cols-2 gap-8 max-xl:grid-cols-1 h-[400px] overflow-hidden">
+                <AiNews />
+                <TodayInHistory />
+            </div>
         </div>
     </ScrollArea>
 </template>

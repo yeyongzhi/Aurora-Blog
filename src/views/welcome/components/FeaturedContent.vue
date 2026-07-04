@@ -1,5 +1,5 @@
 <script setup lang="ts" name="FeaturedContent">
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { ArrowUpRightIcon, SparklesIcon } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import {
@@ -7,13 +7,20 @@ import {
     CardContent,
     CardHeader,
     CardTitle,
+    CardDescription
 } from '@/components/ui/card'
-import { findTreeNode, findTreePath, getFetchData, getMdPath, openTab } from '@/utils'
+import {
+    Item,
+    ItemActions,
+    ItemContent,
+    ItemDescription,
+    ItemMedia,
+    ItemTitle,
+} from '@/components/ui/item'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { getFetchData, getMdPath, openTab } from '@/utils'
 import { type NoteTreeItem } from '@/types/Note'
-
-interface FeaturedConfig {
-    id: string
-}
 
 interface FeaturedArticle {
     id: string
@@ -21,37 +28,37 @@ interface FeaturedArticle {
     path: string
 }
 
-const featuredList = ref<FeaturedArticle[]>([])
-const featuredLoading = ref(false)
-const featuredError = ref('')
+interface FavoriteNode {
+    node: NoteTreeItem
+    path: string[]
+}
 
-const showFeaturedList = computed(() => featuredList.value.slice(0, 4))
+const featuredList = ref<FeaturedArticle[]>([])
+
+/** 递归遍历 note 树，收集所有 favorite: true 的节点及其路径 */
+const collectFavoriteNodes = (tree: NoteTreeItem[], parentPath: string[] = []): FavoriteNode[] => {
+    const results: FavoriteNode[] = []
+    for (const item of tree) {
+        const currentPath = [...parentPath, item.key]
+        if (item.favorite) {
+            results.push({ node: item, path: currentPath })
+        }
+        if (item.children && item.children.length > 0) {
+            results.push(...collectFavoriteNodes(item.children, currentPath))
+        }
+    }
+    return results
+}
 
 const getFeaturedData = async () => {
-    featuredLoading.value = true
-    featuredError.value = ''
+    const noteTree = await getFetchData('/note.json') as NoteTreeItem[]
+    const favorites = collectFavoriteNodes(noteTree)
 
-    try {
-        const [featuredConfig, noteTree] = await Promise.all([
-            getFetchData('/article/featured.json') as Promise<FeaturedConfig[]>,
-            getFetchData('/note.json') as Promise<NoteTreeItem[]>,
-        ])
-
-        featuredList.value = featuredConfig.map((item) => {
-            const notePath = findTreePath(noteTree, item.id)
-            const noteItem = findTreeNode(noteTree, item.id)
-
-            return {
-                id: item.id,
-                title: noteItem?.label || item.id,
-                path: notePath ? getMdPath('/article/note', notePath.join('/')) : '',
-            }
-        }).filter((item) => item.path)
-    } catch (error) {
-        featuredError.value = error instanceof Error ? error.message : '精选内容获取失败'
-    } finally {
-        featuredLoading.value = false
-    }
+    featuredList.value = favorites.map(({ node, path }) => ({
+        id: node.key,
+        title: node.label,
+        path: getMdPath('/article/note', path.join('/')),
+    }))
 }
 
 onMounted(() => {
@@ -60,7 +67,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <Card class="h-full rounded-lg">
+    <Card class="h-full rounded-lg flex flex-col overflow-hidden">
         <CardHeader>
             <div class="flex items-start justify-between gap-4">
                 <div>
@@ -68,30 +75,31 @@ onMounted(() => {
                         <SparklesIcon class="size-4" />
                         精选内容
                     </CardTitle>
+                    <CardDescription>精挑细选的知识沉淀，愿它们也能点亮你的灵感。</CardDescription>
                 </div>
-                <span class="text-sm text-muted-foreground">{{ featuredLoading ? '加载中' : `${featuredList.length} 篇` }}</span>
+                <Badge variant="secondary">共{{ featuredList.length }}篇文章</Badge>
             </div>
         </CardHeader>
-        <CardContent class="grid gap-4">
-            <div v-if="featuredError" class="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-                {{ featuredError }}
-            </div>
-            <div v-else-if="featuredLoading" class="grid gap-3">
-                <div v-for="item in 3" :key="item" class="h-24 rounded-lg bg-muted" />
-            </div>
-            <div v-else class="grid gap-3">
-                <div v-for="item in showFeaturedList" :key="item.path" class="rounded-lg border p-4">
-                    <div class="flex items-center justify-between gap-4">
-                        <div class="min-w-0">
-                            <h3 class="truncate font-semibold">{{ item.title }}</h3>
-                            <p class="mt-1 truncate text-sm text-muted-foreground">{{ item.path }}</p>
-                        </div>
-                        <Button variant="outline" size="icon-sm" @click="openTab(item.path)">
-                            <ArrowUpRightIcon class="size-4" />
-                        </Button>
+        <CardContent class="flex-1 min-h-0 overflow-hidden">
+            <ScrollArea class="h-full">
+                <div class="flex flex-col gap-y-4">
+                    <div v-for="item in featuredList" :key="item.path">
+                        <Item variant="outline">
+                            <ItemContent>
+                                <ItemTitle class="font-semibold">{{ item.title }}</ItemTitle>
+                                <ItemDescription>
+                                    {{ item.path }}
+                                </ItemDescription>
+                            </ItemContent>
+                            <ItemActions>
+                                <Button variant="outline" size="icon-sm" @click="openTab(item.path)">
+                                    <ArrowUpRightIcon class="size-4" />
+                                </Button>
+                            </ItemActions>
+                        </Item>
                     </div>
                 </div>
-            </div>
+            </ScrollArea>
         </CardContent>
     </Card>
 </template>

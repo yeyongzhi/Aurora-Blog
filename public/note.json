@@ -24,11 +24,13 @@
       },
       {
         "key": "Context",
-        "label": "Context【上下文】"
+        "label": "Context【上下文】",
+        "favorite": true
       },
       {
         "key": "Skill",
-        "label": "Agent Skill"
+        "label": "Agent Skill",
+        "favorite": true
       },
       {
         "key": "Prompt",
@@ -42,7 +44,8 @@
     "children": [
       {
         "key": "gitRules",
-        "label": "Git代码提交规范✔️"
+        "label": "Git代码提交规范✔️",
+        "favorite": true
       }
     ]
   },
@@ -115,7 +118,8 @@
     "children": [
       {
         "key": "chromeRun",
-        "label": "浏览器的运行原理"
+        "label": "浏览器的运行原理",
+        "favorite": true
       },
       {
         "key": "chromeStorge",
@@ -133,7 +137,8 @@
       },
       {
         "key": "fingerprint",
-        "label": "浏览器指纹"
+        "label": "浏览器指纹",
+        "favorite": true
       },
       {
         "key": "browserEvent",

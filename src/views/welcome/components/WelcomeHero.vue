@@ -37,11 +37,11 @@ defineEmits<{
                     <p class="text-5xl font-extrabold mb-4">{{ title }}</p>
                     <p class="leading-8 text-muted-foreground">{{ subtitle }}</p>
                 </div>
-                <img
+                <!-- <img
                     :src="AvatarImg"
                     alt="Aurora Blog"
                     class="rounded-xl w-[200px] h-[200px] shrink-0 object-cover border"
-                >
+                > -->
             </div>
         </CardContent>
         <CardFooter>

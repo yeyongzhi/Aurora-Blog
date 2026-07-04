@@ -134,9 +134,7 @@ const getCellTitle = (item: WritingDay) => {
     if (item.count === 0) {
         return `${item.date} 没有写文章`
     }
-
-    const articlePaths = item.articles.map((article) => article.path).join('\n')
-    return `${item.date} 写了 ${item.count} 篇文章\n${articlePaths}`
+    return `${item.date} \n ${item.count} 篇文章`
 }
 
 const handleMonthChange = (offset: number) => {
@@ -166,7 +164,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <Card class="rounded-lg">
+    <Card class="h-full rounded-lg overflow-hidden">
         <CardHeader>
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div>
@@ -191,7 +189,7 @@ onMounted(() => {
                 </div>
             </div>
         </CardHeader>
-        <CardContent class="grid gap-4">
+        <CardContent class="grid gap-4 flex-1 min-h-0">
             <div v-if="writingError" class="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
                 {{ writingError }}
             </div>
