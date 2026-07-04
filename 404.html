@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Aurora Blog</title>
+  <script>
+    (function() {
+      var base = '/Aurora-Blog/';
+      var path = window.location.pathname;
+      // 提取 base 之后的相对路径
+      if (path.indexOf(base) === 0) {
+        path = path.substring(base.length - 1);  // 保留 "/xxx" 格式
+      }
+      // 重定向到 index.html，通过 query param 传递目标路径
+      window.location.replace(base + '?p=' + encodeURIComponent(path));
+    })();
+  </script>
+</head>
+<body></body>
+</html>

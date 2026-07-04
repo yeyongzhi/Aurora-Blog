@@ -5,8 +5,19 @@
     <link rel="icon" type="image/svg+xml" href="/Aurora-Blog/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aurora Blog</title>
-    <script type="module" crossorigin src="/Aurora-Blog/assets/index-CUEEnf27.js"></script>
-    <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-CGfl_aij.css">
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/Aurora-Blog/assets/index-Ck_PDsgh.js"></script>
+    <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-cDKeUbtm.css">
   </head>
   <body>
     <div id="app"></div>
