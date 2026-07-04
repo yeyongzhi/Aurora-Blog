@@ -14,7 +14,6 @@ import {
     ItemActions,
     ItemContent,
     ItemDescription,
-    ItemMedia,
     ItemTitle,
 } from '@/components/ui/item'
 import { Badge } from '@/components/ui/badge'

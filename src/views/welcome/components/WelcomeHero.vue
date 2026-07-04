@@ -2,7 +2,6 @@
 import { BookOpenIcon, CompassIcon } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import AvatarImg from '@/assets/images/user/user.jpg'
 import {
     Card,
     CardContent,
