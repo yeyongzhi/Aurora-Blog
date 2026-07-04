@@ -147,6 +147,30 @@ export function getMdPath(basePath: string, fullPath: string) {
     return `${basePath}/${fullPath}.md`
 }
 
+/**
+ * 通过文章路径（祖先 key 用 / 拼接）在树中查找目标节点。
+ * 如 tree = [{key:"AI", children:[{key:"LLM"}]}], path = "AI/LLM" → 返回 LLM 节点。
+ * 路径不存在或为空时返回 null。
+ */
+export function findTreeNodeByPath(
+    tree: NoteTreeItem[],
+    path: string,
+): NoteTreeItem | null {
+    if (!path) return null
+    const segments = path.split('/')
+    let currentNodes = tree
+
+    for (let i = 0; i < segments.length; i++) {
+        const segment = segments[i]
+        const found = currentNodes.find((node) => node.key === segment)
+        if (!found) return null
+        if (i === segments.length - 1) return found
+        if (!found.children || found.children.length === 0) return null
+        currentNodes = found.children
+    }
+    return null
+}
+
 export async function getFetchData(url: string) {
     const fullPath = import.meta.env.BASE_URL + url.replace(/^\/+/, '');
     const res = await fetch(fullPath).then(response => response.json())

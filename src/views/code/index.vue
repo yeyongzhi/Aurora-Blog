@@ -5,16 +5,18 @@ import { ChevronsRightIcon } from 'lucide-vue-next'
 import ArticleSlideMenu from '@/components/self/ArticleSlideMenu/index.vue'
 import Tree from '@/components/self/Tree/index.vue'
 import MarkDown from '@/components/self/MarkDown/index.vue'
-import { getFullPath, getMdPath } from '@/utils/index'
+import { getFullPath, getMdPath, findTreeNodeByPath } from '@/utils/index'
 import Tooltip from '@/components/self/Tooltip/index.vue'
 import { type NoteTreeItem } from '@/types/Note'
 import { getFetchData } from '@/utils/index'
+import useAppStore from '@/store/app'
 
+const appStore = useAppStore()
 const BASE_ARTICLE_PATH = '/article/code'
 
 const treeData = ref<NoteTreeItem[]>([])
 const noteKey = ref<string>('')
-const articlePath = ref<string>('')
+const mdFilePath = ref<string>('')
 
 const findDefaultArticle = (data: Array<NoteTreeItem>) => {
     data.forEach((item) => {
@@ -32,17 +34,49 @@ const initTreeData = async () => {
     try {
         const data = await getFetchData('/code.json')
         treeData.value = data
+
+        const urlArticlePath = appStore.articlePath
+        if (urlArticlePath) {
+            const node = findTreeNodeByPath(treeData.value, urlArticlePath)
+            if (node) {
+                noteKey.value = node.key
+                return
+            }
+        }
         findDefaultArticle(treeData.value)
     } catch (error) {
         console.error('获取代码笔记目录失败:', error)
     }
 }
 
+watch(
+    () => appStore.articlePath,
+    (newPath) => {
+        if (!treeData.value.length) return
+        if (appStore.menuKey !== 'code') return
+
+        if (newPath) {
+            const node = findTreeNodeByPath(treeData.value, newPath)
+            if (node) {
+                noteKey.value = node.key
+            } else {
+                findDefaultArticle(treeData.value)
+            }
+        } else {
+            findDefaultArticle(treeData.value)
+        }
+    },
+)
+
 watch(noteKey, (newKey) => {
     if (newKey && newKey !== "") {
         const fullPath = getFullPath(treeData.value, newKey)
         const mdPath = getMdPath(BASE_ARTICLE_PATH, fullPath)
-        articlePath.value = mdPath
+        mdFilePath.value = mdPath
+
+        if (fullPath !== appStore.articlePath) {
+            appStore.handleArticleChange(fullPath)
+        }
     }
 }, { immediate: true })
 
@@ -76,7 +110,7 @@ onMounted(() => {
                     </Button>
                 </Tooltip>
             </div>
-            <MarkDown :path="articlePath" :showInfo="false" />
+            <MarkDown :path="mdFilePath" :showInfo="false" />
         </div>
     </div>
 </template>

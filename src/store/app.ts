@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { onMounted, ref, computed, watch } from 'vue'
 import { useColorMode } from '@vueuse/core'
 import APP_MENU from '@/router/index'
+import { getRouteFromPath, getPathFromKey, setupUrlSync } from '@/router/urlSync'
 import toast from '@/plugins/message'
 import { hexToOklch } from '@/utils/color'
 
@@ -36,26 +37,34 @@ const useAppStore = defineStore('app', () => {
     }
 
     const menuKey = ref(DEFAULT_MENU_KEY)
-    const historyMenuList = ref<string[]>([DEFAULT_MENU_KEY])
-    const historyMenuIndex = ref(0)
+    const articlePath = ref<string>('')
+
     const handleMenuChange = (value: string) => {
+        if (menuKey.value === value) return
         menuKey.value = value
-        historyMenuList.value.push(value)
-        historyMenuIndex.value = historyMenuIndex.value + 1
+        articlePath.value = ''
+        window.history.pushState(
+            { key: value, articlePath: '' },
+            '',
+            getPathFromKey(value),
+        )
     }
+
+    const handleArticleChange = (path: string) => {
+        articlePath.value = path
+        window.history.pushState(
+            { key: menuKey.value, articlePath: path },
+            '',
+            getPathFromKey(menuKey.value, path || undefined),
+        )
+    }
+
     const handleBack = () => {
-        if(historyMenuList.value.length === 1) {
-            return toast.warning('没有上一级了')
-        }
-        historyMenuIndex.value = historyMenuIndex.value - 1
-        menuKey.value = historyMenuList.value[historyMenuIndex.value] || DEFAULT_MENU_KEY
+        window.history.back()
     }
+
     const handleForward = () => {
-        if(historyMenuList.value.length === 1) {
-            return toast.warning('没有下一级了')
-        }
-        historyMenuIndex.value = historyMenuIndex.value + 1
-        menuKey.value = historyMenuList.value[historyMenuIndex.value] || DEFAULT_MENU_KEY
+        window.history.forward()
     }
     const handleRefresh = () => {
         window.location.reload()
@@ -63,6 +72,30 @@ const useAppStore = defineStore('app', () => {
     const gotoPage = (url: string) => {
         handleMenuChange(url.replace('/', ''))
     }
+
+    const initFromUrl = () => {
+        const route = getRouteFromPath(window.location.pathname)
+        if (route) {
+            menuKey.value = route.key
+            articlePath.value = route.articlePath
+        } else {
+            // 根路径或未知路径 — 用 replaceState 设置默认页 URL
+            window.history.replaceState(
+                { key: DEFAULT_MENU_KEY, articlePath: '' },
+                '',
+                getPathFromKey(DEFAULT_MENU_KEY),
+            )
+        }
+    }
+
+    const initializeUrlRouting = () => {
+        initFromUrl()
+        setupUrlSync((key, artPath) => {
+            menuKey.value = key
+            articlePath.value = artPath
+        })
+    }
+
     const currentMenuComponent = computed(() => {
         let targetMenu: any = null
         APP_MENU.forEach((item) => {
@@ -110,12 +143,15 @@ const useAppStore = defineStore('app', () => {
         themeOptions,
         handleModeChange,
         menuKey,
+        articlePath,
         handleMenuChange,
+        handleArticleChange,
         handleBack,
         handleForward,
         handleRefresh,
         currentMenuComponent,
         gotoPage,
+        initializeUrlRouting,
         themeColor,
         updateThemeColor
     }

@@ -1,4 +1,6 @@
-import { mkdir, readdir, stat, writeFile } from 'node:fs/promises'
+import { mkdir, readdir, writeFile } from 'node:fs/promises'
+import { statSync } from 'node:fs'
+import { execSync } from 'node:child_process'
 import path from 'node:path'
 
 interface ArticleRecord {
@@ -24,9 +26,28 @@ const formatDate = (date: Date) => {
     return `${year}-${month}-${day}`
 }
 
-const getFileCreatedAt = async (filePath: string) => {
-    const fileStat = await stat(filePath)
+/**
+ * 通过 git log 获取文件的首次提交时间（跨部署一致），
+ * 如果不在 git 仓库中则退回到文件系统的 birthtime。
+ */
+const getFileCreatedAt = (filePath: string): Date => {
+    try {
+        const stdout = execSync(
+            `git log --diff-filter=A --follow --format=%aI -- "${filePath}"`,
+            { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] },
+        )
+        const lines = stdout.trim().split('\n').filter(Boolean)
+        if (lines.length > 0) {
+            // 最早的一次提交（倒数第一行）
+            const firstCommitDate = lines[lines.length - 1]
+            return new Date(firstCommitDate)
+        }
+    } catch {
+        // 不在 git 仓库或 git 命令失败，退回文件系统时间
+    }
 
+    // 回退：使用文件系统的 birthtime
+    const fileStat = statSync(filePath)
     return fileStat.birthtimeMs > 0 ? fileStat.birthtime : fileStat.ctime
 }
 
@@ -51,8 +72,8 @@ const walkMarkdownFiles = async (dir: string): Promise<string[]> => {
 
 const generateWritingHeatmap = async () => {
     const markdownFiles = await walkMarkdownFiles(ARTICLE_DIR)
-    const articles: ArticleRecord[] = await Promise.all(markdownFiles.map(async (filePath) => {
-        const createdAt = await getFileCreatedAt(filePath)
+    const articles: ArticleRecord[] = markdownFiles.map((filePath) => {
+        const createdAt = getFileCreatedAt(filePath)
         const relativePath = path.relative(path.resolve(process.cwd(), 'public'), filePath).replace(/\\/g, '/')
 
         return {
@@ -60,7 +81,7 @@ const generateWritingHeatmap = async () => {
             createdAt: createdAt.toISOString(),
             date: formatDate(createdAt),
         }
-    }))
+    })
 
     const dailyMap = articles.reduce<Record<string, DailyRecord>>((map, article) => {
         if (!map[article.date]) {

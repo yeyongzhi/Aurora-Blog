@@ -38,11 +38,13 @@ interface AiNewsResponse {
 }
 
 const BASE_URL = 'https://60s.viki.moe/v2'
+const IMAGE_URL = 'https://60s.viki.moe/v2/60s?encoding=image'
 
 export function useDailyNews(path: '60s' | 'ai-news' = '60s') {
     const newsData = ref<DailyNewsItem | null>(null)
     const aiNewsData = ref<AiNewsItem | null>(null)
     const loading = ref(false)
+    const imageDialogOpen = ref(false)
 
     const fetchNews = async (date?: string) => {
         loading.value = true
@@ -63,10 +65,22 @@ export function useDailyNews(path: '60s' | 'ai-news' = '60s') {
         }
     }
 
+    const openImageViewer = () => {
+        imageDialogOpen.value = true
+    }
+
+    const closeImageViewer = () => {
+        imageDialogOpen.value = false
+    }
+
     return {
         newsData,
         aiNewsData,
         loading,
         fetchNews,
+        imageDialogOpen,
+        imageUrl: IMAGE_URL,
+        openImageViewer,
+        closeImageViewer,
     }
 }

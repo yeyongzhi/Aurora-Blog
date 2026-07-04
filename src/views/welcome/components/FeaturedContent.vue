@@ -18,13 +18,16 @@ import {
 } from '@/components/ui/item'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { getFetchData, getMdPath, openTab } from '@/utils'
+import { getFetchData } from '@/utils'
 import { type NoteTreeItem } from '@/types/Note'
+import useAppStore from '@/store/app'
+import { getPathFromKey } from '@/router/urlSync'
 
 interface FeaturedArticle {
     id: string
     title: string
-    path: string
+    path: string      // 展示用的 .md 文件路径
+    treePath: string  // 导航用的文章树路径
 }
 
 interface FavoriteNode {
@@ -32,6 +35,7 @@ interface FavoriteNode {
     path: string[]
 }
 
+const appStore = useAppStore()
 const featuredList = ref<FeaturedArticle[]>([])
 
 /** 递归遍历 note 树，收集所有 favorite: true 的节点及其路径 */
@@ -53,11 +57,26 @@ const getFeaturedData = async () => {
     const noteTree = await getFetchData('/note.json') as NoteTreeItem[]
     const favorites = collectFavoriteNodes(noteTree)
 
-    featuredList.value = favorites.map(({ node, path }) => ({
-        id: node.key,
-        title: node.label,
-        path: getMdPath('/article/note', path.join('/')),
-    }))
+    featuredList.value = favorites.map(({ node, path }) => {
+        const treePath = path.join('/')
+        return {
+            id: node.key,
+            title: node.label,
+            path: `/article/note/${treePath}.md`,
+            treePath,
+        }
+    })
+}
+
+/** 在应用内导航到笔记文章（深层链接） */
+const goToNoteArticle = (treePath: string) => {
+    appStore.menuKey = 'note'
+    appStore.articlePath = treePath
+    window.history.pushState(
+        { key: 'note', articlePath: treePath },
+        '',
+        getPathFromKey('note', treePath),
+    )
 }
 
 onMounted(() => {
@@ -72,7 +91,7 @@ onMounted(() => {
                 <div>
                     <CardTitle class="flex items-center gap-2 text-xl">
                         <SparklesIcon class="size-4" />
-                        精选内容
+                        精选内容🔥
                     </CardTitle>
                     <CardDescription>精挑细选的知识沉淀，愿它们也能点亮你的灵感。</CardDescription>
                 </div>
@@ -91,7 +110,7 @@ onMounted(() => {
                                 </ItemDescription>
                             </ItemContent>
                             <ItemActions>
-                                <Button variant="outline" size="icon-sm" @click="openTab(item.path)">
+                                <Button variant="outline" size="icon-sm" @click="goToNoteArticle(item.treePath)">
                                     <ArrowUpRightIcon class="size-4" />
                                 </Button>
                             </ItemActions>

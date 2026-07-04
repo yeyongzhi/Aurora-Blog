@@ -5,9 +5,10 @@ import { ChevronsRightIcon } from 'lucide-vue-next'
 import NoteSlideMenu from './components/SlideMenu.vue'
 import Tree from './components/Tree.vue'
 import MarkDown from '@/components/self/MarkDown/index.vue'
-import { getFullPath, getMdPath } from '@/utils/index'
+import { getFullPath, getMdPath, findTreeNodeByPath } from '@/utils/index'
 import Tooltip from '@/components/self/Tooltip/index.vue'
 import { getFetchData } from '@/utils/index'
+import useAppStore from '@/store/app'
 
 export interface NoteTreeItem {
     key: string
@@ -16,9 +17,10 @@ export interface NoteTreeItem {
     children?: Array<NoteTreeItem>
 }
 
+const appStore = useAppStore()
 const treeData = ref<NoteTreeItem[]>([])
 const noteKey = ref<string>('')
-const articlePath = ref<string>('')
+const mdFilePath = ref<string>('')
 
 const findDefaultArticle = (data: Array<NoteTreeItem>) => {
     data.forEach((item) => {
@@ -36,20 +38,53 @@ const initTreeData = async () => {
     try {
         const data = await getFetchData('/note.json')
         treeData.value = data
+
+        // 优先从 URL 解析文章路径，否则加载默认文章
+        const urlArticlePath = appStore.articlePath
+        if (urlArticlePath) {
+            const node = findTreeNodeByPath(treeData.value, urlArticlePath)
+            if (node) {
+                noteKey.value = node.key
+                return
+            }
+        }
         findDefaultArticle(treeData.value)
     } catch (error) {
         console.error('获取笔记目录失败:', error)
     }
 }
 
+// 监听 URL 中的文章路径变化（浏览器前进/后退）
+watch(
+    () => appStore.articlePath,
+    (newPath) => {
+        if (!treeData.value.length) return
+        if (appStore.menuKey !== 'note') return
+
+        if (newPath) {
+            const node = findTreeNodeByPath(treeData.value, newPath)
+            if (node) {
+                noteKey.value = node.key
+            } else {
+                findDefaultArticle(treeData.value)
+            }
+        } else {
+            findDefaultArticle(treeData.value)
+        }
+    },
+)
+
+// 监听用户点击文章 → 同步 URL
 watch(noteKey, (newKey) => {
     if (newKey && newKey !== "") {
-        console.log("新的文章key" + newKey)
         const fullPath = getFullPath(treeData.value, newKey)
-        console.log("新的文章路径" + fullPath)
         const mdPath = getMdPath('/article/note', fullPath)
-        console.log("新的文章md路径" + mdPath)
-        articlePath.value = mdPath
+        mdFilePath.value = mdPath
+
+        // 仅在 URL 与当前选择不一致时同步（防止循环）
+        if (fullPath !== appStore.articlePath) {
+            appStore.handleArticleChange(fullPath)
+        }
     }
 }, { immediate: true })
 
@@ -85,7 +120,7 @@ onMounted(() => {
                     </Tooltip>
                 </TooltipProvider>
             </div>
-            <MarkDown :path="articlePath" />
+            <MarkDown :path="mdFilePath" />
         </div>
     </div>
 </template>

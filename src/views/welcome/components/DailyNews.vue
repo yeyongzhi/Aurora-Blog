@@ -1,7 +1,8 @@
 <script setup lang="ts" name="DailyNews">
 import { computed, onMounted } from 'vue'
-import { NewspaperIcon, RefreshCwIcon } from 'lucide-vue-next'
+import { NewspaperIcon, RefreshCwIcon, ImageIcon } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
+import Tooltip from '@/components/self/Tooltip/index.vue'
 import {
     Card,
     CardContent,
@@ -11,14 +12,28 @@ import {
 } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
+import {
     Item,
     ItemContent,
-    ItemDescription,
+    ItemTitle,
     ItemMedia,
 } from '@/components/ui/item'
 import { useDailyNews } from '@/composables/useDailyNews'
 
-const { newsData, loading, fetchNews } = useDailyNews()
+const {
+    newsData,
+    loading,
+    fetchNews,
+    imageDialogOpen,
+    imageUrl,
+    openImageViewer,
+    closeImageViewer,
+} = useDailyNews()
 
 const headerInfo = computed(() => {
     if (!newsData.value) return ''
@@ -41,9 +56,16 @@ onMounted(() => {
                     </CardTitle>
                     <CardDescription>{{ headerInfo || '加载中…' }}</CardDescription>
                 </div>
-                <Button variant="outline" size="icon-sm" :disabled="loading" @click="fetchNews()">
-                    <RefreshCwIcon :class="`size-4 ${loading ? 'animate-spin' : ''}`" />
-                </Button>
+                <div class="flex items-center gap-2">
+                    <Tooltip content="图片查看">
+                        <Button variant="outline" size="icon-sm" @click="openImageViewer()">
+                            <ImageIcon class="size-4" />
+                        </Button>
+                    </Tooltip>
+                    <Button variant="outline" size="icon-sm" :disabled="loading" @click="fetchNews()">
+                        <RefreshCwIcon :class="`size-4 ${loading ? 'animate-spin' : ''}`" />
+                    </Button>
+                </div>
             </div>
         </CardHeader>
         <CardContent class="flex-1 min-h-0 overflow-hidden">
@@ -53,13 +75,13 @@ onMounted(() => {
             <ScrollArea v-else-if="newsData" class="h-full">
                 <div class="flex flex-col gap-y-4">
                     <Item v-for="(text, index) in newsData.news" :key="index" variant="outline">
-                        <ItemMedia class="font-medium text-muted-foreground tabular-nums">
+                        <ItemMedia class="font-medium tabular-nums">
                             {{ String(index + 1).padStart(2, '0') }}
                         </ItemMedia>
                         <ItemContent>
-                            <ItemDescription class="leading-relaxed">
+                            <ItemTitle class="leading-relaxed">
                                 {{ text }}
-                            </ItemDescription>
+                            </ItemTitle>
                         </ItemContent>
                     </Item>
                 </div>
@@ -69,4 +91,21 @@ onMounted(() => {
             </ScrollArea>
         </CardContent>
     </Card>
+
+    <!-- 图片查看弹窗 -->
+    <Dialog :open="imageDialogOpen" @update:open="closeImageViewer">
+        <DialogContent class="max-w-2xl">
+            <DialogHeader>
+                <DialogTitle>每日60s新闻 - 图片版</DialogTitle>
+            </DialogHeader>
+            <div class="flex justify-center">
+                <img
+                    :src="imageUrl"
+                    alt="每日60s新闻图片"
+                    class="w-full rounded-md"
+                    loading="lazy"
+                />
+            </div>
+        </DialogContent>
+    </Dialog>
 </template>

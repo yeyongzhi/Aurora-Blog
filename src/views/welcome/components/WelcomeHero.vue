@@ -1,4 +1,5 @@
 <script setup lang="ts" name="WelcomeHero">
+import { computed } from 'vue'
 import { BookOpenIcon, CompassIcon } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -10,7 +11,14 @@ import {
     CardTitle,
     CardFooter
 } from '@/components/ui/card'
+import useUserStore from '@/store/user'
 
+const userStore = useUserStore()
+const user = computed(() => {
+    return userStore.userInfo || {
+        name: '',
+    }
+})
 defineProps<{
     title: string
     subtitle: string
@@ -27,7 +35,7 @@ defineEmits<{
         <CardHeader>
             <CardTitle></CardTitle>
             <CardDescription>
-                <Badge variant="secondary" class="w-fit">Aurora Blog</Badge>
+                <Badge variant="secondary" class="w-fit">{{ user.name }}</Badge>
             </CardDescription>
         </CardHeader>
         <CardContent class="gap-y-8">

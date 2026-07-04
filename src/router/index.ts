@@ -107,4 +107,22 @@ const APP_MENU: RouterMeta[] = [
   },
 ];
 
+/** 获取所有有页面对应的 key（排除纯菜单父级，如 moreLife、moreKnowledge、more） */
+export function getFlatRoutes(): Map<string, RouterMeta> {
+    const map = new Map<string, RouterMeta>()
+    APP_MENU.forEach((item) => {
+        if (item.component) {
+            map.set(item.key, item)
+        }
+        if (item.children) {
+            item.children.forEach((child) => {
+                map.set(child.key, child)
+            })
+        }
+    })
+    return map
+}
+
+export const FLAT_ROUTES = getFlatRoutes()
+
 export default APP_MENU;
