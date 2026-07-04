@@ -20,6 +20,7 @@ import {
     ItemTitle,
 } from '@/components/ui/item'
 import { useDailyNews } from '@/composables/useDailyNews'
+import Empty from '@/components/self/Empty/index.vue'
 
 /** 22 点之后取当天数据，否则取昨天 */
 const getTargetDate = (): string => {
@@ -58,7 +59,7 @@ onMounted(() => {
                         <BotIcon class="size-4" />
                         AI 资讯快报
                     </CardTitle>
-                    <CardDescription>{{ headerInfo || '加载中…' }}</CardDescription>
+                    <CardDescription>{{ headerInfo || '' }}</CardDescription>
                 </div>
                 <Button variant="outline" size="icon-sm" :disabled="loading" @click="fetchNews(getTargetDate())">
                     <RefreshCwIcon :class="`size-4 ${loading ? 'animate-spin' : ''}`" />
@@ -98,6 +99,7 @@ onMounted(() => {
                     </Item>
                 </div>
             </ScrollArea>
+            <Empty v-else description="暂无 AI 资讯" />
         </CardContent>
     </Card>
 </template>
