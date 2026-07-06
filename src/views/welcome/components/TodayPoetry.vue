@@ -1,7 +1,8 @@
 <script setup lang="ts" name="TodayPoetry">
 import { onMounted } from 'vue'
-import { BookOpenIcon, RefreshCwIcon } from 'lucide-vue-next'
+import { BookOpenIcon, RefreshCwIcon, CopyIcon } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
+import Tooltip from '@/components/self/Tooltip/index.vue'
 import {
     Card,
     CardContent,
@@ -10,8 +11,47 @@ import {
     CardTitle,
 } from '@/components/ui/card'
 import { usePoetry } from '@/composables/usePoetry'
+import message from '@/plugins/message'
 
 const { poetry, loading, fetchPoetry } = usePoetry()
+
+const copyText = async (text: string) => {
+    if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text)
+        return
+    }
+
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    textarea.style.position = 'fixed'
+    textarea.style.opacity = '0'
+    document.body.appendChild(textarea)
+    textarea.select()
+
+    try {
+        if (!document.execCommand('copy')) {
+            throw new Error('Copy command failed')
+        }
+    } finally {
+        document.body.removeChild(textarea)
+    }
+}
+
+const copyPoetry = async () => {
+    if (!poetry.value) {
+        message.warning('暂无可复制内容')
+        return
+    }
+
+    const content = `${poetry.value.content}\n——${poetry.value.author}《${poetry.value.origin}》`
+
+    try {
+        await copyText(content)
+        message.success('复制成功')
+    } catch {
+        message.error('复制失败，请重试')
+    }
+}
 
 onMounted(() => {
     fetchPoetry()
@@ -29,9 +69,16 @@ onMounted(() => {
                     </CardTitle>
                     <CardDescription>随机推荐一首古诗词，品味千年文韵</CardDescription>
                 </div>
-                <Button variant="outline" size="icon-sm" :disabled="loading" @click="fetchPoetry()">
-                    <RefreshCwIcon :class="`size-4 ${loading ? 'animate-spin' : ''}`" />
-                </Button>
+                <div class="flex items-center gap-x-2">
+                    <Tooltip :content="poetry ? '复制' : '暂无可复制内容'">
+                        <Button variant="outline" size="icon-sm" @click="copyPoetry()">
+                            <CopyIcon class="size-4" />
+                        </Button>
+                    </Tooltip>
+                    <Button variant="outline" size="icon-sm" :disabled="loading" @click="fetchPoetry()">
+                        <RefreshCwIcon :class="`size-4 ${loading ? 'animate-spin' : ''}`" />
+                    </Button>
+                </div>
             </div>
         </CardHeader>
         <CardContent>
