@@ -170,7 +170,7 @@ onMounted(() => {
                 <div>
                     <CardTitle class="flex items-center gap-2 text-xl">
                         <FilePenLineIcon class="size-4" />
-                        月度写作热力图
+                        写作热力图
                     </CardTitle>
                     <CardDescription class="flex items-center gap-1">
                         {{ currentMonthTitle }} 写作记录

@@ -1,6 +1,6 @@
 import { mkdir, readdir, writeFile } from 'node:fs/promises'
 import { statSync } from 'node:fs'
-import { execSync } from 'node:child_process'
+import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 
 interface ArticleRecord {
@@ -18,29 +18,23 @@ interface DailyRecord {
 const ARTICLE_DIR = path.resolve(process.cwd(), 'public/article')
 const OUTPUT_PATH = path.resolve(process.cwd(), 'public/article/writing-heatmap.json')
 
-const formatDate = (date: Date) => {
-    const year = date.getFullYear()
-    const month = `${date.getMonth() + 1}`.padStart(2, '0')
-    const day = `${date.getDate()}`.padStart(2, '0')
-
-    return `${year}-${month}-${day}`
-}
+const createArticleDate = (createdAt: string) => createdAt.slice(0, 10)
 
 /**
  * 通过 git log 获取文件的首次提交时间（跨部署一致），
  * 如果不在 git 仓库中则退回到文件系统的 birthtime。
  */
-const getFileCreatedAt = (filePath: string): Date => {
+const getFileCreatedAt = (filePath: string): string => {
     try {
-        const stdout = execSync(
-            `git log --diff-filter=A --follow --format=%aI -- "${filePath}"`,
+        const stdout = execFileSync(
+            'git',
+            ['log', '--diff-filter=A', '--follow', '--format=%aI', '--', filePath],
             { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] },
         )
         const lines = stdout.trim().split('\n').filter(Boolean)
         if (lines.length > 0) {
             // 最早的一次提交（倒数第一行）
-            const firstCommitDate = lines[lines.length - 1]
-            return new Date(firstCommitDate)
+            return lines[lines.length - 1]
         }
     } catch {
         // 不在 git 仓库或 git 命令失败，退回文件系统时间
@@ -48,7 +42,8 @@ const getFileCreatedAt = (filePath: string): Date => {
 
     // 回退：使用文件系统的 birthtime
     const fileStat = statSync(filePath)
-    return fileStat.birthtimeMs > 0 ? fileStat.birthtime : fileStat.ctime
+    const createdAt = fileStat.birthtimeMs > 0 ? fileStat.birthtime : fileStat.ctime
+    return createdAt.toISOString()
 }
 
 const walkMarkdownFiles = async (dir: string): Promise<string[]> => {
@@ -78,8 +73,8 @@ const generateWritingHeatmap = async () => {
 
         return {
             path: `/${relativePath}`,
-            createdAt: createdAt.toISOString(),
-            date: formatDate(createdAt),
+            createdAt,
+            date: createArticleDate(createdAt),
         }
     })
 
