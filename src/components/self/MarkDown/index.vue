@@ -18,11 +18,6 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
 import Tooltip from '@/components/self/Tooltip/index.vue'
 import { Button } from '@/components/ui/button'
 import Tree from '../Tree/index.vue'
