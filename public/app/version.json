@@ -15,5 +15,15 @@
             { "type": "feature", "text": "新增菜单记忆功能" },
             { "type": "feature", "text": "新增主题配置功能" }
         ]
+    },
+    {
+        "type": "feature",
+        "version": "1.1.0",
+        "date": "2026-07-09",
+        "content": [
+            { "type": "feature", "text": "新增首页模块（包含天气，写作日历图、咨询等模块" },
+            { "type": "style", "text": "优化笔记页面的展示样式" },
+            { "type": "feature", "text": "全局的路由机制优化，方便跳转" }
+        ]
     }
 ]

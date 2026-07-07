@@ -296,6 +296,38 @@ const articelTextTotal = computed(() => {
     return getArticleTextCount(markdownContent.value)
 })
 
+const primaryTitleIndex = computed(() => {
+    if (!markdownContent.value) {
+        return -1
+    }
+    return markdownContent.value.findIndex((item: any) => item.type === 'h1')
+})
+
+const readingTime = computed(() => {
+    if (typeof articelTextTotal.value !== 'number') {
+        return '-'
+    }
+    return `${Math.max(1, Math.ceil(articelTextTotal.value / 400))} 分钟`
+})
+
+const articleInfoList = computed(() => [
+    {
+        icon: 'CalendarClockIcon',
+        value: markdownInfo.value.lastModified || '-',
+        tooltip: '最近更新时间',
+    },
+    {
+        icon: 'NotebookTabsIcon',
+        value: articelTextTotal.value,
+        tooltip: '全文字数统计',
+    },
+    {
+        icon: 'BookOpenTextIcon',
+        value: readingTime.value,
+        tooltip: '大概阅读时长',
+    },
+])
+
 </script>
 
 <template>
@@ -307,8 +339,17 @@ const articelTextTotal = computed(() => {
         <ScrollArea ref="scrollAreaRootRef" class="w-full h-full text-4 pr-[350px]" v-else>
             <template v-for="(item, index) in markdownContent" :key="'md' + index">
                 <template v-if="item.type === 'h1'">
-                    <h1 :class="`md_${item.type} mb-8 text-4xl font-extrabold text-balance`" :id="renderTitleId(item)">
+                    <h1 :class="`md_${item.type} mb-3 text-4xl font-extrabold text-balance`" :id="renderTitleId(item)">
                         {{ item.content.trim().replace(/#/g, "") }}</h1>
+                    <div v-if="showInfo && index === primaryTitleIndex"
+                        class="mb-4 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+                        <Tooltip v-for="info in articleInfoList" :key="info.tooltip" :content="info.tooltip">
+                            <span class="inline-flex items-center gap-1 rounded-md border bg-muted/40 px-2 py-1">
+                                <Icon :name="info.icon" size="4" />
+                                <span>{{ info.value }}</span>
+                            </span>
+                        </Tooltip>
+                    </div>
                 </template>
                 <template v-else-if="item.type === 'h2'">
                     <h2 :class="`md_${item.type} my-6 scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0`"
@@ -423,26 +464,6 @@ const articelTextTotal = computed(() => {
                 <Icon name="ArrowUpIcon" size="4" class="cursor-pointer" @click="scrollToTop" />
             </Tooltip>
         </div>
-        <Popover>
-            <PopoverTrigger as-child>
-                <div class="absolute bottom-2 right-16 p-2 border text-xs rounded-md bg-muted" v-if="showInfo">
-                    <Icon name="BookMarkedIcon" size="4" class="cursor-pointer" />
-                </div>
-            </PopoverTrigger>
-            <PopoverContent>
-                <div class="text-xs p-0">
-                    <p class="flex items-center mb-2">
-                        <Icon name="FileClockIcon" size="4" class="mr-1" />
-                        最后修改时间：{{ markdownInfo.lastModified || '-' }}
-                    </p>
-                    <p class="flex items-center">
-                        <Icon name="NewspaperIcon" size="4" class="mr-1" />
-                        全文字数统计：{{ articelTextTotal }}
-                    </p>
-                </div>
-            </PopoverContent>
-        </Popover>
-
     </div>
 </template>
 
