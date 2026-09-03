@@ -35,6 +35,11 @@
       {
         "key": "Prompt",
         "label": "Prompt【提示词】"
+      },
+      {
+        "key": "Agent",
+        "label": "Agent 智能体",
+        "favorite": true
       }
     ]
   },
