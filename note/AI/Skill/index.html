@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Aurora-Blog/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI技能——Agent Skill · Aurora Blog</title>
+    <meta name="description" content="AI技能——Agent Skill 参考资料： Agent Skill 从使用到原理，一次讲清 Skill的发展 2025年10月，Anthropic正式发布了Agent Skill 在12月，Anthropic发布了Agent Skill的开放标准 至此，Agent Skill成为了一个AI Agent领域的一个正式" />
+    <meta property="og:title" content="AI技能——Agent Skill" />
+    <meta property="og:description" content="AI技能——Agent Skill 参考资料： Agent Skill 从使用到原理，一次讲清 Skill的发展 2025年10月，Anthropic正式发布了Agent Skill 在12月，Anthropic发布了Agent Skill的开放标准 至此，Agent Skill成为了一个AI Agent领域的一个正式" />
+    <meta property="og:type" content="article" />
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="/Aurora-Blog/rss.xml">
+  <script type="module" crossorigin src="/Aurora-Blog/assets/index-NWYERBSP.js"></script>
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/utils-D0knN-ye.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/message-DS1Enptf.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/app-BWulmN22.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Teleport-1uqCgFUj.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/useId-ei6_d6y2.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Tooltip-zTMX_NZm.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/createLucideIcon-c2Bz6bMt.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/getActiveElement-CsVldu09.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dist-CWOCWQNC.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/button-CIDzBaD-.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dialog-BK0Eul6v.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dayjs.min-BGQIFLV3.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/arrow-up-n0HNxLwl.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/calendar-clock-1E24VrDJ.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Icon-CreQQJGx.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/chevron-down-D-hLN6pa.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/clock-EfN5-Z3e.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/usePrimitiveElement-DTUjrV0E.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/TabsTrigger-CpqXjyMi.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/logo-DHZXrb2c.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/item-DkANXWTq.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/user-gp70azbS.js">
+  <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-BaQKhgJp.css">
+<link rel="stylesheet" href="/Aurora-Blog/assets/MarkDown-NT605qeY.css"><meta property="article:published_time" content="2026-03-17T23:03:20+08:00"><meta property="article:modified_time" content="2026-03-18T13:10:16+08:00"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"AI技能——Agent Skill","description":"AI技能——Agent Skill 参考资料： Agent Skill 从使用到原理，一次讲清 Skill的发展 2025年10月，Anthropic正式发布了Agent Skill 在12月，Anthropic发布了Agent Skill的开放标准 至此，Agent Skill成为了一个AI Agent领域的一个正式","datePublished":"2026-03-17T23:03:20+08:00","dateModified":"2026-03-18T13:10:16+08:00","author":{"@type":"Person","name":"Aurora"},"url":"https://yeyongzhi.github.io/Aurora-Blog/note/AI/Skill/"}</script><link rel="canonical" href="https://yeyongzhi.github.io/Aurora-Blog/note/AI/Skill/"><meta property="og:url" content="https://yeyongzhi.github.io/Aurora-Blog/note/AI/Skill/"></head>
+  <body>
+    <div id="app"><main style="max-width:960px;margin:auto;padding:24px"><nav><a href="/Aurora-Blog/">Aurora Blog</a></nav><article class="markdown-body"><h1 id="md_nav_0">AI技能——Agent Skill</h1>
+<p>参考资料：
+<a href="https://www.bilibili.com/video/BV1cGigBQE6n?t=214.2" target="_blank" rel="noopener noreferrer">Agent Skill 从使用到原理，一次讲清</a></p>
+<h2 id="md_nav_1">Skill的发展</h2>
+<p>2025年10月，<code>Anthropic</code>正式发布了Agent Skill
+在12月，Anthropic发布了<code>Agent Skill的开放标准</code>
+至此，Agent Skill成为了一个AI Agent领域的一个<strong>正式的标准</strong>（而不单单局限于Claude Code）</p>
+<h2 id="md_nav_2">定义</h2>
+<p>Agent Skill从本质上来讲，就是一本<u>**关于AI Agent的说明书，使用指南**</u>。可以<u>供大模型随时翻阅查找</u>。
+比如你正在培训一个<code>智能客服的AI Agent</code>
+那么你可以这样设计它的<code>Skill</code></p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">在你回答用户问题的时候，请注意：
+- 首先必须先站在用户的角度，安抚情绪
+- 其次，认真分析问题给出若干种合适的解决方案
+- 另外要注意，遇到不明确的问题不要随意给出承诺
+</code></pre></div>
+<p>比如你正在培训一个<code>智能会议总结的AI Agent</code>
+那么你可以这样设计它的<code>Skill</code></p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">在总结会议纪要的时候，请按照以下几个方面去整理思考：
+- 参会人员、及其对应的职位
+- 会议的主题、内容
+- 会议的时间、地点
+- 会议得到的结论
+</code></pre></div>
+<p>它不同于在对话中你对大模型提出的要求，也许在有限的上下文中无法做到一直记住。但是Skill会在每次对话中，自动提供给大模型去翻阅、查找并记住。</p>
+<h2 id="md_nav_3">基本用法</h2>
+<p>可以看到下面这个Skill.md文件内容
+<img src="/Aurora-Blog/article/note/AI/images/skill/skill_md.png" alt="Skill Md文件" loading="lazy" decoding="async"></p>
+<p>其中包括以下几个部分：</p>
+<ul>
+<li>头部元数据（Meta Data）
+用来描述Skill的名称（名字）和描述（这个Skill是用来干什么的）</li>
+<li>指令（Instruction）
+用来详细描述模型需要定义的规则</li>
+</ul>
+<p>当我们配置好这个<strong>会议总结的Skill</strong>后
+大模型就可以根据这个Skill，来自动总结会议纪要</p>
+<p>例如让我们给大模型一个输入：
+<img src="/Aurora-Blog/article/note/AI/images/skill/skill2.png" alt="" loading="lazy" decoding="async">
+它能够按照我们Skill中的要求给出我们对应的结果，完全符合我们的预期。
+<img src="/Aurora-Blog/article/note/AI/images/skill/skill3.png" alt="" loading="lazy" decoding="async">
+整体过程的流程可以用下面这张图来概括
+<img src="/Aurora-Blog/article/note/AI/images/skill/skill4.png" alt="" loading="lazy" decoding="async"></p>
+<blockquote>
+<p>要注意的是，在一开始并不是把所有的Skill的全部内容发给大模型，而是仅仅发送一份<strong>Skill清单</strong>。然后大模型会根据需求选择：<strong>我到底需要哪些Skill来完成任务</strong>。
+然后再由Claude Code把<strong>大模型要的Skill的内容，全部完整的发给大模型</strong>（说白了，就是按需加载，也会节省token）。</p>
+</blockquote>
+<h2 id="md_nav_4">【高级用法】Reference</h2>
+<p>例如：当会议中谈论到了<strong>钱</strong>的时候，希望总结告诉我们这个钱是否合法合规，符合集团财务预算。
+同理，当会议中出现<strong>合同</strong>相关的内容时，也希望在总结中加入相关的提示（合同是否有法务风险等等...）</p>
+<p>那么此时，按照一般的做法。我们会把集团的财务文件、合同、法律法规相关的文件，全部写进Skill中 或者 告诉大模型。
+这样一来会导致：</p>
+<ul>
+<li>Skill会变得特别臃肿</li>
+<li>回答更加耗时</li>
+<li>更消耗token</li>
+</ul>
+<p>因此，<code>Agent Skill</code>提出了一种新的用法——<strong>Reference</strong>
+在Skill.md中告诉大模型：
+【财务提醒】</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>markdown</span></div><pre><code class="language-markdown">财务提醒：仅在提到&quot;钱、预算、采购、费用&quot;等相关内容的时候，需要读取`集团财务手册.md`，然后指出会议中关于&quot;钱、预算、采购、费用&quot;等相关内容是否合法合规，符合集团财务预算。
+并明确财务审批人，审批流程。
+</code></pre></div>
+<p>同理我们尝试了一遍上面的流程，会发现Agent Skill在读取到<code>会议总结助手</code>的时候，也会读取到<code>集团财务手册.md</code>并询问是否需要读取这个文件然后给出对应的要求，就是我们上面写的【财务提醒】。
+如下图：
+<img src="/Aurora-Blog/article/note/AI/images/skill/skill5.png" alt="" loading="lazy" decoding="async">
+最后它会给我们一个符合要求的回答，如下：</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>markdown</span></div><pre><code class="language-markdown">●-参会人员：老陈、小李-议题：安排下周二上海出差事宜，包括签约大客户、酒店预订及客户宴请。
+-决定：小李当天提交出差申请，按住宿1200元、餐饮3000元(6人)的标准预订外滩附近酒店
+-财务提醒：住宿1200元/晚超出一线城市标准（800元/晚)400元；餐饮人均500元达到高消费地区提交业务副总裁(VP)特批方可报销。
+</code></pre></div>
+<blockquote>
+<p>当然了，如果输入中没有包含任何钱的内容，那么大模型就不会读取<code>集团财务手册.md</code>，自然也不会消耗token。</p>
+</blockquote>
+<p>以上就是Reference的核心原理：<strong>条件触发</strong></p>
+<h2 id="md_nav_5">【高级用法】Script</h2>
+<p>前面我们说的都是如何更好的优化提示词，以便得到我们预期想要的结果。
+如果Skill能够真的帮助我们干活的话，那岂不是最完美的方案
+比如这样的需求：每次会议结束之后，总结完会议绩效，并自动上传到服务器存档。</p>
+<p>那么此时，我们可以在Skill中加入以下内容：</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>markdown</span></div><pre><code class="language-markdown">【上传规则】
+如果用户提到“上传”、“同步”或“发送到服务器”，你必须运行upload.py脚本将总结内容上传到服务器。脚本使用方法：`python upload.py &quot;会议总结内容&quot;`
+</code></pre></div>
+<p>按照上面的流程操作一遍：</p>
+<ol>
+<li>Claude Code第一步还是会询问是否要使用<code>会议总结助手</code>Skill</li>
+<li>接着， Claude Code会询问是否需要使用<code>上传规则</code>Skill然后运行<code>python upload.py &quot;会议总结内容&quot;</code>上传到服务器</li>
+</ol>
+<p>注意这里的第二步，你写的<code>upload.py脚本</code>是<strong>不会被读取的，仅仅是被执行</strong>。
+Claude Code只关心脚本的运行方式以及运行结果，<strong>不会去读取脚本中的内容</strong>。
+这样也会极大的节省token的消耗。</p>
+<p>因此，Script与Reference的区别在于：</p>
+<ul>
+<li>Script是<strong>直接运行</strong>的，其内容<strong>不会被读取</strong></li>
+<li>Reference是<strong>根据条件触发</strong>的，需要加载内容到上下文，因此其<strong>内容会被读取</strong></li>
+</ul>
+<h2 id="md_nav_6">渐进式披露机制</h2>
+<p><img src="/Aurora-Blog/article/note/AI/images/skill/skill6.png" alt="Skill 渐进式披露机制" loading="lazy" decoding="async"></p>
+<h2 id="md_nav_7">Skill 与 MCP 的区别</h2>
+<p><img src="/Aurora-Blog/article/note/AI/images/skill/skill7.png" alt="Skill 与 MCP 的区别" loading="lazy" decoding="async"></p>
+<ul>
+<li><strong>MCP</strong>：给大模型提供给数据</li>
+<li><strong>Skill</strong>：教大模型如何处理数据</li>
+</ul>
+<p>本质上来说，<u>Skill也能够运行代码</u>。就好像瑞士军刀也能用来切菜，但是没有人这么做。
+在执行代码方面，MCP比Skill更加的合适，不论是<strong>安全性还是便捷性层面</strong>。
+当然了，两者各有所长。在常见的业务中，一般都是<strong>MCP + Skill</strong>两者高效结合使用~</p>
+<h2 id="md_nav_8">【额外】Skill的表现</h2>
+<p>Skill在请求体中的表现本质是一个Function Calling
+其中做了一些动态的拼接，将目前可用的Skill列表，动态的拼接成一个Function Calling的参数
+然后传递给大模型
+<img src="/Aurora-Blog/article/note/AI/images/skill/skill1.png" alt="Skill在请求体中的呈现" loading="lazy" decoding="async"></p>
+</article></main></div>
+  </body>
+</html>

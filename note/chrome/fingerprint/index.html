@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Aurora-Blog/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>浏览器指纹 · Aurora Blog</title>
+    <meta name="description" content="浏览器指纹 背景 首先我们都知道，当我们登录某个网站（例如淘宝京东等），会精准推送给我们喜欢的商品，这是怎么做到的呢？ 毫无疑问，因为我们登录了我们的账号，淘宝京东会根据我们的账号信息来判断我们是谁，从而推送我们喜欢的商品、以及历史浏览过的商品。 那么当我们的时候，我们发现也会推送一些我们感兴趣、经常观看的视频，这又是" />
+    <meta property="og:title" content="浏览器指纹" />
+    <meta property="og:description" content="浏览器指纹 背景 首先我们都知道，当我们登录某个网站（例如淘宝京东等），会精准推送给我们喜欢的商品，这是怎么做到的呢？ 毫无疑问，因为我们登录了我们的账号，淘宝京东会根据我们的账号信息来判断我们是谁，从而推送我们喜欢的商品、以及历史浏览过的商品。 那么当我们的时候，我们发现也会推送一些我们感兴趣、经常观看的视频，这又是" />
+    <meta property="og:type" content="article" />
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="/Aurora-Blog/rss.xml">
+  <script type="module" crossorigin src="/Aurora-Blog/assets/index-NWYERBSP.js"></script>
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/utils-D0knN-ye.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/message-DS1Enptf.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/app-BWulmN22.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Teleport-1uqCgFUj.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/useId-ei6_d6y2.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Tooltip-zTMX_NZm.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/createLucideIcon-c2Bz6bMt.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/getActiveElement-CsVldu09.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dist-CWOCWQNC.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/button-CIDzBaD-.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dialog-BK0Eul6v.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dayjs.min-BGQIFLV3.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/arrow-up-n0HNxLwl.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/calendar-clock-1E24VrDJ.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Icon-CreQQJGx.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/chevron-down-D-hLN6pa.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/clock-EfN5-Z3e.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/usePrimitiveElement-DTUjrV0E.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/TabsTrigger-CpqXjyMi.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/logo-DHZXrb2c.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/item-DkANXWTq.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/user-gp70azbS.js">
+  <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-BaQKhgJp.css">
+<link rel="stylesheet" href="/Aurora-Blog/assets/MarkDown-NT605qeY.css"><meta property="article:published_time" content="2026-03-03T15:22:09+08:00"><meta property="article:modified_time" content="2026-03-03T15:22:09+08:00"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"浏览器指纹","description":"浏览器指纹 背景 首先我们都知道，当我们登录某个网站（例如淘宝京东等），会精准推送给我们喜欢的商品，这是怎么做到的呢？ 毫无疑问，因为我们登录了我们的账号，淘宝京东会根据我们的账号信息来判断我们是谁，从而推送我们喜欢的商品、以及历史浏览过的商品。 那么当我们的时候，我们发现也会推送一些我们感兴趣、经常观看的视频，这又是","datePublished":"2026-03-03T15:22:09+08:00","dateModified":"2026-03-03T15:22:09+08:00","author":{"@type":"Person","name":"Aurora"},"url":"https://yeyongzhi.github.io/Aurora-Blog/note/chrome/fingerprint/"}</script><link rel="canonical" href="https://yeyongzhi.github.io/Aurora-Blog/note/chrome/fingerprint/"><meta property="og:url" content="https://yeyongzhi.github.io/Aurora-Blog/note/chrome/fingerprint/"></head>
+  <body>
+    <div id="app"><main style="max-width:960px;margin:auto;padding:24px"><nav><a href="/Aurora-Blog/">Aurora Blog</a></nav><article class="markdown-body"><h1 id="md_nav_0">浏览器指纹</h1>
+<h2 id="md_nav_1">背景</h2>
+<p>首先我们都知道，当我们登录某个网站（例如淘宝京东等），会精准推送给我们喜欢的商品，这是怎么做到的呢？
+毫无疑问，因为我们登录了我们的账号，淘宝京东会根据<strong>我们的账号信息</strong>来判断我们是谁，从而推送我们喜欢的商品、以及历史浏览过的商品。
+那么当我们<u>没有登陆任何账号</u>的时候，我们发现也会推送一些我们感兴趣、经常观看的视频，这又是怎么做到的呢？
+——答：<strong>浏览器指纹</strong></p>
+<h2 id="md_nav_2">概念</h2>
+<p>浏览器指纹是指浏览器的<strong>唯一标识（基本唯一）</strong>，它是由浏览器的一些特征组成的，例如<u>浏览器的类型、版本、语言、插件、分辨率、操作系统</u>的一些信息等。
+当然这里面的收集信息非常复杂，包括但不限于<u>浏览器信息、网络信息、插件信息、操作系统信息...</u>
+因为只有收集到<strong>足够多且杂乱</strong>的信息，才能保证浏览器指纹的唯一性。
+这里强调基本唯一的意思就是：世界上<code>99.99999%</code>的情况下，<strong>不存在两台一模一样的设备（就是上面的收集信息全部一样导致生成的浏览器指纹也一样）</strong>。</p>
+<p>可以点击下面的链接，查看浏览器指纹的详细信息：
+<a href="http://www.fingerprintbrowser.com/" target="_blank" rel="noopener noreferrer">浏览器指纹检测</a></p>
+<blockquote>
+<p>注意：即使我打开了浏览器的无痕模式，生成出来的ID也是一模一样的。</p>
+</blockquote>
+<h2 id="md_nav_3">网站收集浏览器指纹的目的</h2>
+<ol>
+<li>广告推送
+浏览器指纹一般会用于广告。我们浏览一些没登录的网站的时候，广告联盟的广告推送服务都会默默地收集这些浏览器指纹，并且与你正在浏览的网页进行一个绑定。这样广告商就能更精准地识别你喜欢什么样的东西，方便广告商更精准地推送广告。</li>
+<li>网站防刷
+有了浏览器指纹，就可以防止一些恶意用户的恶意刷浏览量，因为后端可以通过浏览器指纹认得这些恶意用户，所以可以防止这些用户的恶意行为。</li>
+</ol>
+<h2 id="md_nav_4">浏览器指纹的类型</h2>
+<p><a href="https://browserleaks.com/" target="_blank" rel="noopener noreferrer">指纹类型</a></p>
+<h3 id="md_nav_5">canvas指纹</h3>
+<p><img src="/Aurora-Blog/article/note/chrome/images/fingerprint2.png" alt="canvas指纹信息" loading="lazy" decoding="async">
+canvas指纹的原理就是通过<code>canvas</code>生成一张图片，然后将<strong>图片的像素点信息</strong>记录下来，作为指纹信息。
+不同的<code>浏览器、操作系统、cpu、显卡</code>等等，画出来的<code>canvas</code>是不一样的，甚至可能是<strong>唯一</strong>的。</p>
+<h3 id="md_nav_6">webGL指纹</h3>
+<p><img src="/Aurora-Blog/article/note/chrome/images/fingerprint1.png" alt="webGL指纹信息" loading="lazy" decoding="async">
+webGL指纹的原理与上面canvas类似。</p>
+<h2 id="md_nav_7">如何防止浏览器指纹</h2>
+<p>根据上面的canvas指纹，我们可以想办法<strong>手动修改toDataURL的返回值，使结果值产生差异</strong>。
+又或者是使用<strong>专门的指纹浏览器</strong>，该浏览器可以随意切换js版本等信息来造成无序的随机值。</p>
+</article></main></div>
+  </body>
+</html>

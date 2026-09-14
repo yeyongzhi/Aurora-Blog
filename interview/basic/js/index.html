@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Aurora-Blog/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript 基础面试题 · Aurora Blog</title>
+    <meta name="description" content="JavaScript 基础面试题 1. const申明的变量修改问题 为什么在执行语句1的时候，不会报错正常执行；但是语句2会报错？ 2. 变量提升（Hoisting） “变量提升”（Hoisting）是一个重要的概念，它描述了变量和函数声明在编译阶段被“移动”到的行为。 一般情况下（绝大多数情况下）我们开发都遵循先申" />
+    <meta property="og:title" content="JavaScript 基础面试题" />
+    <meta property="og:description" content="JavaScript 基础面试题 1. const申明的变量修改问题 为什么在执行语句1的时候，不会报错正常执行；但是语句2会报错？ 2. 变量提升（Hoisting） “变量提升”（Hoisting）是一个重要的概念，它描述了变量和函数声明在编译阶段被“移动”到的行为。 一般情况下（绝大多数情况下）我们开发都遵循先申" />
+    <meta property="og:type" content="article" />
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="/Aurora-Blog/rss.xml">
+  <script type="module" crossorigin src="/Aurora-Blog/assets/index-NWYERBSP.js"></script>
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/utils-D0knN-ye.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/message-DS1Enptf.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/app-BWulmN22.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Teleport-1uqCgFUj.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/useId-ei6_d6y2.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Tooltip-zTMX_NZm.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/createLucideIcon-c2Bz6bMt.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/getActiveElement-CsVldu09.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dist-CWOCWQNC.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/button-CIDzBaD-.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dialog-BK0Eul6v.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dayjs.min-BGQIFLV3.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/arrow-up-n0HNxLwl.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/calendar-clock-1E24VrDJ.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Icon-CreQQJGx.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/chevron-down-D-hLN6pa.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/clock-EfN5-Z3e.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/usePrimitiveElement-DTUjrV0E.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/TabsTrigger-CpqXjyMi.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/logo-DHZXrb2c.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/item-DkANXWTq.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/user-gp70azbS.js">
+  <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-BaQKhgJp.css">
+<link rel="stylesheet" href="/Aurora-Blog/assets/MarkDown-NT605qeY.css"><meta property="article:published_time" content="2026-03-03T15:22:09+08:00"><meta property="article:modified_time" content="2026-03-03T15:22:09+08:00"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"JavaScript 基础面试题","description":"JavaScript 基础面试题 1. const申明的变量修改问题 为什么在执行语句1的时候，不会报错正常执行；但是语句2会报错？ 2. 变量提升（Hoisting） “变量提升”（Hoisting）是一个重要的概念，它描述了变量和函数声明在编译阶段被“移动”到的行为。 一般情况下（绝大多数情况下）我们开发都遵循先申","datePublished":"2026-03-03T15:22:09+08:00","dateModified":"2026-03-03T15:22:09+08:00","author":{"@type":"Person","name":"Aurora"},"url":"https://yeyongzhi.github.io/Aurora-Blog/interview/basic/js/"}</script><link rel="canonical" href="https://yeyongzhi.github.io/Aurora-Blog/interview/basic/js/"><meta property="og:url" content="https://yeyongzhi.github.io/Aurora-Blog/interview/basic/js/"></head>
+  <body>
+    <div id="app"><main style="max-width:960px;margin:auto;padding:24px"><nav><a href="/Aurora-Blog/">Aurora Blog</a></nav><article class="markdown-body"><h1 id="md_nav_0">JavaScript 基础面试题</h1>
+<h2 id="md_nav_1">1. const申明的变量修改问题</h2>
+<p>为什么在执行<strong>语句1</strong>的时候，不会报错正常执行；但是<strong>语句2</strong>会报错？</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">// 定义一个变量
+const student = { name: '' }
+
+// 在上面这段话的执行中，首先是创建了一个对象，然后将对象存储在堆内存中，
+// 并将堆内存中的地址（堆地址）赋值给变量student
+
+// ---------------------
+// 语句1
+// 执行语句1的时候，首先根据student可以找到堆地址，接着找到目标对象{ name: '' }
+// 接着我们尝试去修改目标对象的属性值，这是可行的，对于student常量来说，本身指向的堆地址并未改变
+student.name = '张三'
+
+// ---------------------
+// 语句2
+// 而在执行语句2的时候，我们尝试去修改student变量指向的堆地址，这是不可行的，因为student是一个常量，不能被重新赋值
+student = { name: '李四' }
+</code></pre></div>
+<h2 id="md_nav_2">2. 变量提升（Hoisting）</h2>
+<p>“变量提升”（Hoisting）是一个重要的概念，它描述了<strong>变量和函数声明</strong>在编译阶段被“移动”到<u>其作用域顶部</u>的行为。
+一般情况下（绝大多数情况下）我们开发都遵循先申明后使用的顺序，例如你需要先申明a变量，然后再使用a变量。
+但是在JavaScript中，变量和函数的声明会被提升到其作用域的顶部，这就意味着你可以在声明之前就使用变量和函数。</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">// 变量提升
+console.log(a); // 输出: undefined
+var a = 10;
+console.log(a); // 输出: 10
+
+// 实际执行顺序相当于：
+// var a;        // 声明提升
+// console.log(a); // undefined
+// a = 10;       // 赋值在原位置
+// console.log(a);
+</code></pre></div>
+<p>核心要点：</p>
+<ul>
+<li>提升申明：提升的是变量和函数的声明（即上面的var a），而不是赋值（即上面的a = 10）。</li>
+<li>作用域隔离：变量提升只发生在<strong>当前作用域</strong>，不会影响到其他作用域。</li>
+</ul>
+<p>那么此时会有集帅问到：let 和 const 也存在变量提升吗？答案是<strong>肯定</strong>的。</p>
+</article></main></div>
+  </body>
+</html>

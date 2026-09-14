@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Aurora-Blog/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>浏览器事件机制的实现 · Aurora Blog</title>
+    <meta name="description" content="浏览器事件机制的实现 背景介绍 事件处理是我们在开发过程中使用频率最高的一种机制，它可以帮助我们实现交互效果，提升用户体验。 最常用的点击按钮提交表单、点击地图打开弹窗等等都需要鼠标点击事件的触发，...... 浏览器对 DOM 事件的绑定和派发遵循一套标准化的底层逻辑，主要基于**事件捕获（Capture）和事件冒泡" />
+    <meta property="og:title" content="浏览器事件机制的实现" />
+    <meta property="og:description" content="浏览器事件机制的实现 背景介绍 事件处理是我们在开发过程中使用频率最高的一种机制，它可以帮助我们实现交互效果，提升用户体验。 最常用的点击按钮提交表单、点击地图打开弹窗等等都需要鼠标点击事件的触发，...... 浏览器对 DOM 事件的绑定和派发遵循一套标准化的底层逻辑，主要基于**事件捕获（Capture）和事件冒泡" />
+    <meta property="og:type" content="article" />
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="/Aurora-Blog/rss.xml">
+  <script type="module" crossorigin src="/Aurora-Blog/assets/index-NWYERBSP.js"></script>
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/utils-D0knN-ye.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/message-DS1Enptf.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/app-BWulmN22.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Teleport-1uqCgFUj.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/useId-ei6_d6y2.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Tooltip-zTMX_NZm.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/createLucideIcon-c2Bz6bMt.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/getActiveElement-CsVldu09.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dist-CWOCWQNC.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/button-CIDzBaD-.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dialog-BK0Eul6v.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dayjs.min-BGQIFLV3.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/arrow-up-n0HNxLwl.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/calendar-clock-1E24VrDJ.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Icon-CreQQJGx.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/chevron-down-D-hLN6pa.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/clock-EfN5-Z3e.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/usePrimitiveElement-DTUjrV0E.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/TabsTrigger-CpqXjyMi.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/logo-DHZXrb2c.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/item-DkANXWTq.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/user-gp70azbS.js">
+  <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-BaQKhgJp.css">
+<link rel="stylesheet" href="/Aurora-Blog/assets/MarkDown-NT605qeY.css"><meta property="article:published_time" content="2026-03-03T15:22:09+08:00"><meta property="article:modified_time" content="2026-03-03T15:22:09+08:00"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"浏览器事件机制的实现","description":"浏览器事件机制的实现 背景介绍 事件处理是我们在开发过程中使用频率最高的一种机制，它可以帮助我们实现交互效果，提升用户体验。 最常用的点击按钮提交表单、点击地图打开弹窗等等都需要鼠标点击事件的触发，...... 浏览器对 DOM 事件的绑定和派发遵循一套标准化的底层逻辑，主要基于**事件捕获（Capture）和事件冒泡","datePublished":"2026-03-03T15:22:09+08:00","dateModified":"2026-03-03T15:22:09+08:00","author":{"@type":"Person","name":"Aurora"},"url":"https://yeyongzhi.github.io/Aurora-Blog/note/chrome/browserEvent/"}</script><link rel="canonical" href="https://yeyongzhi.github.io/Aurora-Blog/note/chrome/browserEvent/"><meta property="og:url" content="https://yeyongzhi.github.io/Aurora-Blog/note/chrome/browserEvent/"></head>
+  <body>
+    <div id="app"><main style="max-width:960px;margin:auto;padding:24px"><nav><a href="/Aurora-Blog/">Aurora Blog</a></nav><article class="markdown-body"><h1 id="md_nav_0">浏览器事件机制的实现</h1>
+<h2 id="md_nav_1">背景介绍</h2>
+<p>事件处理是我们在开发过程中使用频率最高的一种机制，它可以帮助我们实现交互效果，提升用户体验。
+最常用的点击按钮提交表单、点击地图打开弹窗等等都需要鼠标点击事件的触发，......</p>
+<p>浏览器对 DOM 事件的绑定和派发遵循一套标准化的底层逻辑，主要基于**事件捕获（Capture）<strong>和</strong>事件冒泡（Bubbling）**两个阶段，其核心规范是<u>DOM Level 3 Events</u></p>
+<h2 id="md_nav_2">🧩第一阶段：事件注册（Event Registration）</h2>
+<p>事件注册一般通过<code>addEventListener</code>方法来实现，它的语法如下：</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">element.addEventListener(event, function, options)
+</code></pre></div>
+<p>当然它还可以通过dom元素直接绑定事件，直接在html元素上绑定事件，例如：</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>html</span></div><pre><code class="language-html">&lt;button onclick=&quot;alert('hello world')&quot;&gt;点击我&lt;/button&gt;
+</code></pre></div>
+<p>多个元素可以绑定同一个事件处理函数，同样的一个元素也可以多次绑定多个不同的事件处理函数。</p>
+<h2 id="md_nav_3">🧩第二阶段：点击触发与事件派发（Event Dispatch）</h2>
+<ol>
+<li>检测用户输入（硬件层）：用户按下鼠标左键，操作系统检测到输入设备事件；并将此事件传递给浏览器进程。</li>
+<li>命中测试（Hit Testing）：浏览器根据触发位置（屏幕指针坐标），确定最顶层、可交互的DOM元素。这个元素就是事件的<code>target</code>。</li>
+<li>创建事件对象（Event Object）：浏览器创建一个 MouseEvent 实例（或其他事件类型），并设置一些关键属性值（target、bubbles、cancelable等）。</li>
+<li>构建事件路径（Event Path / Event Flow）
+浏览器从 event.target 开始，向上遍历 DOM 树，直到 window，收集所有祖先元素，例如：</li>
+</ol>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">[
+  window,
+  document,
+  html,
+  body,
+  div#container,
+  button#myBtn  // &lt;-- target
+]
+</code></pre></div>
+<ol start="5">
+<li>事件派发的三个阶段</li>
+</ol>
+<ul>
+<li>
+<p><strong>阶段1：事件捕获阶段</strong>（目的是让外层容器有机会在事件到达目标前“拦截”或预处理）
+事件从 window 开始，向下遍历 DOM 树，检查其上是否有对应（例如click）的事件监听器，且<code>capture</code>属性为<code>true</code>，如下图所示
+其实<code>capture</code>属性为<code>true</code>代表的意思就是你希望listener在事件捕获阶段就执行，而不是在事件冒泡阶段执行。
+<img src="/Aurora-Blog/article/note/chrome/images/Event1.png" alt="addEventListener capture属性" loading="lazy" decoding="async">
+如果有，执行该监听器，设置<code>eventPhase = 1 (CAPTURING_PHASE)</code>，<code>currentTarget</code>为当前元素。
+一直传递到<u>目标元素的直接父元素</u>，到此停止。</p>
+</li>
+<li>
+<p><strong>阶段2：目标阶段</strong>：事件到达目标元素，触发绑定的事件处理函数。
+eventPhase = 2 (AT_TARGET)
+执行 target 元素上所有 click 事件监听器，无论<code>capture</code>是<code>true</code>还是<code>false</code>。
+currentTarget 始终是 target 元素。
+注意：如果事件的<code>bubbles: false</code>（如 focus 事件），则派发在此阶段结束后<strong>直接结束</strong>，不进入下面的第三个阶段：冒泡阶段。</p>
+</li>
+<li>
+<p><strong>阶段3：事件冒泡阶段</strong>：事件从目标元素开始，向上遍历 DOM 树，触发所有绑定的事件处理函数。
+方向：从target目标元素到window，依次向上遍历
+检查每个元素上面是否有click的事件监听器，且<code>capture</code>属性为<code>false</code>，
+如果有，执行该监听器，设置<code>eventPhase = 3 (BUBBLING_PHASE)</code>，<code>currentTarget</code>为当前元素。
+一直传递到 window 结束。</p>
+</li>
+</ul>
+<ol start="6">
+<li>
+<p>事件处理函数的执行
+在上面的事件派发的三个阶段中，每当符合事件类型、并且条件满足的时候，浏览器进程就会执行<code>listener</code>函数。并传入<code>event</code>对象。</p>
+</li>
+<li>
+<p>事件完成
+事件处理函数执行完毕后，事件完成。
+如果没有调用 preventDefault()，浏览器执行默认行为（如<u>表单提交、页面跳转、文本选中</u>等）。
+内存中的 event 对象被标记为可回收。</p>
+</li>
+</ol>
+</article></main></div>
+  </body>
+</html>

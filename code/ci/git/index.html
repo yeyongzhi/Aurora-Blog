@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Aurora-Blog/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Git相关脚本流程 · Aurora Blog</title>
+    <meta name="description" content="Git相关脚本流程 Commit CI 【版本：1.0.0】" />
+    <meta property="og:title" content="Git相关脚本流程" />
+    <meta property="og:description" content="Git相关脚本流程 Commit CI 【版本：1.0.0】" />
+    <meta property="og:type" content="article" />
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="/Aurora-Blog/rss.xml">
+  <script type="module" crossorigin src="/Aurora-Blog/assets/index-NWYERBSP.js"></script>
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/utils-D0knN-ye.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/message-DS1Enptf.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/app-BWulmN22.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Teleport-1uqCgFUj.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/useId-ei6_d6y2.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Tooltip-zTMX_NZm.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/createLucideIcon-c2Bz6bMt.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/getActiveElement-CsVldu09.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dist-CWOCWQNC.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/button-CIDzBaD-.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dialog-BK0Eul6v.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dayjs.min-BGQIFLV3.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/arrow-up-n0HNxLwl.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/calendar-clock-1E24VrDJ.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Icon-CreQQJGx.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/chevron-down-D-hLN6pa.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/clock-EfN5-Z3e.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/usePrimitiveElement-DTUjrV0E.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/TabsTrigger-CpqXjyMi.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/logo-DHZXrb2c.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/item-DkANXWTq.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/user-gp70azbS.js">
+  <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-BaQKhgJp.css">
+<link rel="stylesheet" href="/Aurora-Blog/assets/MarkDown-NT605qeY.css"><meta property="article:published_time" content="2026-04-18T12:22:52+08:00"><meta property="article:modified_time" content="2026-06-26T17:59:50+08:00"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Git相关脚本流程","description":"Git相关脚本流程 Commit CI 【版本：1.0.0】","datePublished":"2026-04-18T12:22:52+08:00","dateModified":"2026-06-26T17:59:50+08:00","author":{"@type":"Person","name":"Aurora"},"url":"https://yeyongzhi.github.io/Aurora-Blog/code/ci/git/"}</script><link rel="canonical" href="https://yeyongzhi.github.io/Aurora-Blog/code/ci/git/"><meta property="og:url" content="https://yeyongzhi.github.io/Aurora-Blog/code/ci/git/"></head>
+  <body>
+    <div id="app"><main style="max-width:960px;margin:auto;padding:24px"><nav><a href="/Aurora-Blog/">Aurora Blog</a></nav><article class="markdown-body"><h1 id="md_nav_0">Git相关脚本流程</h1>
+<h2 id="md_nav_1">Commit CI 【版本：1.0.0】</h2>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">/**
+ * 交互式 Git 提交脚本
+ *
+ * 流程：
+ * 1. 检查是否有未 push 的 commit → 提示是否先 push
+ * 2. 检查是否有未 commit 的改动 → 没有则退出
+ * 3. git add . 暂存所有文件
+ * 4. 选择提交类型 + 输入 message → 执行 git commit
+ */
+
+import { execSync } from &quot;node:child_process&quot;;
+import { writeFileSync, unlinkSync } from &quot;node:fs&quot;;
+import { tmpdir } from &quot;node:os&quot;;
+import { join } from &quot;node:path&quot;;
+import readline from &quot;node:readline&quot;;
+import { select } from &quot;@inquirer/prompts&quot;;
+
+// ==================== ANSI 终端颜色 ====================
+
+const color = {
+  reset: &quot;\x1b[0m&quot;,
+  green: (text: string) =&gt; `\x1b[32m${text}\x1b[0m`,
+  yellow: (text: string) =&gt; `\x1b[33m${text}\x1b[0m`,
+  red: (text: string) =&gt; `\x1b[31m${text}\x1b[0m`,
+  cyan: (text: string) =&gt; `\x1b[36m${text}\x1b[0m`,
+  bold: (text: string) =&gt; `\x1b[1m${text}\x1b[0m`,
+};
+
+// ==================== Git 操作封装 ====================
+
+/** 执行 git 命令，返回去除了首尾空白的输出（静默 stderr） */
+function git(cmd: string): string {
+  return execSync(`git ${cmd}`, {
+    encoding: &quot;utf-8&quot;,
+    stdio: [&quot;pipe&quot;, &quot;pipe&quot;, &quot;pipe&quot;],
+  }).trim();
+}
+
+/** 执行 git 命令并返回是否成功（不抛出异常） */
+function gitSilent(cmd: string): { success: boolean; output: string } {
+  try {
+    const output = execSync(`git ${cmd}`, {
+      encoding: &quot;utf-8&quot;,
+      stdio: [&quot;pipe&quot;, &quot;pipe&quot;, &quot;pipe&quot;],
+    }).trim();
+    return { success: true, output };
+  } catch {
+    return { success: false, output: &quot;&quot; };
+  }
+}
+
+// ==================== 提交类型定义 ====================
+
+interface CommitType {
+  emoji: string;
+  label: string;
+  value: string;
+}
+
+const COMMIT_TYPES: CommitType[] = [
+  { emoji: &quot;✨️&quot;, label: &quot;功能开发、迭代&quot;, value: &quot;feature&quot; },
+  { emoji: &quot;🐞&quot;, label: &quot;BUG修复&quot;, value: &quot;fix&quot; },
+  { emoji: &quot;🎨&quot;, label: &quot;样式调整&quot;, value: &quot;style&quot; },
+  { emoji: &quot;🌀&quot;, label: &quot;重构&quot;, value: &quot;refactor&quot; },
+  { emoji: &quot;⚡️&quot;, label: &quot;添加、修改测试&quot;, value: &quot;test&quot; },
+  { emoji: &quot;📦️&quot;, label: &quot;架构、依赖调整&quot;, value: &quot;build&quot; },
+  { emoji: &quot;🧪&quot;, label: &quot;性能优化&quot;, value: &quot;perf&quot; },
+  { emoji: &quot;🌐&quot;, label: &quot;CI配置、脚本变更&quot;, value: &quot;ci&quot; },
+  { emoji: &quot;📝&quot;, label: &quot;文档更新&quot;, value: &quot;docs&quot; },
+  { emoji: &quot;🔧&quot;, label: &quot;杂项&quot;, value: &quot;chore&quot; },
+  { emoji: &quot;⏪️&quot;, label: &quot;回滚&quot;, value: &quot;revert&quot; },
+];
+
+// ==================== 多行输入 ====================
+
+/** 采集多行输入，空行确认完成 */
+async function collectMultilineInput(prompt: string): Promise&lt;string&gt; {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  console.log(color.cyan(`\n? ${prompt}`));
+  console.log(color.yellow(&quot;  (↵ Enter 换行，空行 + Enter 完成输入)&quot;));
+  console.log(color.yellow(&quot;第1行输入标题  后续行输入内容)\n&quot;));
+
+  const lines: string[] = [];
+
+  return new Promise&lt;string&gt;((resolve) =&gt; {
+    const askLine = () =&gt; {
+      rl.question(`  ${String(lines.length + 1).padStart(2, &quot; &quot;)} │ `, (line) =&gt; {
+        if (line === &quot;&quot;) {
+          if (lines.length === 0) {
+            console.log(color.red(&quot;  ⚠ 提交信息不能为空，请至少输入一行&quot;));
+            askLine();
+          } else {
+            rl.close();
+            resolve(lines.join(&quot;\n&quot;));
+          }
+        } else {
+          lines.push(line);
+          askLine();
+        }
+      });
+    };
+    askLine();
+  });
+}
+
+// ==================== 主流程 ====================
+
+async function main() {
+  // 设置环境变量，标记本次提交流程来自 pnpm run commit
+  // .husky/pre-commit hook 会检查这个变量，拒绝手动 git commit
+  process.env.GIT_COMMIT_FROM_SCRIPT = &quot;true&quot;;
+
+  console.log(color.cyan(&quot;\n📋 Git 交互式提交\n&quot;));
+
+  // ---------- 步骤 1：检查未 push 的 commit ----------
+
+  const currentBranch = gitSilent(&quot;branch --show-current&quot;);
+  let hasUnpushed = false;
+
+  if (currentBranch.success &amp;&amp; currentBranch.output) {
+    // 用 @{push} 对比当前 HEAD，检查是否有未推送的提交
+    const ahead = gitSilent(
+      `rev-list --count @{push}..HEAD 2&gt;/dev/null`
+    );
+    if (ahead.success &amp;&amp; Number(ahead.output) &gt; 0) {
+      hasUnpushed = true;
+      const logResult = gitSilent(
+        `log @{push}..HEAD --oneline --no-decorate`
+      );
+      const unpushedList = logResult.success
+        ? logResult.output
+            .split(&quot;\n&quot;)
+            .map((line) =&gt; `    ${line}`)
+            .join(&quot;\n&quot;)
+        : `    ${color.yellow(&quot;（无法获取详细列表）&quot;)}`;
+
+      console.log(
+        color.yellow(
+          `⚠️  当前分支 ${currentBranch.output} 有 ${ahead.output} 个未推送的 commit：`
+        )
+      );
+      console.log(unpushedList);
+      console.log(&quot;&quot;);
+
+      // 用 @inquirer/prompts 的 select 来询问是否 push
+      const shouldPush = await select({
+        message: &quot;是否先推送（push）这些 commit？&quot;,
+        choices: [
+          { name: &quot;是 — 先 push 再继续提交流程&quot;, value: &quot;yes&quot; },
+          { name: &quot;否 — 跳过 push，直接继续提交流程&quot;, value: &quot;no&quot; },
+        ],
+      });
+
+      if (shouldPush === &quot;yes&quot;) {
+        console.log(color.cyan(&quot;\n📤 正在 push...\n&quot;));
+        try {
+          const pushResult = execSync(&quot;git push&quot;, {
+            encoding: &quot;utf-8&quot;,
+            stdio: &quot;inherit&quot;,
+          });
+          console.log(color.green(&quot;\n✅ Push 成功！\n&quot;));
+        } catch {
+          console.log(color.red(&quot;\n❌ Push 失败，请手动处理。提交已取消。\n&quot;));
+          process.exit(1);
+        }
+      } else {
+        console.log(color.yellow(&quot;\n⏭️  跳过 push，继续提交流程。\n&quot;));
+      }
+    }
+  }
+
+  // ---------- 步骤 2：检查是否有未 commit 的改动 ----------
+
+  const statusResult = gitSilent(&quot;status --porcelain&quot;);
+
+  if (!statusResult.success || statusResult.output === &quot;&quot;) {
+    // working tree 完全干净且没有 unpushed commit
+    if (!hasUnpushed) {
+      console.log(color.green(&quot;✅ 工作区干净，当前暂无任何改动。\n&quot;));
+    }
+    // 如果只有 unpushed 但已经 push 完了（或跳过），且没有新改动
+    // 并且刚才已经处理过 push，这里不需要再退出
+    process.exit(0);
+  }
+
+  // 统计改动文件数
+  const changedFiles = statusResult.output.split(&quot;\n&quot;).filter(Boolean);
+  console.log(
+    color.cyan(`📂 检测到 ${changedFiles.length} 个文件有改动：`)
+  );
+
+  // 区分 staged / unstaged / untracked 并展示
+  const staged = changedFiles.filter(
+    (f) =&gt; !f.startsWith(&quot; &quot;) &amp;&amp; !f.startsWith(&quot;??&quot;)
+  );
+  const unstaged = changedFiles.filter((f) =&gt; f.startsWith(&quot; &quot;));
+  const untracked = changedFiles.filter((f) =&gt; f.startsWith(&quot;??&quot;));
+
+  void [
+    { label: &quot;已暂存 (staged)&quot;, list: staged, colorFn: color.green },
+    { label: &quot;未暂存 (unstaged)&quot;, list: unstaged, colorFn: color.yellow },
+    { label: &quot;未跟踪 (untracked)&quot;, list: untracked, colorFn: color.red },
+  ].forEach(({ label, list, colorFn }) =&gt; {
+    if (list.length &gt; 0) {
+      console.log(colorFn(`  ${label} (${list.length} 个)：`));
+      list.forEach((f) =&gt; {
+        // 去掉 git status porcelain 格式的前两个字符状态位
+        const filename = f.slice(3).trim();
+        console.log(`    - ${filename}`);
+      });
+    }
+  });
+  console.log(&quot;&quot;);
+
+  // ---------- 步骤 3：git add . + 交互式提交 ----------
+
+  console.log(color.cyan(&quot;📦 正在暂存所有文件 (git add .)...\n&quot;));
+  git(&quot;add .&quot;);
+
+  // 选择提交类型
+  const chosenType = await select({
+    message: &quot;请选择本次提交的类型：&quot;,
+    choices: COMMIT_TYPES.map((t) =&gt; ({
+      name: `[${t.emoji}] ${t.label}`,
+      value: t,
+    })),
+    pageSize: 11, // 一次性显示全部选项，避免滚动
+  });
+
+  // 多行输入提交信息
+  const commitMessage = await collectMultilineInput(&quot;请输入本次提交的 message：&quot;);
+
+  // 第一行带类型前缀，后续行作为 git commit body（空行分隔，符合 git 规范）
+  const messageLines = commitMessage.trim().split(&quot;\n&quot;);
+  const firstLine = `${chosenType.emoji} ${chosenType.value}: ${messageLines[0]}`;
+  const fullMessage =
+    messageLines.length &gt; 1
+      ? `${firstLine}\n\n${messageLines.slice(1).join(&quot;\n&quot;)}`
+      : firstLine;
+
+  console.log(&quot;&quot;);
+  console.log(color.cyan(&quot;📝 提交信息预览：&quot;));
+  fullMessage.split(&quot;\n&quot;).forEach((line) =&gt; console.log(`  ${line}`));
+  console.log(&quot;&quot;);
+
+  // 确认提交
+  const shouldCommit = await select({
+    message: `本次共准备提交 ${changedFiles.length} 个文件，确认是否要提交？`,
+    choices: [
+      { name: &quot;是 (y) — 确认提交&quot;, value: &quot;yes&quot; },
+      { name: &quot;否 (n) — 取消提交，回滚暂存区&quot;, value: &quot;no&quot; },
+    ],
+  });
+
+  if (shouldCommit === &quot;no&quot;) {
+    console.log(color.yellow(&quot;\n⏭️  已取消提交，正在回滚暂存区...&quot;));
+    gitSilent(&quot;reset HEAD&quot;);
+    console.log(color.yellow(&quot;✅ 暂存区已恢复。\n&quot;));
+    process.exit(0);
+  }
+
+  // 通过临时文件写入 message，避免 Windows 命令行多行转义问题
+  const tmpFile = join(tmpdir(), `git-commit-msg-${Date.now()}.txt`).replace(/\\/g, &quot;/&quot;);
+  try {
+    writeFileSync(tmpFile, fullMessage, &quot;utf-8&quot;);
+    execSync(`git commit -F &quot;${tmpFile}&quot;`, {
+      encoding: &quot;utf-8&quot;,
+      stdio: &quot;inherit&quot;,
+    });
+    console.log(color.green(&quot;\n🎉 已全部提交成功！\n&quot;));
+  } catch {
+    console.log(color.red(&quot;\n❌ 提交失败，已取消。暂存区已恢复。\n&quot;));
+    gitSilent(&quot;reset HEAD&quot;);
+    process.exit(1);
+  } finally {
+    try { unlinkSync(tmpFile); } catch { /* 临时文件清理失败不影响主流程 */ }
+  }
+}
+
+main().catch((err) =&gt; {
+  console.error(color.red(`\n❌ 脚本执行出错：${err.message}\n`));
+  process.exit(1);
+});
+
+</code></pre></div>
+</article></main></div>
+  </body>
+</html>

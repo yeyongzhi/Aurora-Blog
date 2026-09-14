@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Aurora-Blog/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>详解Cookie存储 · Aurora Blog</title>
+    <meta name="description" content="详解Cookie存储 背景 当我们首次登录某个网站（比如淘宝网）成功的时候，当我们下次直接打开淘宝网，就不需要再次登录了。一般这个时间可以维持在3-5天甚至更长。 这其中实现的技术就是通过cookie。 使用场景 cookie相比于localStorage等存储方式的最大区别，就是cookie它的存储容量非常有限，一般" />
+    <meta property="og:title" content="详解Cookie存储" />
+    <meta property="og:description" content="详解Cookie存储 背景 当我们首次登录某个网站（比如淘宝网）成功的时候，当我们下次直接打开淘宝网，就不需要再次登录了。一般这个时间可以维持在3-5天甚至更长。 这其中实现的技术就是通过cookie。 使用场景 cookie相比于localStorage等存储方式的最大区别，就是cookie它的存储容量非常有限，一般" />
+    <meta property="og:type" content="article" />
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="/Aurora-Blog/rss.xml">
+  <script type="module" crossorigin src="/Aurora-Blog/assets/index-NWYERBSP.js"></script>
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/utils-D0knN-ye.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/message-DS1Enptf.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/app-BWulmN22.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Teleport-1uqCgFUj.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/useId-ei6_d6y2.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Tooltip-zTMX_NZm.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/createLucideIcon-c2Bz6bMt.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/getActiveElement-CsVldu09.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dist-CWOCWQNC.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/button-CIDzBaD-.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dialog-BK0Eul6v.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dayjs.min-BGQIFLV3.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/arrow-up-n0HNxLwl.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/calendar-clock-1E24VrDJ.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Icon-CreQQJGx.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/chevron-down-D-hLN6pa.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/clock-EfN5-Z3e.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/usePrimitiveElement-DTUjrV0E.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/TabsTrigger-CpqXjyMi.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/logo-DHZXrb2c.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/item-DkANXWTq.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/user-gp70azbS.js">
+  <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-BaQKhgJp.css">
+<link rel="stylesheet" href="/Aurora-Blog/assets/MarkDown-NT605qeY.css"><meta property="article:published_time" content="2026-03-03T15:22:09+08:00"><meta property="article:modified_time" content="2026-03-03T15:22:09+08:00"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"详解Cookie存储","description":"详解Cookie存储 背景 当我们首次登录某个网站（比如淘宝网）成功的时候，当我们下次直接打开淘宝网，就不需要再次登录了。一般这个时间可以维持在3-5天甚至更长。 这其中实现的技术就是通过cookie。 使用场景 cookie相比于localStorage等存储方式的最大区别，就是cookie它的存储容量非常有限，一般","datePublished":"2026-03-03T15:22:09+08:00","dateModified":"2026-03-03T15:22:09+08:00","author":{"@type":"Person","name":"Aurora"},"url":"https://yeyongzhi.github.io/Aurora-Blog/note/chrome/chromeStorge/cookie/"}</script><link rel="canonical" href="https://yeyongzhi.github.io/Aurora-Blog/note/chrome/chromeStorge/cookie/"><meta property="og:url" content="https://yeyongzhi.github.io/Aurora-Blog/note/chrome/chromeStorge/cookie/"></head>
+  <body>
+    <div id="app"><main style="max-width:960px;margin:auto;padding:24px"><nav><a href="/Aurora-Blog/">Aurora Blog</a></nav><article class="markdown-body"><h1 id="md_nav_0">详解Cookie存储</h1>
+<h2 id="md_nav_1">背景</h2>
+<p>当我们首次登录某个网站（比如淘宝网）成功的时候，当我们下次直接打开淘宝网，就不需要再次登录了。一般这个时间可以维持在<strong>3-5天甚至更长</strong>。
+这其中实现的技术就是通过<code>cookie</code>。</p>
+<h2 id="md_nav_2">使用场景</h2>
+<p>cookie相比于localStorage等存储方式的最大区别，就是cookie它的存储容量非常有限，一般只有<strong>4kb</strong>左右。
+所以自然而然的，cookie只适合存储一些<u>比较小的数据</u>，例如<u>用户的登录信息</u>等。</p>
+<h2 id="md_nav_3">工作原理</h2>
+<p>一般情况下，我们的cookie是通过服务端来存储的。这一过程具体是怎么实现的呢？我们用登录淘宝网来举例：</p>
+<p>当我们首次打开网站，输入账号密码进行登录，服务端会校验你的账户信息，校验通过后确认登录，浏览器再打开到首页进行浏览。
+在这个过程中，服务端会通过<u>set-cookie</u>来设置cookie，然后将cookie通过响应头返回给浏览器。
+浏览器拿到<strong>HTTP响应头</strong>后，会将cookie存储到浏览器中（请注意，这一步是<strong>浏览器自动完成的，因此我们感知不到</strong>），如下图：</p>
+<p><img src="/Aurora-Blog/article/note/chrome/chromeStorge/images/cookie1.png" alt="HTTP响应头中的Set-Cookie" loading="lazy" decoding="async"></p>
+<p>我们可以看到，在响应头中，服务端给我们设置了很多的<code>Set-Cookie</code>。</p>
+<p>然后在下次请求的时候，会将cookie通过<u>cookie</u><strong>HTTP请求头</strong>再次发送给服务端（请注意，这一步也是<strong>浏览器自动完成的，因此我们感知不到</strong>），如下图：</p>
+<p><img src="/Aurora-Blog/article/note/chrome/chromeStorge/images/cookie2.png" alt="HTTP请求头中的Cookie" loading="lazy" decoding="async"></p>
+<p>综上所述，通过cookie，服务端可以直接获取到一些浏览器（也就是客户端）的一些信息，从而实现一些功能，比如上面说到的<strong>淘宝的自动登录</strong>。</p>
+<h2 id="md_nav_4">js操作cookie</h2>
+<h3 id="md_nav_5">1️⃣读取 cookie</h3>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">const cookies = document.cookie; // 获取所有 Cookie，返回一个字符串
+console.log(cookies); // 输出：user_id=12345
+</code></pre></div>
+<p><img src="/Aurora-Blog/article/note/chrome/chromeStorge/images/cookie3.png" alt="读取cookie" loading="lazy" decoding="async"></p>
+<p>⚙️解析cookie字符串转换为Object对象的函数：</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">function parseCookies(cookieString) {
+  // 创建一个空对象来存储解析后的 Cookie
+  const cookies = {};
+
+  // 如果 cookieString 是空字符串，直接返回空对象
+  if (!cookieString) {
+    return cookies;
+  }
+
+  // 使用分号分割字符串，得到每个 key=value 形式的 Cookie
+  const cookieArray = cookieString.split('; ');
+
+  // 遍历每个 Cookie
+  cookieArray.forEach((cookie) =&gt; {
+    // 使用等号分割 key 和 value
+    const [key, value] = cookie.split('=');
+    // 将 key 和 value 添加到对象中
+    cookies[key] = value;
+  });
+
+  return cookies;
+}
+</code></pre></div>
+<h3 id="md_nav_6">2️⃣设置/修改 cookie</h3>
+<p>cookie的键名是唯一的，因此如果设置了一个已存在的键名，那么新的值将会覆盖旧的值。</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">// 设置一个简单的 Cookie
+// 这里注意，document.cookie并不会直接将原来的所有cookie全部覆盖，而是会将新的cookie追加到原来的cookie后面
+document.cookie = &quot;user_id=12345; expires=Thu, 18 Dec 2025 12:00:00 GMT; path=/&quot;; 
+
+// 设置一个带有 HttpOnly 和 Secure 属性的 Cookie
+// 如果这个cookie带有HttpOnly属性，那么这个cookie只能在HTTP请求头中被访问，不能在JavaScript中被访问，也就是说无法通过document.cookie来获取这个cookie的值（比如下面的auth_token）
+document.cookie = &quot;auth_token=xyz789; expires=Thu, 18 Dec 2025 12:00:00 GMT; path=/; secure; httponly&quot;;
+</code></pre></div>
+<h3 id="md_nav_7">3️⃣删除 cookie</h3>
+<p>删除一个 Cookie 的方法是将其过期时间设置为<strong>过去的时间</strong>，这样浏览器会自动删除该Cookie。</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">document.cookie = &quot;user_id=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/&quot;;
+</code></pre></div>
+<p>📌请注意，当你满足<u>修改或者删除的条件</u>的时候，并不就意味着你可以操作成功。在修改或者删除的时候，必须满足<code>Path属性</code>还有<code>Domain属性</code>都要相同。</p>
+<blockquote>
+<p>例如，如果设置时使用了<code>path=/admin</code>，那么修改或删除时也必须使用<code>path=/admin</code>。</p>
+</blockquote>
+<h2 id="md_nav_8">cookie的属性</h2>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">document.cookie = &quot;[cookie相关内容]&quot;;
+
+user_id=12345 // 键名和键值，键名和键值之间使用等号连接——这是最关键的键值对
+Domain=example.com // 指定该 Cookie 只能在 example.com 及其子域名下使用
+Path=/ // 指定该 Cookie 可以被访问的路径是网站的根路径，即整个网站都可以访问
+Expires=Wed, 21 Oct 2025 07:28:00 GMT // 指定该 Cookie 的过期时间为 2025 年 10 月 21 日上午 7:28:00
+Max-Age=3600 （单位是s）// 指定该 Cookie 的最大有效时间为 3600 秒（即 1 小时）
+Secure // 指定该 Cookie 只能在 HTTPS 连接中使用
+HttpOnly // 指定该 Cookie 只能在 HTTP 请求头中被访问，不能在 JavaScript 中被访问
+SameSite=Strict
+Priority=High // 指定该 Cookie 的优先级为高
+Version=1 // 指定该 Cookie 的版本号为 1
+Comment=This cookie stores the user ID // 指定该 Cookie 的注释信息，用于描述该 Cookie 的用途
+CommentURL=https://example.com/cookie-info.html  // 指定该 Cookie 的注释信息的 URL，用于提供更多关于该 Cookie 的信息
+Discard // 指定该 Cookie 应该被丢弃，而不是存储在浏览器中（如果设置了过期时间Expires或者最大有效时间Max-Age，那么一般就不需要设置Discard）
+</code></pre></div>
+</article></main></div>
+  </body>
+</html>

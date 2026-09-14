@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Aurora-Blog/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent 智能体 · Aurora Blog</title>
+    <meta name="description" content="Agent 智能体 定义 目前的大模型LLM仅仅是只能帮你回答问题、根据输入（文字）返回输出（文字） 比如你问：帮我写一个贪吃蛇的代码游戏 他会回答给你一串完整的可运行的html代码，但是你得手动复制粘贴到你的项目中去运行 核心问题显现：大模型无法感知或者改变外界环境（读不到你的现有代码，不能帮你直接把代码写进去） 感" />
+    <meta property="og:title" content="Agent 智能体" />
+    <meta property="og:description" content="Agent 智能体 定义 目前的大模型LLM仅仅是只能帮你回答问题、根据输入（文字）返回输出（文字） 比如你问：帮我写一个贪吃蛇的代码游戏 他会回答给你一串完整的可运行的html代码，但是你得手动复制粘贴到你的项目中去运行 核心问题显现：大模型无法感知或者改变外界环境（读不到你的现有代码，不能帮你直接把代码写进去） 感" />
+    <meta property="og:type" content="article" />
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="/Aurora-Blog/rss.xml">
+  <script type="module" crossorigin src="/Aurora-Blog/assets/index-NWYERBSP.js"></script>
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/utils-D0knN-ye.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/message-DS1Enptf.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/app-BWulmN22.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Teleport-1uqCgFUj.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/useId-ei6_d6y2.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Tooltip-zTMX_NZm.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/createLucideIcon-c2Bz6bMt.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/getActiveElement-CsVldu09.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dist-CWOCWQNC.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/button-CIDzBaD-.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dialog-BK0Eul6v.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dayjs.min-BGQIFLV3.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/arrow-up-n0HNxLwl.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/calendar-clock-1E24VrDJ.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Icon-CreQQJGx.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/chevron-down-D-hLN6pa.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/clock-EfN5-Z3e.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/usePrimitiveElement-DTUjrV0E.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/TabsTrigger-CpqXjyMi.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/logo-DHZXrb2c.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/item-DkANXWTq.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/user-gp70azbS.js">
+  <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-BaQKhgJp.css">
+<link rel="stylesheet" href="/Aurora-Blog/assets/MarkDown-NT605qeY.css"><meta property="article:published_time" content="2026-09-03T13:40:40+08:00"><meta property="article:modified_time" content="2026-09-03T13:40:40+08:00"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Agent 智能体","description":"Agent 智能体 定义 目前的大模型LLM仅仅是只能帮你回答问题、根据输入（文字）返回输出（文字） 比如你问：帮我写一个贪吃蛇的代码游戏 他会回答给你一串完整的可运行的html代码，但是你得手动复制粘贴到你的项目中去运行 核心问题显现：大模型无法感知或者改变外界环境（读不到你的现有代码，不能帮你直接把代码写进去） 感","datePublished":"2026-09-03T13:40:40+08:00","dateModified":"2026-09-03T13:40:40+08:00","author":{"@type":"Person","name":"Aurora"},"url":"https://yeyongzhi.github.io/Aurora-Blog/note/AI/Agent/"}</script><link rel="canonical" href="https://yeyongzhi.github.io/Aurora-Blog/note/AI/Agent/"><meta property="og:url" content="https://yeyongzhi.github.io/Aurora-Blog/note/AI/Agent/"></head>
+  <body>
+    <div id="app"><main style="max-width:960px;margin:auto;padding:24px"><nav><a href="/Aurora-Blog/">Aurora Blog</a></nav><article class="markdown-body"><h1 id="md_nav_0">Agent 智能体</h1>
+<h2 id="md_nav_1">定义</h2>
+<p>目前的大模型LLM仅仅是只能帮你回答问题、根据输入（文字）返回输出（文字）
+比如你问：帮我写一个贪吃蛇的代码游戏
+他会回答给你一串完整的可运行的html代码，但是你得<strong>手动复制粘贴</strong>到你的项目中去运行</p>
+<p>核心问题显现：<strong>大模型无法感知或者改变外界环境</strong>（读不到你的现有代码，不能帮你直接把代码写进去）</p>
+<p>感知 就是 <strong>读</strong>
+改变 就是 <strong>写</strong></p>
+<p>那么有什么办法可以解决这个问题？（懒惰是科技进步的阶梯）</p>
+<p>——是有的，解决方案就是：使用工具
+什么工具呢？
+读写文件内容的工具
+查看文件列表的工具
+运行终端命令的工具
+...</p>
+<h2 id="md_nav_2">Agent 运行模式 —— ReAct</h2>
+<h3 id="md_nav_3">ReAct 模式（reasoning and acting 思考与行动）</h3>
+<blockquote>
+<p>腾讯混元大模型的负责人提出</p>
+</blockquote>
+<p><img src="/Aurora-Blog/article/note/AI/images/agent/1.png" alt="ReAct 模式" loading="lazy" decoding="async"></p>
+<p>这种模式下可以分为四类步骤：</p>
+<ul>
+<li>Thought 思考</li>
+<li>Action 行动</li>
+<li>Observation 观察</li>
+<li>Final Answer 最终答案</li>
+</ul>
+<p>可以参考下面这段<em>系统提示词</em>：</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>plaintext</span></div><pre><code class="language-plaintext"># ReAct系统提示词
+
+## 职责描述
+你需要解决一个任务。为此，你需要将任务分解为多个步骤。对于每个步骤，首先使用&lt;thought&gt;思考要做什么，然后使用&lt;action&gt;调用一个工具，工具的执行结果会通过&lt;observation&gt;返回给你。持续这个思考和行动的过程，直到你有足够的信息来提供&lt;final_answer&gt;。 
+
+所有步骤请严格使用以下XML标签格式输出：
+
+&lt;task&gt;:用户提出的任务
+&lt;thought&gt;:思考
+&lt;action&gt;:采取的工具操作
+&lt;observation&gt;:工具或环境返回的结果
+&lt;final_answer&gt;:最终答案
+</code></pre></div>
+<h3 id="md_nav_4">ReAct 运行时序图</h3>
+<p>整个Agent工作流里面涉及到两个角色：<em>用户</em> 和 <em>Agent</em>
+Agent又包含了三部分：Agent主程序（run函数）、Agent工具（函数）、大模型LLM</p>
+<p>整个时序图大致流程如下：
+<img src="/Aurora-Blog/article/note/AI/images/agent/2.png" alt="ReAct 运行时序图" loading="lazy" decoding="async"></p>
+<p>以Agent主程序为划分，左侧部分其实就是把当前的工作内容 同步显示给 用户</p>
+<h2 id="md_nav_5">Agent 运行模式 —— Plan-and-Execute（来自 LangChain）</h2>
+<p>上面说到的<strong>ReAct模式</strong>其实就是不断重复一个过程：思考-行动-观察，然后得到最终答案
+还有另外一种模式，会在事先创建好全部的代办列表（TodoList），然后Agent会根据这个列表去完成一件一件事</p>
+<p><img src="/Aurora-Blog/article/note/AI/images/agent/3.png" alt="Plan-and-Execute Agent 角色" loading="lazy" decoding="async"></p>
+<p><strong>Plan-and-Execute Agent</strong> 可以视为一个主要Agent
+但是其内部也会有各个子Agent、子Agent的模型等，比如上图中：</p>
+<ul>
+<li>Plan模型，用来制定全部的代办列表（TodoList）</li>
+<li>Re-Plan模型，用来优化待办列表重新生成计划等</li>
+</ul>
+<h3 id="md_nav_6">主Agent和子Agent 的设计模式</h3>
+<p>主Agent：用来负责主管、监督各个子Agent任务的执行（相当于团队的TL）
+子Agent：专注于执行某个部分的任务，能够把控质量</p>
+<p><strong>优点</strong></p>
+<ul>
+<li>主任务拆分，交给不同的专家处理，能够提升交付质量，更容易把控</li>
+<li>缓解**上下文环境（Context）**的压力（主Context和子Context），降低成本，节省token</li>
+<li>可操作性强，可以专注某个模块下的任务，精细化分工，多个大模型共同协作</li>
+</ul>
+<blockquote>
+<p>这就像**电影导演（主Agent）<strong>与</strong>特效组、配音组、摄影组（子Agent）**的关系。导演不需要精通每一帧的渲染，但他把控整体艺术方向；各组只做自己最擅长的事，并向导演汇报进度。如果让导演一个人去画所有分镜、调所有灯光，电影永远拍不完</p>
+</blockquote>
+<h3 id="md_nav_7">Plan-and-Execute Agent 执行时序图</h3>
+<p><img src="/Aurora-Blog/article/note/AI/images/agent/4.png" alt="Plan-and-Execute Agent 执行时序图" loading="lazy" decoding="async"></p>
+<p>基于上面的例子，我们可以大致理解一下：</p>
+<ol>
+<li>首先我们发出<strong>问题</strong>：<em>查询今年的澳网冠军的家乡</em></li>
+<li>问题提交给<strong>Agent主程序</strong>（也就是我们写的代码逻辑）</li>
+<li>主程序调用<strong>子Plan Agent</strong>，让它给我一份执行计划</li>
+<li>子Plan Agent根据问题，生成一份执行计划（TodoList）</li>
+<li><strong>Agent主程序</strong>根据执行计划，调用<strong>子执行Agent</strong>执行任务1234</li>
+<li>子Agent执行任务，得到<em>结果1234</em></li>
+<li><strong>Agent主程序</strong>拿着执行计划（TodoList）、和上一步完成的<em>执行结果1234</em>一并发给<strong>Re-Plan Agent</strong>，告诉他给我弄一份新的执行计划 or 给我最终答案（如果已经有答案的话）
+...</li>
+</ol>
+<p>如此反复多次上面的3-7步骤
+到最后一个第7步骤的时候，<strong>执行Agent</strong>会发现，哎用户的问题已经有答案了，因此会直接返回最终答案</p>
+</article></main></div>
+  </body>
+</html>

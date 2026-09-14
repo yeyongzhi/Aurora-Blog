@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Aurora-Blog/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>浏览器本地存储 · Aurora Blog</title>
+    <meta name="description" content="浏览器本地存储 本文主要介绍localStorge以及sessionStorge两个本地存储的解决方案 localStorge localStorge是浏览器存储中最常见的一种方法，它是存在于全局对象window上：window.localStorge 它的特点是： 持久化存储（除非用户手动清除、或者删除浏览器的缓存记" />
+    <meta property="og:title" content="浏览器本地存储" />
+    <meta property="og:description" content="浏览器本地存储 本文主要介绍localStorge以及sessionStorge两个本地存储的解决方案 localStorge localStorge是浏览器存储中最常见的一种方法，它是存在于全局对象window上：window.localStorge 它的特点是： 持久化存储（除非用户手动清除、或者删除浏览器的缓存记" />
+    <meta property="og:type" content="article" />
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="/Aurora-Blog/rss.xml">
+  <script type="module" crossorigin src="/Aurora-Blog/assets/index-NWYERBSP.js"></script>
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/utils-D0knN-ye.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/message-DS1Enptf.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/app-BWulmN22.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Teleport-1uqCgFUj.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/useId-ei6_d6y2.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Tooltip-zTMX_NZm.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/createLucideIcon-c2Bz6bMt.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/getActiveElement-CsVldu09.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dist-CWOCWQNC.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/button-CIDzBaD-.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dialog-BK0Eul6v.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dayjs.min-BGQIFLV3.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/arrow-up-n0HNxLwl.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/calendar-clock-1E24VrDJ.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Icon-CreQQJGx.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/chevron-down-D-hLN6pa.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/clock-EfN5-Z3e.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/usePrimitiveElement-DTUjrV0E.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/TabsTrigger-CpqXjyMi.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/logo-DHZXrb2c.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/item-DkANXWTq.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/user-gp70azbS.js">
+  <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-BaQKhgJp.css">
+<link rel="stylesheet" href="/Aurora-Blog/assets/MarkDown-NT605qeY.css"><meta property="article:published_time" content="2026-03-03T15:22:09+08:00"><meta property="article:modified_time" content="2026-03-03T15:22:09+08:00"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"浏览器本地存储","description":"浏览器本地存储 本文主要介绍localStorge以及sessionStorge两个本地存储的解决方案 localStorge localStorge是浏览器存储中最常见的一种方法，它是存在于全局对象window上：window.localStorge 它的特点是： 持久化存储（除非用户手动清除、或者删除浏览器的缓存记","datePublished":"2026-03-03T15:22:09+08:00","dateModified":"2026-03-03T15:22:09+08:00","author":{"@type":"Person","name":"Aurora"},"url":"https://yeyongzhi.github.io/Aurora-Blog/note/chrome/chromeStorge/localStorge/"}</script><link rel="canonical" href="https://yeyongzhi.github.io/Aurora-Blog/note/chrome/chromeStorge/localStorge/"><meta property="og:url" content="https://yeyongzhi.github.io/Aurora-Blog/note/chrome/chromeStorge/localStorge/"></head>
+  <body>
+    <div id="app"><main style="max-width:960px;margin:auto;padding:24px"><nav><a href="/Aurora-Blog/">Aurora Blog</a></nav><article class="markdown-body"><h1 id="md_nav_0">浏览器本地存储</h1>
+<p>本文主要介绍localStorge以及sessionStorge两个本地存储的解决方案</p>
+<h2 id="md_nav_1">localStorge</h2>
+<p>localStorge是浏览器存储中最常见的一种方法，它是存在于全局对象window上：<code>window.localStorge</code>
+它的特点是：</p>
+<ol>
+<li><strong>持久化存储</strong>（除非用户手动清除、或者删除浏览器的缓存记录等等），会一直存在于设备当中。</li>
+<li>以<strong>键值对</strong>的方式进行存储，键值均只允许<strong>字符串格式</strong>，整数键将自动转换为字符串。</li>
+</ol>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/localStorage" target="_blank" rel="noopener noreferrer">MDN：localStorge</a></p>
+<p>API有以下几种：</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">// 添加数据
+localStorage.setItem(&quot;myCat&quot;, &quot;Tom&quot;);
+
+// 读取数据
+let cat = localStorage.getItem(&quot;myCat&quot;);
+
+// 删除某个特定数据项
+localStorage.removeItem(&quot;myCat&quot;);
+
+// 移除所有数据项
+localStorage.clear();
+
+// 根据索引获取键名
+localStorage.key(0);
+
+// 返回localStorge的长度（存储的参数个数）
+localStorage.length()
+
+// 返回localStorge实例对象，包含了全部属性
+localStorage.valueOf()
+
+</code></pre></div>
+<p>其中，<code>setItem</code>方法用于设置特定的键值对，除此之外，还可以采用直接申明的方式（效果是一样的）：
+<code>getItem</code>方法同理</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">localStorage.colorSetting = &quot;#a4509b&quot;;
+localStorage[&quot;colorSetting&quot;] = &quot;#a4509b&quot;;
+localStorage.setItem(&quot;colorSetting&quot;, &quot;#a4509b&quot;);
+</code></pre></div>
+<h2 id="md_nav_2">sessionStorge</h2>
+<p>sessionStorge的用法和local基本完全一致，它们的区别在于存储的有效期。</p>
+<ul>
+<li>localStorege：永久有效（除非手动清除）</li>
+<li>sessionStorege：仅在会话期间有效（当前浏览器标签页关闭，会话就消失）</li>
+</ul>
+<h2 id="md_nav_3">存储容量比较</h2>
+<p><code>localStorege</code>和<code>sessionStorege</code>两者的容量均在<strong>5MB</strong>左右，具体可能因为浏览器的机制不同而表现不同。
+不过这相比于，cookie来说已经是足够大了，一般情况下我们存储数据都能满足要求。</p>
+<h2 id="md_nav_4">同步</h2>
+<p><code>localStorege</code>和<code>sessionStorege</code>两者都是同步的，<u>操作会立即执行并阻塞现有的进程</u>。</p>
+<h2 id="md_nav_5">区别</h2>
+<p>local和session适合存储一些比较小、短时间内经常会变动的数据，indexedDB适合存储一些比较大、长时间内需要存储的数据。</p>
+<h2 id="md_nav_6">browser-localstorge 🔥🔥🔥</h2>
+<p>这是一款浏览器本地存储化工具包，支持<code>localStorege</code>、<code>sessionStorege</code>和<code>indexedDB</code>三种方式。为本人自主开发。
+可前往<a href="https://www.npmjs.com/package/browser-localstorge" target="_blank" rel="noopener noreferrer">npm</a>查看。</p>
+</article></main></div>
+  </body>
+</html>

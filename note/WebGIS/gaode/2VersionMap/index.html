@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Aurora-Blog/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>同一个应用中加载双版本高德地图 · Aurora Blog</title>
+    <meta name="description" content="同一个应用中加载双版本高德地图 项目背景 最近在一个项目中需要增加一个模块A，但是项目中已有一个模块B，B中引用的是高德地图的v1.4.15版本，如果说我的模块A也引用v1.4.15版本，版本的功能无法全部满足需求，因此我们可以得到两种解决办法： 升级模块B中的高德地图版本到v2.0，但是这需要我们同步修改模块B中所有" />
+    <meta property="og:title" content="同一个应用中加载双版本高德地图" />
+    <meta property="og:description" content="同一个应用中加载双版本高德地图 项目背景 最近在一个项目中需要增加一个模块A，但是项目中已有一个模块B，B中引用的是高德地图的v1.4.15版本，如果说我的模块A也引用v1.4.15版本，版本的功能无法全部满足需求，因此我们可以得到两种解决办法： 升级模块B中的高德地图版本到v2.0，但是这需要我们同步修改模块B中所有" />
+    <meta property="og:type" content="article" />
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="/Aurora-Blog/rss.xml">
+  <script type="module" crossorigin src="/Aurora-Blog/assets/index-NWYERBSP.js"></script>
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/utils-D0knN-ye.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/message-DS1Enptf.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/app-BWulmN22.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Teleport-1uqCgFUj.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/useId-ei6_d6y2.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Tooltip-zTMX_NZm.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/createLucideIcon-c2Bz6bMt.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/getActiveElement-CsVldu09.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dist-CWOCWQNC.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/button-CIDzBaD-.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dialog-BK0Eul6v.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dayjs.min-BGQIFLV3.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/arrow-up-n0HNxLwl.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/calendar-clock-1E24VrDJ.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Icon-CreQQJGx.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/chevron-down-D-hLN6pa.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/clock-EfN5-Z3e.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/usePrimitiveElement-DTUjrV0E.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/TabsTrigger-CpqXjyMi.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/logo-DHZXrb2c.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/item-DkANXWTq.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/user-gp70azbS.js">
+  <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-BaQKhgJp.css">
+<link rel="stylesheet" href="/Aurora-Blog/assets/MarkDown-NT605qeY.css"><meta property="article:published_time" content="2026-03-03T15:22:09+08:00"><meta property="article:modified_time" content="2026-03-03T15:22:09+08:00"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"同一个应用中加载双版本高德地图","description":"同一个应用中加载双版本高德地图 项目背景 最近在一个项目中需要增加一个模块A，但是项目中已有一个模块B，B中引用的是高德地图的v1.4.15版本，如果说我的模块A也引用v1.4.15版本，版本的功能无法全部满足需求，因此我们可以得到两种解决办法： 升级模块B中的高德地图版本到v2.0，但是这需要我们同步修改模块B中所有","datePublished":"2026-03-03T15:22:09+08:00","dateModified":"2026-03-03T15:22:09+08:00","author":{"@type":"Person","name":"Aurora"},"url":"https://yeyongzhi.github.io/Aurora-Blog/note/WebGIS/gaode/2VersionMap/"}</script><link rel="canonical" href="https://yeyongzhi.github.io/Aurora-Blog/note/WebGIS/gaode/2VersionMap/"><meta property="og:url" content="https://yeyongzhi.github.io/Aurora-Blog/note/WebGIS/gaode/2VersionMap/"></head>
+  <body>
+    <div id="app"><main style="max-width:960px;margin:auto;padding:24px"><nav><a href="/Aurora-Blog/">Aurora Blog</a></nav><article class="markdown-body"><h1 id="md_nav_0">同一个应用中加载双版本高德地图</h1>
+<h2 id="md_nav_1">项目背景</h2>
+<p>最近在一个项目中需要增加一个模块A，但是项目中已有一个模块B，B中引用的是高德地图的<code>v1.4.15</code>版本，如果说我的模块A也引用<code>v1.4.15</code>版本，版本的功能无法全部满足需求，因此我们可以得到两种解决办法：</p>
+<ol>
+<li>升级模块B中的高德地图版本到<code>v2.0</code>，但是这需要我们同步修改模块B中所有的代码，并且需要重新测试。</li>
+<li>同时加载两个版本的高德地图，在模块A中使用<code>v2.0</code>版本的高德地图，在模块B中还是使用原来<code>v1.4.15</code>版本的高德地图。
+当模块B中的<strong>代码量、功能点较多</strong>的时候，升级模块B中的高德地图版本到<code>v2.0</code>是不现实的，因此我们选择了第二种方案。</li>
+</ol>
+<h2 id="md_nav_2">解决办法</h2>
+<h3 id="md_nav_3">使用Loader加载</h3>
+<p>高德地图加载API方式：
+<a href="https://lbs.amap.com/api/javascript-api-v2/guide/abc/load#t1" target="_blank" rel="noopener noreferrer">使用 JS API Loader加载（推荐）</a></p>
+<p>基于这种API加载方式，我们需要在<u>模块之间切换</u>的时候，执行：</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">window.AMap = null
+AMapLoader.reset()
+</code></pre></div>
+<p>然后我们去加载对应版本的JS资源，并将结果赋值到<code>window.AMap2</code>上。<code>AMap2</code>可以是一个任意变量名，主要是为了与<code>AMap</code>区分开。</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">AMapLoader.load({
+    key: 'xxx',
+    version: '2.0',
+}).then(res =&gt; {
+    window.AMap2 = res // 重新赋值
+    resolve(true)
+})
+</code></pre></div>
+<p>将上面两段代码结合起来，我们可以实现一个简单的<strong>双版本高德地图</strong>的切换：</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">loadMapSource () {
+    window.AMap = null
+    AMapLoader.reset()
+    return new Promise((resolve, reject) =&gt; {
+        if (window.AMap2) {
+            resolve(true)
+        } else {
+            AMapLoader.load({
+                key: 'xxx',
+                version: '2.0',
+            }).then(res =&gt; {
+                window.AMap2 = res
+                resolve(true)
+            })
+        }
+    })
+},
+</code></pre></div>
+<h3 id="md_nav_4">使用script标签加载</h3>
+<p>核心思路基本一致，当切换版本的时候，<strong>销毁之前加载某个js版本的记录</strong>，然后<strong>重新加载对应版本的js资源</strong>。</p>
+<p>参考代码：</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>html</span></div><pre><code class="language-html">&lt;script&gt;
+  window._AMapSecurityConfig = { securityJsCode: '73c21e805abce9f1a798bd4453a52994' }
+&lt;/script&gt;
+&lt;script src=&quot;https://webapi.amap.com/loader.js&quot;&gt;&lt;/script&gt;
+
+&lt;script&gt;
+  async function resetAMapCtx() {
+    window.AMap = undefined
+    window.AMapLoader = undefined
+    document.querySelector('script[src*=&quot;webapi.amap.com/loader.js&quot;]')?.remove()
+    document.querySelector('script[src*=&quot;webapi.amap.com/maps&quot;]')?.remove()
+
+    return new Promise((resolve) =&gt; {
+      const script = document.createElement('script')
+      script.src = 'https://webapi.amap.com/loader.js'
+      document.body.appendChild(script)
+      script.onload = () =&gt; resolve()
+      console.log('Loader reset')
+    })
+  }
+&lt;/script&gt;
+
+&lt;script type=&quot;module&quot;&gt;
+  await window.AMapLoader.load({
+    key: 'd9b0b89f7eb3ec5cf1ca02e8752ea742',
+    version: '2.0'
+  })
+  const map01 = new window.AMap.Map('view01')
+  console.log('AMap version:', window.AMap.version, map01)
+  await resetAMapCtx()
+
+  await window.AMapLoader.load({
+    key: '3e8779d1bc53e17015af3cc6fa6a6ef6',
+    version: '1.4.15'
+  })
+  const map02 = new window.AMap.Map('view02')
+  console.log('AMap version:', window.AMap.v, map02)
+  await resetAMapCtx()
+&lt;/script&gt;
+
+&lt;div style=&quot;display: flex; width: 900px; height: 450px; margin: 5% auto; border: 1px solid #2b4b6b&quot;&gt;
+  &lt;div id=&quot;view01&quot; style=&quot;flex: 1; height: 100%&quot;&gt;&lt;/div&gt;
+  &lt;div id=&quot;view02&quot; style=&quot;flex: 1; height: 100%&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div>
+<h2 id="md_nav_5">总结反思</h2>
+<p>高德地图的JS API在各个版本之间的差异不小，如果强行要升级肯定会带来很多的问题、工作量。因此在初次开发的时候，尽量选择<strong>版本较新的资源</strong>进行开发，也便于后期的<strong>迭代、维护</strong>。
+在代码中，尽量将<strong>和地图有关的代码单独抽离</strong>出来，便于后续的维护。</p>
+</article></main></div>
+  </body>
+</html>

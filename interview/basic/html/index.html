@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Aurora-Blog/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML 面经 · Aurora Blog</title>
+    <meta name="description" content="HTML 面经 HTML 语义化 使用合适的标签来标记不同的内容，让代码具有自解释性。例如： header：定义文档的头部区域 nav：定义导航链接的部分 main：定义文档的主要内容区域 article：定义独立的文章或内容块 section：定义文档中的节或章节 aside：定义与主要内容相关的侧边栏内容 foot" />
+    <meta property="og:title" content="HTML 面经" />
+    <meta property="og:description" content="HTML 面经 HTML 语义化 使用合适的标签来标记不同的内容，让代码具有自解释性。例如： header：定义文档的头部区域 nav：定义导航链接的部分 main：定义文档的主要内容区域 article：定义独立的文章或内容块 section：定义文档中的节或章节 aside：定义与主要内容相关的侧边栏内容 foot" />
+    <meta property="og:type" content="article" />
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="/Aurora-Blog/rss.xml">
+  <script type="module" crossorigin src="/Aurora-Blog/assets/index-NWYERBSP.js"></script>
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/utils-D0knN-ye.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/message-DS1Enptf.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/app-BWulmN22.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Teleport-1uqCgFUj.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/useId-ei6_d6y2.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Tooltip-zTMX_NZm.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/createLucideIcon-c2Bz6bMt.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/getActiveElement-CsVldu09.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dist-CWOCWQNC.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/button-CIDzBaD-.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dialog-BK0Eul6v.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dayjs.min-BGQIFLV3.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/arrow-up-n0HNxLwl.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/calendar-clock-1E24VrDJ.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Icon-CreQQJGx.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/chevron-down-D-hLN6pa.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/clock-EfN5-Z3e.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/usePrimitiveElement-DTUjrV0E.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/TabsTrigger-CpqXjyMi.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/logo-DHZXrb2c.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/item-DkANXWTq.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/user-gp70azbS.js">
+  <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-BaQKhgJp.css">
+<link rel="stylesheet" href="/Aurora-Blog/assets/MarkDown-NT605qeY.css"><meta property="article:published_time" content="2026-03-03T15:22:09+08:00"><meta property="article:modified_time" content="2026-03-08T22:00:51+08:00"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"HTML 面经","description":"HTML 面经 HTML 语义化 使用合适的标签来标记不同的内容，让代码具有自解释性。例如： header：定义文档的头部区域 nav：定义导航链接的部分 main：定义文档的主要内容区域 article：定义独立的文章或内容块 section：定义文档中的节或章节 aside：定义与主要内容相关的侧边栏内容 foot","datePublished":"2026-03-03T15:22:09+08:00","dateModified":"2026-03-08T22:00:51+08:00","author":{"@type":"Person","name":"Aurora"},"url":"https://yeyongzhi.github.io/Aurora-Blog/interview/basic/html/"}</script><link rel="canonical" href="https://yeyongzhi.github.io/Aurora-Blog/interview/basic/html/"><meta property="og:url" content="https://yeyongzhi.github.io/Aurora-Blog/interview/basic/html/"></head>
+  <body>
+    <div id="app"><main style="max-width:960px;margin:auto;padding:24px"><nav><a href="/Aurora-Blog/">Aurora Blog</a></nav><article class="markdown-body"><h1 id="md_nav_0">HTML 面经</h1>
+<h2 id="md_nav_1">HTML 语义化</h2>
+<p>使用合适的标签来标记不同的内容，让代码具有自解释性。例如：</p>
+<ul>
+<li><code>header</code>：定义文档的头部区域</li>
+<li><code>nav</code>：定义导航链接的部分</li>
+<li><code>main</code>：定义文档的主要内容区域</li>
+<li><code>article</code>：定义独立的文章或内容块</li>
+<li><code>section</code>：定义文档中的节或章节</li>
+<li><code>aside</code>：定义与主要内容相关的侧边栏内容</li>
+<li><code>footer</code>：定义文档的底部区域
+语义化的标签的价值有</li>
+</ul>
+<ol>
+<li>便于SEO搜索优化</li>
+<li>便于无障碍访问模式</li>
+<li>提升代码结构、可读性便于后期维护</li>
+<li>默认的网页支持，比如details自带的折叠功能、h1~h6的标题自带样式</li>
+</ol>
+<h2 id="md_nav_2">&lt;!DOCTYPE html&gt; 的作用是什么？</h2>
+<p><strong>&lt;!DOCTYPE html&gt;</strong> 是 HTML 文档的第一行，用于声明文档类型为<strong>HTML5</strong>。它的作用是告诉浏览器使用 HTML5 解析器来渲染文档，触发标准模式 (Standards Mode)。
+如果缺失，浏览器可能会进入怪异模式，可能会导致盒模型计算错误、布局错乱、css表现不一致等问题。</p>
+<h2 id="md_nav_3">meta 标签有哪些常见用途？</h2>
+<ul>
+<li>字符集：<code>&lt;meta charset=&quot;UTF-8&quot;&gt;</code> (防止乱码，必须放在 head 最前)。</li>
+<li>视口设置：<code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</code> (移动端适配核心)。</li>
+<li>SEO 控制：<code>description, keywords, robots</code> (控制爬虫索引)。</li>
+<li>HTTP 模拟：<code>http-equiv</code> (如刷新页面、设置<code> Content-Security-Policy</code>)。</li>
+<li>移动端优化：<code>apple-mobile-web-app-capable</code> (全屏模式), <code>theme-color</code> (浏览器地址栏颜色)。</li>
+</ul>
+<h2 id="md_nav_4">&lt;script&gt; 标签中 defer 和 async 的区别？</h2>
+<p><strong>默认的情况（不添加任何属性）<strong>下，script的加载会马上立即</strong>下载</strong>，下载完成之后会立即<strong>执行</strong>。这两个过程都会<strong>阻塞HTML</strong>的解析过程。
+但是如果添加了<code>defer</code>或<code>async</code>属性，就会改变这个默认行为。它们都会<strong>并行下载脚本，不阻塞HTML</strong>的解析过程。</p>
+<ul>
+<li><strong>defer</strong>：脚本会在页面解析完成后执行，按顺序执行。</li>
+<li><strong>async</strong>：脚本会在加载完成后立即执行，不按顺序执行（谁先下载完谁先执行）。</li>
+</ul>
+<h2 id="md_nav_5">回流（Reflow）与重绘（Repaint）</h2>
+<p>**回流（Reflow）<strong>和</strong>重绘（Repaint）**是浏览器渲染页面时两个最关键的性能消耗点。理解它们的区别和触发机制，是前端性能优化的核心。</p>
+<ul>
+<li><strong>重绘（Repaint）</strong>：重绘：只是“换衣服”（颜色、背景变了），不需要重新计算位置。</li>
+<li><strong>回流（Reflow）</strong>：是“整容”或“搬家”（大小、位置、布局变了），需要重新计算整个或部分页面的几何结构，开销极大。</li>
+</ul>
+<blockquote>
+<p>回流必然导致重绘，但重绘不一定导致回流</p>
+</blockquote>
+<p>先简单了解一下浏览器渲染流程：</p>
+<ul>
+<li>DOM Tree：解析 HTML 生成。</li>
+<li>CSSOM Tree：解析 CSS 生成。</li>
+<li>Render Tree：DOM + CSSOM 合并，计算出每个节点的具体样式（排除 display: none 的节点）。</li>
+<li>Layout (回流)：计算每个节点在屏幕上的确切位置和大小。</li>
+<li>Paint (重绘)：将像素绘制到屏幕上。</li>
+</ul>
+<p>触发重绘的几个条件：</p>
+<ol>
+<li>修改颜色 (color, background-color)</li>
+<li>修改可见性但不影响布局 (visibility: hidden，注意 display: none 会触发回流)</li>
+<li>修改边框样式 (border-style)</li>
+<li>添加/移除阴影 (box-shadow)</li>
+</ol>
+<blockquote>
+<p>开销相对较小，但仍需 CPU 参与</p>
+</blockquote>
+<p>触发回流的几个条件：</p>
+<ol>
+<li>DOM 增删：添加或删除可见的 DOM 元素。</li>
+<li>位置变化：修改 top, left, margin, padding, border 等影响位置的属性。</li>
+<li>尺寸变化：修改 width, height。</li>
+<li>内容变化：修改文本内容、图片大小、输入框文字。</li>
+<li>窗口变化：浏览器窗口 resize (window.onresize)。</li>
+<li>字体加载：网页初始加载或动态改变字体大小。</li>
+<li>激活伪类：:hover 有时也会触发（取决于具体样式）。</li>
+<li>JS 读取布局属性：这是最容易被忽视的！强制同步布局。</li>
+</ol>
+<blockquote>
+<p>当你读取 <code>offsetTop</code>, <code>offsetLeft</code>, <code>scrollWidth</code>, <code>getComputedStyle()</code> 等属性时，浏览器为了保证返回值的准确性，会立即执行挂起的回流操作。
+注意：现代浏览器会对<u>回流进行优化（批处理）</u>。它们会将多次修改放入队列，在<strong>下一帧统一执行</strong>。但如果你读取了布局属性（如 <code>offsetLeft</code>），就会<strong>强制浏览器清空队列立即执行回流</strong>，从而破坏优化。</p>
+</blockquote>
+</article></main></div>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Aurora-Blog/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>js 执行上下文 · Aurora Blog</title>
+    <meta name="description" content="js 执行上下文 什么是执行上下文 执行上下文（Execution Context）是JavaScript代码被解析和执行时所处的环境 每当 JavaScript 引擎开始执行一段可执行代码（如全局代码、函数调用、eval 等），就会为其创建一个执行上下文 可以理解为：执行上下文是js执行时候的环境、容器，它包含了代码" />
+    <meta property="og:title" content="js 执行上下文" />
+    <meta property="og:description" content="js 执行上下文 什么是执行上下文 执行上下文（Execution Context）是JavaScript代码被解析和执行时所处的环境 每当 JavaScript 引擎开始执行一段可执行代码（如全局代码、函数调用、eval 等），就会为其创建一个执行上下文 可以理解为：执行上下文是js执行时候的环境、容器，它包含了代码" />
+    <meta property="og:type" content="article" />
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="/Aurora-Blog/rss.xml">
+  <script type="module" crossorigin src="/Aurora-Blog/assets/index-NWYERBSP.js"></script>
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/utils-D0knN-ye.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/message-DS1Enptf.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/app-BWulmN22.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Teleport-1uqCgFUj.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/useId-ei6_d6y2.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Tooltip-zTMX_NZm.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/createLucideIcon-c2Bz6bMt.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/getActiveElement-CsVldu09.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dist-CWOCWQNC.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/button-CIDzBaD-.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dialog-BK0Eul6v.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dayjs.min-BGQIFLV3.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/arrow-up-n0HNxLwl.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/calendar-clock-1E24VrDJ.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Icon-CreQQJGx.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/chevron-down-D-hLN6pa.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/clock-EfN5-Z3e.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/usePrimitiveElement-DTUjrV0E.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/TabsTrigger-CpqXjyMi.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/logo-DHZXrb2c.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/item-DkANXWTq.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/user-gp70azbS.js">
+  <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-BaQKhgJp.css">
+<link rel="stylesheet" href="/Aurora-Blog/assets/MarkDown-NT605qeY.css"><meta property="article:published_time" content="2026-03-03T15:22:09+08:00"><meta property="article:modified_time" content="2026-03-03T15:22:09+08:00"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"js 执行上下文","description":"js 执行上下文 什么是执行上下文 执行上下文（Execution Context）是JavaScript代码被解析和执行时所处的环境 每当 JavaScript 引擎开始执行一段可执行代码（如全局代码、函数调用、eval 等），就会为其创建一个执行上下文 可以理解为：执行上下文是js执行时候的环境、容器，它包含了代码","datePublished":"2026-03-03T15:22:09+08:00","dateModified":"2026-03-03T15:22:09+08:00","author":{"@type":"Person","name":"Aurora"},"url":"https://yeyongzhi.github.io/Aurora-Blog/note/js/executionContext/"}</script><link rel="canonical" href="https://yeyongzhi.github.io/Aurora-Blog/note/js/executionContext/"><meta property="og:url" content="https://yeyongzhi.github.io/Aurora-Blog/note/js/executionContext/"></head>
+  <body>
+    <div id="app"><main style="max-width:960px;margin:auto;padding:24px"><nav><a href="/Aurora-Blog/">Aurora Blog</a></nav><article class="markdown-body"><h1 id="md_nav_0">js 执行上下文</h1>
+<h2 id="md_nav_1">什么是执行上下文</h2>
+<p>执行上下文（Execution Context）是JavaScript<strong>代码被解析和执行时</strong>所处的环境
+每当 JavaScript 引擎开始执行一段可执行代码（如全局代码、函数调用、eval 等），就会为其创建一个执行上下文
+可以理解为：执行上下文是js执行时候的<strong>环境、容器</strong>，它包含了代码执行所需的所有信息，如变量、函数、this 等</p>
+<p>js中主要有三种执行上下文：</p>
+<ol>
+<li>全局执行上下文（Global Execution Context）</li>
+<li>函数执行上下文（Function Execution Context）</li>
+<li>eval 执行上下文（Eval Execution Context）（不推荐使用）</li>
+</ol>
+<h2 id="md_nav_2">全局执行上下文</h2>
+<h3 id="md_nav_3">什么时候创建的？</h3>
+<p>在<strong>JavaScript脚本加载后、任何代码执行之前</strong>，引擎会首先创建全局执行上下文
+注意这里是<strong>脚本加载后并且代码执行之前</strong>
+它在整个程序生命周期中只有一个，并且<strong>最先被创建，最后被销毁</strong></p>
+<p>那么众所周知，一个网页应用在加载的时候会加载很多的js脚本，无论加载多少个<code>&lt;script&gt;标签或JS文件</code>，都只存在一个全局执行上下文（Global Execution Context）。</p>
+<blockquote>
+<p>一个网页（一个 JS 运行环境）只有一个全局执行上下文，所有脚本文件共享它.</p>
+</blockquote>
+<p>例如：</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">&lt;script src=&quot;a.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;b.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;c.js&quot;&gt;&lt;/script&gt;
+</code></pre></div>
+<blockquote>
+<p>这些脚本文件<strong>共享同一个全局作用域</strong>，也共享同一个全局执行上下文。它们会被依次解析和执行，就像把所有代码拼接在一起一样。</p>
+</blockquote>
+<ul>
+<li>对于上面的普通脚本（非模块脚本），直接在全局作用域中运行，变量可能会挂载到window中（var）</li>
+<li>对于ES模块的脚本，各个文件有独立的作用域，但是仍然在同一个全局执行上下文中运行。</li>
+</ul>
+<h3 id="md_nav_4">全局对象绑定</h3>
+<p>在浏览器环境中，全局执行上下文中的<code>this</code>指向<code>全局对象window</code>
+在nodejs环境中，全局执行上下文中的<code>this</code>指向<code>全局对象global</code></p>
+</article></main></div>
+  </body>
+</html>

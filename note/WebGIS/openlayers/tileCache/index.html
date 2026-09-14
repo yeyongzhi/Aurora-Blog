@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Aurora-Blog/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>openlayers中瓦片缓存机制的实现——离线地图 · Aurora Blog</title>
+    <meta name="description" content="openlayers中瓦片缓存机制的实现——离线地图 背景 在项目开发中，碰到一个需求：离线地图的使用。在无网络环境下，普通的网络请求加载瓦片必然是行不通的，因此需要将瓦片离线缓存到设备中，然后再从设备中加载。 项目使用的是Tauri框架开发的exe桌面应用，因此可以直接将瓦片缓存到本地文件系统中。 如果是传统的web" />
+    <meta property="og:title" content="openlayers中瓦片缓存机制的实现——离线地图" />
+    <meta property="og:description" content="openlayers中瓦片缓存机制的实现——离线地图 背景 在项目开发中，碰到一个需求：离线地图的使用。在无网络环境下，普通的网络请求加载瓦片必然是行不通的，因此需要将瓦片离线缓存到设备中，然后再从设备中加载。 项目使用的是Tauri框架开发的exe桌面应用，因此可以直接将瓦片缓存到本地文件系统中。 如果是传统的web" />
+    <meta property="og:type" content="article" />
+    <script>
+      // 从 404.html 重定向中恢复目标路径
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var basePath = window.location.pathname.replace(/\/+$/, '');
+          window.history.replaceState(null, '', basePath + p);
+        }
+      })();
+    </script>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="/Aurora-Blog/rss.xml">
+  <script type="module" crossorigin src="/Aurora-Blog/assets/index-NWYERBSP.js"></script>
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/utils-D0knN-ye.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/message-DS1Enptf.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/app-BWulmN22.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Teleport-1uqCgFUj.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/useId-ei6_d6y2.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Tooltip-zTMX_NZm.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/createLucideIcon-c2Bz6bMt.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/getActiveElement-CsVldu09.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dist-CWOCWQNC.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/button-CIDzBaD-.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dialog-BK0Eul6v.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/dayjs.min-BGQIFLV3.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/arrow-up-n0HNxLwl.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/calendar-clock-1E24VrDJ.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/Icon-CreQQJGx.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/chevron-down-D-hLN6pa.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/clock-EfN5-Z3e.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/usePrimitiveElement-DTUjrV0E.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/TabsTrigger-CpqXjyMi.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/logo-DHZXrb2c.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/item-DkANXWTq.js">
+  <link rel="modulepreload" crossorigin href="/Aurora-Blog/assets/user-gp70azbS.js">
+  <link rel="stylesheet" crossorigin href="/Aurora-Blog/assets/index-BaQKhgJp.css">
+<link rel="stylesheet" href="/Aurora-Blog/assets/MarkDown-NT605qeY.css"><meta property="article:published_time" content="2026-03-03T15:22:09+08:00"><meta property="article:modified_time" content="2026-03-03T15:22:09+08:00"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"openlayers中瓦片缓存机制的实现——离线地图","description":"openlayers中瓦片缓存机制的实现——离线地图 背景 在项目开发中，碰到一个需求：离线地图的使用。在无网络环境下，普通的网络请求加载瓦片必然是行不通的，因此需要将瓦片离线缓存到设备中，然后再从设备中加载。 项目使用的是Tauri框架开发的exe桌面应用，因此可以直接将瓦片缓存到本地文件系统中。 如果是传统的web","datePublished":"2026-03-03T15:22:09+08:00","dateModified":"2026-03-03T15:22:09+08:00","author":{"@type":"Person","name":"Aurora"},"url":"https://yeyongzhi.github.io/Aurora-Blog/note/WebGIS/openlayers/tileCache/"}</script><link rel="canonical" href="https://yeyongzhi.github.io/Aurora-Blog/note/WebGIS/openlayers/tileCache/"><meta property="og:url" content="https://yeyongzhi.github.io/Aurora-Blog/note/WebGIS/openlayers/tileCache/"></head>
+  <body>
+    <div id="app"><main style="max-width:960px;margin:auto;padding:24px"><nav><a href="/Aurora-Blog/">Aurora Blog</a></nav><article class="markdown-body"><h1 id="md_nav_0">openlayers中瓦片缓存机制的实现——离线地图</h1>
+<h2 id="md_nav_1">背景</h2>
+<p>在项目开发中，碰到一个需求：离线地图的使用。在无网络环境下，普通的网络请求加载瓦片必然是行不通的，因此需要将瓦片离线缓存到设备中，然后再从设备中加载。
+项目使用的是<code>Tauri</code>框架开发的<code>exe桌面应用</code>，因此可以直接将瓦片缓存到<strong>本地文件系统</strong>中。
+如果是传统的web应用，也可以使用<code>IndexedDB</code>来存储瓦片。
+两者的实现思路是完全一致的，只是存储的方式不同。</p>
+<h2 id="md_nav_2">实现</h2>
+<p>最基础的一个思路就是：</p>
+<ol>
+<li>在正常网络环境下，每次<code>请求瓦片</code>时，将瓦片缓存到本地文件系统中，并记录瓦片的位置索引信息<code>（x,y,x）</code>。</li>
+<li>然后在每次瓦片渲染的时候，直接<strong>从本地文件系统中加载瓦片</strong>即可。</li>
+</ol>
+<p>在瓦片的加载实现中，增加<code>tileLoadFunction</code>的方法实现、以及对瓦片资源监听tileloadend事件，在事件中进行缓存。请看下面的代码：</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">const tileSource = new OlSource.XYZ({
+    url: '/tiles/{z}/{x}/{y}.png',
+    crossOrigin: 'anonymous',
+    tileLoadFunction: async (imageTile, src) =&gt; {
+        const { tileCoord } = imageTile
+        const url = await getTile(tileCoord) // 根据瓦片的位置索引信息，从本地文件系统中加载瓦片
+        imageTile.getImage().src = url || src // 这里的url指的是本地文件系统中的路径，src指的是网络请求的路径
+    }
+})
+
+tileSource.on(&quot;tileloadend&quot;, (e) =&gt; {
+    const { tileCoord, image_ } = e.tile
+    const [z, x, y] = tileCoord
+    const imgKey = `${z}_${x}_${y}`
+    saveTile(image_, { tileCoord }) // 将瓦片缓存到本地文件系统中
+    /* 这里的image_指的是瓦片的图片对象，tileCoord指的是瓦片的位置索引信息 */
+})
+</code></pre></div>
+<h2 id="md_nav_3">总结反思</h2>
+<p>在这个项目中，还碰到一个需求任务：用户可以<strong>手动选择缓存某个地区的瓦片</strong>，以便于<strong>在网络环境良好</strong>的情况下，我<strong>主动选择下载xx市区的地图</strong>，等网络环境不好的时候，用户就可以自然的从本地读取之前下载好的瓦片，然后继续浏览地图了。
+针对这种情况下的功能需求，实现思路是：
+我们需要提前准备好各个地区的瓦片数据（比如杭州、上海），存放在服务器上，然后在用户选择缓存某个地区的瓦片的时候，我们需要<strong>将该地区的瓦片数据下载到本地</strong>，然后再从本地加载瓦片。</p>
+<p>思考：如果没有提前把瓦片数据下载好放到服务器上，那么也许就需要通过<u>一定的算法，计算出某个地区的瓦片数据的位置索引信息</u>，然后在网络环境下载瓦片数据，然后再缓存到本地文件系统中。</p>
+<h2 id="md_nav_4">💡附：leaflet版本</h2>
+<p>对于各家的地图引擎，基本都会有关于瓦片自定义缓存加载的方式，这里就以<code>leaflet</code>为例，实现一个简单的瓦片缓存加载方式。
+当你使用其他地图引擎时，请更多的参考API文档~</p>
+<div class="markdown-code"><div class="markdown-code-toolbar"><span>javascript</span></div><pre><code class="language-javascript">const map = L.map('map_container', {
+    center: L.latLng(30.3, 120.2),
+    zoom: 10
+});
+
+// 自定义瓦片
+const layer = L.tileLayer('/tiles/{z}/{x}/{y}.png', { minZoom: 0, maxZoom: 10, async: true, crossOrigin: true });
+
+layer.createTile = function (coords, done) {
+    const tile = L.DomUtil.create('img', 'leaflet-tile');
+    const { x, y, z } = coords;
+    const img_key = `${z}_${x}_${y}`;
+    localforage.getItem(img_key)
+        .then(value =&gt; {
+            if (value) {
+                console.log(&quot;返回本地缓存瓦片：&quot; + `${z}_${x}_${y}`)
+                tile.src = value;
+            } else {
+                // 回退到网络请求
+                tile.src = this.getTileUrl(coords);
+            }
+        })
+        .catch(() =&gt; {
+            tile.src = this.getTileUrl(coords);
+        });
+    tile.onload = () =&gt; done(null, tile);
+    tile.onerror = () =&gt; done(new Error('Failed to load tile'), tile);
+    return tile;
+};
+
+layer.addTo(map);
+layer.on(&quot;tileload&quot;, async (e) =&gt; {
+    // console.log(e)
+    const { coords, tile } = e
+    const { x, y, z } = coords
+    const img_key = `${z}_${x}_${y}`
+    const has = await getTile(img_key)
+    if (!has) {
+        console.log(&quot;存储本地瓦片：&quot; + tile.src)
+        const img = new Image();
+        // 设置crossOrigin属性以允许跨域资源共享(CORS)，如果图片来自同一域名，则不需要此设置
+        img.setAttribute('crossOrigin', 'anonymous');
+        img.onload = async (e) =&gt; {
+            const canvas = document.createElement(&quot;canvas&quot;);
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext(&quot;2d&quot;);
+            ctx.drawImage(img, 0, 0);
+            const base64String = canvas.toDataURL(&quot;image/png&quot;);
+            await saveTile(img_key, base64String)
+        }
+        img.src = tile.src
+    }
+})
+</code></pre></div>
+</article></main></div>
+  </body>
+</html>
