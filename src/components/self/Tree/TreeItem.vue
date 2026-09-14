@@ -29,7 +29,7 @@ const isExpanded = ref(true)
 
 <template>
     <div class="text-sm flex flex-col">
-        <div
+        <button type="button"
             v-if="!item.children || item.children.length === 0"
             :class="['flex items-center justify-between cursor-pointer px-2 py-1 rounded-md', currentKey === item.key ? 'bg-primary text-primary-foreground' : 'hover:bg-accent']"
             @click="updateCurrentKey(item.key)"
@@ -37,15 +37,16 @@ const isExpanded = ref(true)
             <div class="flex items-center">
                 <span class="ml-2">{{ item.label }}</span>
             </div>
-        </div>
+        </button>
         <Collapsible v-else :defaultOpen="true" v-model:open="isExpanded">
-            <CollapsibleTrigger>
-                <div class="flex items-center">
+            <div class="flex items-center">
+                <CollapsibleTrigger :aria-label="`展开或收起 ${item.label}`">
                     <ChevronDownIcon v-if="isExpanded" class="size-4" />
                     <ChevronRightIcon v-else class="size-4" />
-                    <span class="ml-2">{{ item.label }}</span>
-                </div>
-            </CollapsibleTrigger>
+                </CollapsibleTrigger>
+                <button v-if="item.selectable" type="button" class="ml-2 text-left" @click="updateCurrentKey(item.key)">{{ item.label }}</button>
+                <span v-else class="ml-2">{{ item.label }}</span>
+            </div>
             <CollapsibleContent>
                 <div class="flex flex-col pl-4">
                     <TreeItem

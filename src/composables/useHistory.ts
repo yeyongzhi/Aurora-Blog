@@ -1,3 +1,4 @@
+import { fetchJson } from '@/utils/request'
 import { ref } from 'vue'
 
 export interface HistoryEvent {
@@ -32,14 +33,19 @@ const EVENT_LABEL_MAP: Record<string, string> = {
 export function useHistory() {
     const historyData = ref<HistoryData | null>(null)
     const loading = ref(false)
+    const error = ref('')
 
     const fetchHistory = async () => {
         loading.value = true
+        error.value = ''
 
         try {
-            const response = await fetch(HISTORY_API)
-            const result: HistoryResponse = await response.json()
+            const response = await fetchJson<HistoryResponse>(HISTORY_API)
+            const result: HistoryResponse = response
+            if (!Array.isArray(result?.data?.items)) throw new Error('历史数据格式无效')
             historyData.value = result.data
+        } catch (cause) {
+            error.value = cause instanceof Error ? cause.message : '数据加载失败'
         } finally {
             loading.value = false
         }
@@ -50,6 +56,7 @@ export function useHistory() {
     return {
         historyData,
         loading,
+        error,
         fetchHistory,
         getEventLabel,
     }

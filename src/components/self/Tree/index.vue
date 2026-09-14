@@ -13,6 +13,7 @@ import TreeItem from './TreeItem.vue'
 export interface TreeItem {
     key: string
     label: string
+    selectable?: boolean
     children?: Array<TreeItem>
 }
 
@@ -42,7 +43,7 @@ watch(() => props.data, (newVal, _) => {
     if (newVal) {
         initTree(newVal)
     }
-})
+}, { immediate: true })
 
 const updateCurrentKey = (key: string) => {
     emit('update:currentKey', key)

@@ -27,7 +27,7 @@ import { useDailyNews } from '@/composables/useDailyNews'
 
 const {
     newsData,
-    loading,
+    loading, error,
     fetchNews,
     imageDialogOpen,
     imageUrl,
@@ -69,6 +69,7 @@ onMounted(() => {
             </div>
         </CardHeader>
         <CardContent class="flex-1 min-h-0 overflow-hidden">
+            <p v-if="error" role="status" class="mb-2 text-sm text-muted-foreground">{{ error }}，请稍后刷新。</p>
             <div v-if="loading && !newsData" class="flex items-center justify-center py-12">
                 <span class="text-sm text-muted-foreground">正在加载新闻…</span>
             </div>

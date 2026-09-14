@@ -13,7 +13,7 @@ import {
 import { usePoetry } from '@/composables/usePoetry'
 import message from '@/plugins/message'
 
-const { poetry, loading, fetchPoetry } = usePoetry()
+const { poetry, loading, error, fetchPoetry } = usePoetry()
 
 const copyText = async (text: string) => {
     if (navigator.clipboard?.writeText) {
@@ -82,6 +82,7 @@ onMounted(() => {
             </div>
         </CardHeader>
         <CardContent>
+            <p v-if="error" role="status" class="mb-2 text-sm text-muted-foreground">{{ error }}，请稍后刷新。</p>
             <div v-if="loading && !poetry" class="flex items-center justify-center py-8">
                 <span class="text-sm text-muted-foreground">正在寻一首好诗…</span>
             </div>

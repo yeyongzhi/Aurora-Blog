@@ -14,6 +14,7 @@ export interface UserInfo {
 
 const useUserStore = defineStore('user', () => {
     const userLoading = ref(false)
+    const userError = ref('')
     const userInfo = ref<UserInfo>({
         name: '',
         signature: '',
@@ -23,14 +24,19 @@ const useUserStore = defineStore('user', () => {
 
     const getUserData = async () => {
         userLoading.value = true
-        const data = await getFetchData('/user.json')
-        userInfo.value = data
-        userLoading.value = false
+        userError.value = ''
+        try {
+            const data = await getFetchData('/user.json')
+            if (!data || typeof data.name !== 'string') throw new Error('用户资料格式无效')
+            userInfo.value = data
+        } catch { userError.value = '个人资料加载失败，其他内容仍可使用' }
+        finally { userLoading.value = false }
     }
 
     return {
         userInfo,
         userLoading,
+        userError,
         getUserData
     }
 })

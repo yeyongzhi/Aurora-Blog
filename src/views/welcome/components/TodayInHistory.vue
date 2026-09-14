@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/item'
 import { useHistory } from '@/composables/useHistory'
 
-const { historyData, loading, fetchHistory, getEventLabel } = useHistory()
+const { historyData, loading, error, fetchHistory, getEventLabel } = useHistory()
 
 const eventBadgeVariant = (type: string): 'default' | 'secondary' | 'outline' => {
     switch (type) {
@@ -70,6 +70,7 @@ onMounted(() => {
             </div>
         </CardHeader>
         <CardContent class="flex-1 min-h-0 overflow-hidden">
+            <p v-if="error" role="status" class="mb-2 text-sm text-muted-foreground">{{ error }}，请稍后刷新。</p>
             <div v-if="loading && !historyData" class="flex items-center justify-center py-12">
                 <span class="text-sm text-muted-foreground">正在加载历史…</span>
             </div>

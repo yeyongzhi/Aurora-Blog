@@ -1,7 +1,10 @@
+import { type RenderedMarkdown } from './markdown'
+import { fetchJson, safeUrl } from './request'
 import { type NoteTreeItem } from '@/types/Note'
 
 export function openTab(url: string) {
-    window.open(url)
+    const target = safeUrl(url)
+    if (target) window.open(target, '_blank', 'noopener,noreferrer')
 }
 
 export function scrollToTop() {
@@ -9,17 +12,17 @@ export function scrollToTop() {
 }
 
 // 根据路径获取markdown文件内容和元信息（合并为一次请求，避免重复 fetch 同一文件）
-export async function getMarkDownData(markdown_path: string): Promise<{
+export async function getMarkDownData(markdown_path: string, signal?: AbortSignal): Promise<{
     content: string | null
     lastModified: string | null
 }> {
     try {
         const fullPath = import.meta.env.BASE_URL + markdown_path.replace(/^\/+/, '');
-        const response = await fetch(fullPath);
+        const response = await fetch(fullPath, { signal: signal ?? AbortSignal.timeout(15000) });
 
         const contentType = response.headers.get('Content-Type');
         // 非 markdown 文件返回空
-        if (!contentType?.includes("text/markdown")) {
+        if (!response.ok || contentType?.includes("text/html")) {
             return { content: null, lastModified: null };
         }
 
@@ -31,7 +34,7 @@ export async function getMarkDownData(markdown_path: string): Promise<{
             lastModified,
         };
     } catch (err) {
-        console.error("md文件读取出错", err);
+        if (!signal?.aborted) console.error("md文件读取出错", err);
         return { content: null, lastModified: null };
     }
 }
@@ -54,23 +57,8 @@ export async function getMarkDownInfo(markdown_path: string) {
  * 根据文章内容获取字数
  * @param content 
  */
-export function getArticleTextCount(content: Array<any>) {
-    let total = 0
-    content.forEach((item: any) => {
-        if(item.type.startsWith("h")) {
-            total += item.content.trim().replace(/#/g, "").length
-        }
-        if(item.type === 'text') {
-            total += item.content.length
-        }
-        if(item.type === 'code' || item.type === 'quote') {
-            total += item.content.join("").length
-        }
-        if(item.type === 'link') {
-            total += item.content[1].length
-        }
-    })
-    return total
+export function getArticleTextCount(content: RenderedMarkdown) {
+    return content.textCount
 }
 
 /**
@@ -173,6 +161,5 @@ export function findTreeNodeByPath(
 
 export async function getFetchData(url: string) {
     const fullPath = import.meta.env.BASE_URL + url.replace(/^\/+/, '');
-    const res = await fetch(fullPath).then(response => response.json())
-    return res
+    return fetchJson<any>(fullPath)
 }

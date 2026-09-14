@@ -1,6 +1,8 @@
 <script setup lang="ts" name="Icon">
 import { Button } from '@/components/ui/button'
-import * as lucideIcon from 'lucide-vue-next';
+import { ArrowUpIcon, BookOpenTextIcon, BugIcon, CalendarClockIcon, FileCodeCornerIcon, HammerIcon, Logs, MonitorIcon, NotebookTabsIcon, Palette, QrCodeIcon, SearchIcon } from 'lucide-vue-next'
+import type { Component } from 'vue'
+const icons: Record<string, Component> = { ArrowUpIcon, BookOpenTextIcon, BugIcon, CalendarClockIcon, FileCodeCornerIcon, HammerIcon, Logs, MonitorIcon, NotebookTabsIcon, Palette, QrCodeIcon, SearchIcon }
 import { computed } from 'vue'
 
 interface IconProps {
@@ -16,7 +18,7 @@ const props = withDefaults(defineProps<IconProps>(), {
 })
 
 const icon = computed(() => {
-    return props.name in lucideIcon ? (lucideIcon as any)[props.name] : null
+    return icons[props.name] || null
 })
 
 </script>
@@ -24,9 +26,9 @@ const icon = computed(() => {
 <template>
     <span v-if="icon">
         <Button variant="secondary" v-if="background">
-            <component :class="`size-${props.size}`" :is="icon" />
+            <component :style="{ width: `${Number(props.size) * 0.25}rem`, height: `${Number(props.size) * 0.25}rem` }" :is="icon" />
         </Button>
-        <component :is="icon" :class="`size-${props.size}`" v-else />
+        <component :is="icon" :style="{ width: `${Number(props.size) * 0.25}rem`, height: `${Number(props.size) * 0.25}rem` }" v-else />
     </span>
 </template>
 

@@ -68,7 +68,7 @@ export function useWeather(defaultCity = DEFAULT_CITY, defaultLanguage = DEFAULT
         weatherError.value = ''
 
         try {
-            const response = await fetch(weatherUrl.value)
+            const response = await fetch(weatherUrl.value, { signal: AbortSignal.timeout(15000) })
 
             if (!response.ok) {
                 throw new Error(`天气请求失败：${response.status}`)

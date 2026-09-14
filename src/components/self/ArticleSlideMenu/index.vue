@@ -11,7 +11,7 @@ import {
     CardTitle,
 } from '@/components/ui/card'
 import Tooltip from '@/components/self/Tooltip/index.vue'
-import { type NoteTreeItem } from '@/views/note/index.vue'
+import { type NoteTreeItem } from '@/types/Note'
 
 interface Props {
     visible: boolean;
@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
     treeData: () => [],
 })
 
-const getTotal = (tree: Array<any>) => {
+const getTotal = (tree: NoteTreeItem[]) => {
     let total = 0
     tree.forEach((item) => {
         if (item.children && item.children.length > 0) {
@@ -45,21 +45,19 @@ const emits = defineEmits(['toggle'])
 </script>
 
 <template>
-    <Card class="w-[300px] gap-4 py-4">
+    <Card class="w-full lg:w-[300px] shrink-0 max-h-[35dvh] lg:max-h-full gap-4 py-4">
         <CardHeader>
             <CardTitle>菜单导航</CardTitle>
             <CardDescription>
                 共 <span class="text-sm font-bold">{{ articleTotalNum }}</span> 篇文章
             </CardDescription>
             <CardAction>
-                <TooltipProvider>
                     <Tooltip :content="props.visible ? '收起' : '展开'">
                         <Button size="sm" variant="secondary" @click="emits('toggle')">
                             <ChevronsLeftIcon class="size-4" v-if="props.visible" />
                             <ChevronsRightIcon class="size-4" v-else />
                         </Button>
                     </Tooltip>
-                </TooltipProvider>
             </CardAction>
         </CardHeader>
         <CardContent class="overflow-hidden">

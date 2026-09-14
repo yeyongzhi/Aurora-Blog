@@ -1,4 +1,5 @@
 <script setup lang="ts" name="Header">
+import ArticleSearch from '@/components/self/ArticleSearch.vue'
 import Menu from './components/Menu.vue'
 import Avatar from './components/Avatar.vue'
 import DateTime from './components/DateTime.vue'
@@ -13,17 +14,20 @@ import { SunIcon, MoonIcon, Laptop, ClockIcon } from 'lucide-vue-next'
 import useAppStore from '@/store/app'
 
 const appStore = useAppStore()
+const base = import.meta.env.BASE_URL
 
 </script>
 
 <template>
-    <div class="w-full h-[60px] border-b px-8 flex justify-between items-center">
+    <div class="w-full min-h-[60px] shrink-0 flex-wrap gap-2 border-b px-2 sm:px-8 flex justify-between items-center">
         <Avatar />
-        <div class="flex justify-center items-center gap-x-4">
+        <div class="flex justify-center items-center gap-2 flex-wrap">
             <Menu />
+            <ArticleSearch />
+            <Button as-child size="sm" variant="outline"><a :href="`${base}rss.xml`">RSS</a></Button>
             <Popover>
                 <PopoverTrigger asChild>
-                    <Button size="icon" variant="outline">
+                    <Button size="icon" variant="outline" aria-label="主题模式">
                         <SunIcon />
                     </Button>
                 </PopoverTrigger>
@@ -41,7 +45,7 @@ const appStore = useAppStore()
             </Popover>
             <Popover>
                 <PopoverTrigger asChild>
-                    <Button size="icon" variant="outline">
+                    <Button size="icon" variant="outline" aria-label="日期时间">
                         <ClockIcon />
                     </Button>
                 </PopoverTrigger>

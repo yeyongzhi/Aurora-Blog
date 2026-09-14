@@ -1,18 +1,18 @@
+import { readSettings } from '@/utils/settings'
 import { defineStore } from 'pinia'
-import { onMounted, ref, computed, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useColorMode } from '@vueuse/core'
-import APP_MENU from '@/router/index'
+import APP_MENU, { FLAT_ROUTES } from '@/router/index'
 import { getRouteFromPath, getPathFromKey, setupUrlSync } from '@/router/urlSync'
 import toast from '@/plugins/message'
 import { hexToOklch } from '@/utils/color'
 
 type ColorMode = 'light' | 'dark' | 'auto'
 
-const DEFAULT_MODE: ColorMode = 'light'
-const localSettingInfo = localStorage.getItem(import.meta.env.VITE_APP_SYSTEM_SETTING_KEY)
-const localSettingInfoValue = (localSettingInfo && localSettingInfo !== '') ? JSON.parse(localSettingInfo) : {}
+const localSettingInfoValue = readSettings()
 const isRememberMenu = localSettingInfoValue.rememberMenu || false
-const DEFAULT_MENU_KEY = isRememberMenu ? localSettingInfoValue.rememberMenuKey || 'home' : 'home'
+const savedMenuKey = isRememberMenu ? localSettingInfoValue.rememberMenuKey : 'home'
+const DEFAULT_MENU_KEY = APP_MENU.flatMap(item => item.children || [item]).some(item => item.key === savedMenuKey) ? savedMenuKey : 'home'
 export const DEFAULT_THEME_COLOR = '#000000'
 
 const useAppStore = defineStore('app', () => {
@@ -96,25 +96,13 @@ const useAppStore = defineStore('app', () => {
         })
     }
 
-    const currentMenuComponent = computed(() => {
-        let targetMenu: any = null
-        APP_MENU.forEach((item) => {
-            if (item.key === menuKey.value) {
-                targetMenu = item
-            } else if (item.children) {
-                item.children.forEach((child) => {
-                    if (child.key === menuKey.value) {
-                        targetMenu = child
-                    }
-                })
-            }
-        })
-        return targetMenu?.component || null
-    })
+    const currentMenuComponent = computed(() => FLAT_ROUTES.get(menuKey.value)?.component ?? null)
 
-    const themeColor = ref(localStorage.getItem('themeColor') || DEFAULT_THEME_COLOR)
+    const savedTheme = localStorage.getItem('themeColor') || ''
+    const themeColor = ref(/^#[0-9a-f]{6}$/i.test(savedTheme) ? savedTheme : DEFAULT_THEME_COLOR)
     
     const updateThemeColor = (color: string) => {
+        if (!/^#[0-9a-f]{6}$/i.test(color)) return
         themeColor.value = color
         localStorage.setItem('themeColor', color)
         const oklchColor = hexToOklch(color)
@@ -128,15 +116,15 @@ const useAppStore = defineStore('app', () => {
         document.documentElement.style.setProperty('--ring', oklchColor)
     })
 
-    onMounted(() => {
-        mode.value = DEFAULT_MODE
+    const initializeTheme = () => {
         const savedColor = localStorage.getItem('themeColor')
-        if (savedColor && savedColor !== DEFAULT_THEME_COLOR) {
+        if (savedColor && /^#[0-9a-f]{6}$/i.test(savedColor) && savedColor !== DEFAULT_THEME_COLOR) {
             updateThemeColor(savedColor)
         } else {
             updateThemeColor(DEFAULT_THEME_COLOR)
         }
-    })
+    }
+    initializeTheme()
 
     return {
         mode,

@@ -1,9 +1,9 @@
-import { defineAsyncComponent } from "vue";
+import { defineAsyncComponent, type Component } from "vue";
 
 interface RouterMeta {
   name: string;
   key: string;
-  component?: Function;
+  component?: Component;
   children?: RouterMeta[];
 }
 

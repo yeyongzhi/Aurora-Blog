@@ -1,37 +1,48 @@
 name: Build and Deploy
-
 on:
   push:
-    branches:
-      - main  # 指定触发的分支
-  workflow_dispatch:  # 允许手动触发
-
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 jobs:
-  build-and-deploy:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm build
+        env:
+          SITE_URL: https://${{ github.repository_owner }}.github.io/Aurora-Blog/
+      - run: pnpm test:build
+      - uses: actions/upload-artifact@v4
+        if: github.event_name != 'pull_request'
+        with:
+          name: site
+          path: dist
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
-          fetch-depth: 0
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'  # 根据项目需求修改Node.js版本
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build  # 根据项目构建命令修改
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+          name: site
+          path: dist
+      - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist  # 打包后的目录
-          publish_branch: gh-pages  # 部署分支
+          publish_dir: ./dist
+          publish_branch: gh-pages

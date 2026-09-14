@@ -1,4 +1,5 @@
 <script setup lang="ts" name="SystemSetting">
+import { readSettings, SYSTEM_SETTING_KEY } from '@/utils/settings'
 import { ref, onMounted, watch } from 'vue'
 import {
     Dialog,
@@ -54,12 +55,11 @@ const settingInfo = ref<{
 })
 
 const asyncSettingInfo = () => {
-    localStorage.setItem(import.meta.env.VITE_APP_SYSTEM_SETTING_KEY, JSON.stringify(settingInfo.value))
+    localStorage.setItem(SYSTEM_SETTING_KEY, JSON.stringify(settingInfo.value))
 }
 
 const getSettingInfo = () => {
-    const settingInfoStr = localStorage.getItem(import.meta.env.VITE_APP_SYSTEM_SETTING_KEY)
-    return (settingInfoStr && settingInfoStr !== '') ? JSON.parse(settingInfoStr) : null
+    return localStorage.getItem(SYSTEM_SETTING_KEY) ? readSettings() : null
 }
 
 const handleThemeColorChange = (color: string) => {
@@ -83,7 +83,7 @@ onMounted(() => {
     })
 })
 
-watch(() => settingInfo, () => {
+watch(settingInfo, () => {
     asyncSettingInfo()
 }, { deep: true })
 

@@ -13,7 +13,7 @@ import {
 import { useQuote } from '@/composables/useQuote'
 import message from '@/plugins/message'
 
-const { quote, loading, fetchQuote } = useQuote()
+const { quote, loading, error, fetchQuote } = useQuote()
 
 const source = computed(() => {
     if (!quote.value) return ''
@@ -93,6 +93,7 @@ onMounted(() => {
             </div>
         </CardHeader>
         <CardContent>
+            <p v-if="error" role="status" class="mb-2 text-sm text-muted-foreground">{{ error }}，请稍后刷新。</p>
             <div v-if="loading && !quote" class="py-4 text-center text-sm text-muted-foreground">
                 正在寻找一句话…
             </div>

@@ -1,3 +1,4 @@
+import { fetchJson } from '@/utils/request'
 import { ref } from 'vue'
 
 export interface DailyNewsItem {
@@ -44,22 +45,27 @@ export function useDailyNews(path: '60s' | 'ai-news' = '60s') {
     const newsData = ref<DailyNewsItem | null>(null)
     const aiNewsData = ref<AiNewsItem | null>(null)
     const loading = ref(false)
+    const error = ref('')
     const imageDialogOpen = ref(false)
 
     const fetchNews = async (date?: string) => {
         loading.value = true
+        error.value = ''
 
         try {
             const url = date ? `${BASE_URL}/${path}?date=${date}` : `${BASE_URL}/${path}`
-            const response = await fetch(url)
+            const response = await fetchJson<DailyNewsResponse | AiNewsResponse>(url)
 
+            if (!Array.isArray(response?.data?.news)) throw new Error('新闻数据格式无效')
             if (path === 'ai-news') {
-                const result: AiNewsResponse = await response.json()
+                const result = response as AiNewsResponse
                 aiNewsData.value = result.data
             } else {
-                const result: DailyNewsResponse = await response.json()
+                const result = response as DailyNewsResponse
                 newsData.value = result.data
             }
+        } catch (cause) {
+            error.value = cause instanceof Error ? cause.message : '数据加载失败'
         } finally {
             loading.value = false
         }
@@ -77,6 +83,7 @@ export function useDailyNews(path: '60s' | 'ai-news' = '60s') {
         newsData,
         aiNewsData,
         loading,
+        error,
         fetchNews,
         imageDialogOpen,
         imageUrl: IMAGE_URL,

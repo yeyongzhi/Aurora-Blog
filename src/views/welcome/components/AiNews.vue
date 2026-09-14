@@ -33,7 +33,7 @@ const getTargetDate = (): string => {
     return `${y}-${m}-${d}`
 }
 
-const { aiNewsData, loading, fetchNews } = useDailyNews('ai-news')
+const { aiNewsData, loading, error, fetchNews } = useDailyNews('ai-news')
 
 const headerInfo = computed(() => {
     if (!aiNewsData.value) return ''
@@ -67,6 +67,7 @@ onMounted(() => {
             </div>
         </CardHeader>
         <CardContent class="flex-1 min-h-0 overflow-hidden">
+            <p v-if="error" role="status" class="mb-2 text-sm text-muted-foreground">{{ error }}，请稍后刷新。</p>
             <div v-if="loading && !aiNewsData" class="flex items-center justify-center py-12">
                 <span class="text-sm text-muted-foreground">正在加载 AI 资讯…</span>
             </div>

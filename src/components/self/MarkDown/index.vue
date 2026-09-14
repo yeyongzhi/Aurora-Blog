@@ -1,28 +1,20 @@
-<script setup lang="ts" name="MarkDown">
-import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area';
-import Icon from '@/components/self/Icon/index.vue'
-import { ref, watch, computed, onMounted, onUnmounted, nextTick, shallowRef } from 'vue';
-import { formatMarkDown } from '@/utils/markdown'
-import message from '@/plugins/message'
-import { openTab, getMarkDownData, getArticleTextCount } from '@/utils/index'
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import { LinkIcon } from 'lucide-vue-next'
-import {
-    Card,
-    CardAction,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card'
-import Tooltip from '@/components/self/Tooltip/index.vue'
+<script setup lang="ts">
+import { computed, nextTick, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import { ChevronsUpIcon, ChevronsDownIcon, ArrowUpIcon } from 'lucide-vue-next'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
-import Tree from '../Tree/index.vue'
-import { ChevronsUpIcon, ChevronsDownIcon } from 'lucide-vue-next'
-// Using ES6 import syntax
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import Loading from '@/components/self/Loading/index.vue'
+import Tree from '@/components/self/Tree/index.vue'
+import { readPosition, savePosition } from '@/utils/readingPosition'
+import { fetchJson } from '@/utils/request'
+import type { SearchArticle } from '@/utils/search'
+import { renderMarkdown, escapeHtml, type ArticleHeading, type RenderedMarkdown } from '@/utils/markdown'
+import { getMarkDownData } from '@/utils'
+import message from '@/plugins/message'
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import python from 'highlight.js/lib/languages/python';
@@ -35,7 +27,6 @@ import typescript from 'highlight.js/lib/languages/typescript';
 import html from 'highlight.js/lib/languages/xml';
 import css from 'highlight.js/lib/languages/css';
 import sql from 'highlight.js/lib/languages/sql';
-import 'highlight.js/styles/github.css';
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('typescript', typescript);
@@ -49,417 +40,187 @@ hljs.registerLanguage('html', html);
 hljs.registerLanguage('css', css);
 hljs.registerLanguage('sql', sql);
 
-// 扩展插件
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
-const markdownContent = ref<any>(null)
-const markdownInfo = ref<any>({
-    lastModified: '',
-}) // 文章信息
-const markdownLoading = ref(false)
-
-const { path, showInfo, showGuide } = defineProps({
-    path: { type: String, required: true, default: '' },
-    showInfo: { type: Boolean, default: true },
-    showGuide: { type: Boolean, default: true },
-})
-
-// const copyCode = (content: string) => {
-//     navigator.clipboard.writeText(content)
-//         .then(() => {
-//             message.success("复制成功")
-//         })
-//         .catch(() => {
-//             message.error("复制出错，请重试")
-//         });
-// }
-
-const findTitleRange = (list: Array<any>, level: number, originResult: Array<any> = []) => {
-    let result: any[] = originResult
-    for (let i = 0; i < list.length; i++) {
-        if ((list[i].type.startsWith("h") && (Number(list[i].type.replace("h", "")) === level))) {
-            if (level === 1) {
-                result.push({
-                    ...list[i],
-                    index: i,
-                    label: list[i].content.replace(/#/g, "").trim(),
-                    key: `md_nav_${i}`
-                })
-            } else {
-                const findLastIndex = (list2: any) => {
-                    let parentTitleIndex = list2.findIndex((r: any) => {
-                        return r.index > i
-                    })
-                    if (parentTitleIndex === -1) {
-                        parentTitleIndex = list2.length - 1
-                    } else {
-                        parentTitleIndex = parentTitleIndex - 1
-                    }
-                    return parentTitleIndex
-                }
-                let targetIndex = findLastIndex(result)
-                let target = result[targetIndex]
-                if (level >= 3) {
-                    for (let j = 2; j < level; j++) {
-                        targetIndex = findLastIndex(target.children)
-                        target = target.children[targetIndex]
-                        if (j === level - 1) {
-                            if (!target.children) {
-                                target.children = []
-                            }
-                            target.children.push({
-                                ...list[i],
-                                index: i,
-                                // children: [],
-                                label: list[i].content.replace(/#/g, "").trim(),
-                                key: `md_nav_${i}`
-                            })
-                        }
-                    }
-                } else {
-                    if (!target.children) {
-                        target.children = []
-                    }
-                    target.children.push({
-                        ...list[i],
-                        index: i,
-                        // children: [],
-                        label: list[i].content.replace(/#/g, "").trim(),
-                        key: `md_nav_${i}`
-                    })
-                }
+dayjs.extend(utc)
+dayjs.extend(timezone)
+const props = withDefaults(defineProps<{ path: string; showInfo?: boolean; showGuide?: boolean }>(), { showInfo: true, showGuide: true })
+const documentData = shallowRef<RenderedMarkdown | null>(null)
+const lastModified = ref('')
+const published = ref('')
+const dateSource = ref('')
+let catalog: Promise<SearchArticle[]> | undefined
+const readCatalog = () => catalog ||= fetchJson<SearchArticle[]>(`${import.meta.env.BASE_URL}article-index.json`, AbortSignal.timeout(1500)).catch(() => [])
+let readingPath = '', readingTop = 0, lastSaved = 0
+const persistReading = () => { try { savePosition(localStorage, readingPath, readingTop) } catch {} }
+const rememberScroll = (event: Event) => {
+    const target = event.target
+    if (!readingPath || !(target instanceof HTMLElement) || target.dataset.slot !== 'scroll-area-viewport') return
+    readingTop = target.scrollTop
+    if (Date.now() - lastSaved > 300) { persistReading(); lastSaved = Date.now() }
+}
+const loading = ref(false)
+const error = ref('')
+const reloadKey = ref(0)
+const guideVisible = ref(window.matchMedia('(min-width: 1024px)').matches)
+const currentNavKey = ref('')
+const scrollRoot = shallowRef<{ scrollTo: (options: ScrollToOptions) => void } | null>(null)
+const highlight = (code: string, language: string) => {
+    try { return hljs.getLanguage(language) ? hljs.highlight(code, { language }).value : escapeHtml(code) }
+    catch { return escapeHtml(code) }
+}
+const scrollToTop = () => scrollRoot.value?.scrollTo({ top: 0, behavior: 'smooth' })
+const scrollToSection = () => {
+    let fragment = ''
+    try { fragment = decodeURIComponent(location.hash.slice(1)) } catch { return }
+    if (!fragment) return
+    const root = articleRoot.value
+    const target = root && Array.from(root.querySelectorAll<HTMLElement>('[id]')).find(element => element.id === fragment || (element.tagName.match(/^H[1-6]$/) && element.textContent?.trim() === fragment))
+    if (target) scrollRoot.value?.scrollTo({ top: target.offsetTop, behavior: 'smooth' })
+}
+const articleRoot = shallowRef<HTMLElement | null>(null)
+watch([() => props.path, reloadKey], async ([path], _, onCleanup) => {
+    const controller = new AbortController()
+    let active = true
+    const timeout = window.setTimeout(() => controller.abort(), 15000)
+    onCleanup(() => { active = false; controller.abort(); clearTimeout(timeout) })
+    persistReading(); readingPath = ''; readingTop = 0
+    published.value = ''; dateSource.value = ''
+    documentData.value = null
+    lastModified.value = ''
+    currentNavKey.value = ''
+    error.value = ''
+    loading.value = Boolean(path)
+    if (!path) { clearTimeout(timeout); return }
+    try {
+        const [{ content, lastModified: modified }, articles] = await Promise.all([getMarkDownData(path, controller.signal), readCatalog()])
+        if (!active) return
+        if (content === null) throw new Error('文章加载失败，请检查网络或文章路径')
+        documentData.value = renderMarkdown(content, { articlePath: path, base: import.meta.env.BASE_URL, highlight })
+        const article = documentData.value
+        document.title = article.title ? `${article.title} · Aurora Blog` : 'Aurora Blog'
+        for (const name of ['description', 'og:description']) document.querySelector(`meta[${name.startsWith('og:') ? 'property' : 'name'}="${name}"]`)?.setAttribute('content', article.summary)
+        document.querySelector('meta[property="og:title"]')?.setAttribute('content', article.title || 'Aurora Blog')
+        const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+        if (canonical) {
+            const route = path.replace(/^\/?article\//, '').replace(/\.md$/, '').split('/').map(encodeURIComponent).join('/')
+            canonical.href = new URL(`${import.meta.env.BASE_URL}${route}/`, canonical.href).href
+            document.querySelector('meta[property="og:url"]')?.setAttribute('content', canonical.href)
+        }
+        const metadata = articles.find(item => `article/${item.path}.md` === path.replace(/^\//, ''))
+        if (metadata) { published.value = dayjs(metadata.published).format('YYYY-MM-DD'); dateSource.value = metadata.dateSource }
+        for (const [property, content] of [['article:published_time', metadata?.published], ['article:modified_time', metadata?.updated], ['og:type', 'article']]) {
+            let tag = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`)
+            if (content) { if (!tag) { tag = document.createElement('meta'); tag.setAttribute('property', property!); document.head.append(tag) } tag.content = content }
+            else tag?.remove()
+        }
+        let schema = document.querySelector<HTMLScriptElement>('script[type="application/ld+json"]')
+        if (!schema) { schema = document.createElement('script'); schema.type = 'application/ld+json'; document.head.append(schema) }
+        schema.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'BlogPosting', headline: article.title, description: article.summary, ...(metadata ? { datePublished: metadata.published, dateModified: metadata.updated } : {}), author: { '@type': 'Person', name: 'Aurora' } })
+        const updated = metadata?.updated || modified
+        if (updated) lastModified.value = dayjs(updated).tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')
+    } catch (cause) { if (active) error.value = cause instanceof Error ? cause.message : '文章解析失败' }
+    finally {
+        clearTimeout(timeout)
+        if (active) {
+            loading.value = false
+            await nextTick()
+            if (active && documentData.value) {
+                let top = 0; try { top = readPosition(localStorage, path) } catch {}
+                scrollRoot.value?.scrollTo({ top, behavior: 'instant' as ScrollBehavior })
+                readingPath = path; readingTop = top
+                scrollToSection()
             }
         }
-    }
-    return result
-}
-
-
-const guideVisible = ref(true)
-const toggleGuideVisible = () => {
-    guideVisible.value = !guideVisible.value
-}
-const markdown_nav = computed(() => {
-    if (!markdownContent.value) {
-        return []
-    }
-    let list: any = []
-    list = findTitleRange(markdownContent.value, 1)
-    list = findTitleRange(markdownContent.value, 2, list)
-    list = findTitleRange(markdownContent.value, 3, list)
-    list = findTitleRange(markdownContent.value, 4, list)
-    list = findTitleRange(markdownContent.value, 5, list)
-    list = findTitleRange(markdownContent.value, 6, list)
-    // console.log("文章目录生成如下：")
-    // console.log(list)
-    return list
-})
-
-const markdownNavCount = computed(() => {
-    if (!markdown_nav.value) {
-        return 0
-    }
-    let count = 0
-    const traverse = (items: any[]) => {
-        for (const item of items) {
-            count++
-            if (item.children) {
-                traverse(item.children)
-            }
-        }
-    }
-    traverse(markdown_nav.value)
-    return count
-})
-
-const handleNavClick = (name: string) => {
-    location.hash = `#${name}`
-}
-
-watch(() => path, async (newVal) => {
-    if (newVal && newVal !== "") {
-        markdownLoading.value = true
-        // 一次 fetch 同时获取内容和修改时间，避免重复请求同一文件
-        const { content, lastModified } = await getMarkDownData(newVal)
-        if (lastModified) {
-            const localTime = dayjs(lastModified).tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
-            markdownInfo.value = {
-                lastModified: localTime
-            }
-        }
-        if (content) {
-            message.success("文章加载成功")
-            const data = formatMarkDown(content)
-            markdownContent.value = data;
-        } else {
-            message.error("未找到文章")
-            markdownContent.value = null;
-        }
-        markdownLoading.value = false
-        nextTick(() => {
-            scrollToTop()
-        })
     }
 }, { immediate: true })
-
-const scrollAreaRootRef = shallowRef<any>(null)
-
-const scrollToTop = () => {
-    const options = {
-        top: 0,
-        behavior: 'smooth'
+const headings = computed(() => {
+    const roots: ArticleHeading[] = [], stack: ArticleHeading[] = []
+    for (const original of documentData.value?.headings || []) {
+        const heading = { ...original }
+        while (stack.length && stack[stack.length - 1]!.level >= heading.level) stack.pop()
+        const parent = stack[stack.length - 1]
+        if (parent) (parent.children ||= []).push(heading)
+        else roots.push(heading)
+        stack.push(heading)
     }
-    scrollAreaRootRef.value?.scrollTo(options);
-}
-
-const scrollToSection = () => {
-    const decodedHash = decodeURIComponent(location.hash.substring(1));
-    const element = document.getElementById('markdown_nav_' + decodedHash);
-    if (element) {
-        const options = {
-            top: element.offsetTop,
-            behavior: 'smooth'
-        }
-        scrollAreaRootRef.value?.scrollTo(options);
-    }
-}
-
-const currentNavKey = ref("")
-
-const getCurrentNavName = (data: Array<any>, key: string) => {
-    let name = null
-    data.forEach((item: any) => {
-        if (item.key === key) {
-            name = item.label
-        }
-        if (item.children) {
-            name = getCurrentNavName(item.children, key)
-        }
-    })
-    return name
-}
-
-watch(() => currentNavKey.value, (newVal, _) => {
-    if (newVal) {
-        console.log(newVal)
-        let name = getCurrentNavName(markdown_nav.value, newVal)
-        console.log(name)
-        if (name) {
-            handleNavClick(name)
-        }
-    }
+    return roots
 })
-
-onMounted(() => {
-    window.addEventListener('hashchange', scrollToSection);
-    hljs.highlightAll();
-})
-
-onUnmounted(() => {
-    window.removeEventListener('hashchange', scrollToSection);
-})
-
-const renderTitleId = (item: any) => {
-    return 'markdown_nav_' + item.content.replace(/#/g, "").trim()
-}
-
-const renderCode = (content: string[], lang: string = 'javascript') => {
-    const codeStr = content.join('\n')
+watch(currentNavKey, key => { if (key) location.hash = key })
+const copyCode = async (event: MouseEvent) => {
+    const target = event.target instanceof Element ? event.target.closest<HTMLButtonElement>('button[data-copy-code]') : null
+    if (!target || !articleRoot.value?.contains(target)) return
+    const code = documentData.value?.codes[Number(target.dataset.copyCode)]
+    if (code === undefined) return
     try {
-        const result = hljs.highlight(codeStr, { language: lang })
-        return result.value
-    } catch (error) {
-        const result = hljs.highlight(codeStr, { language: 'javascript' })
-        return result.value
-    }
+        await navigator.clipboard.writeText(code)
+        message.success('代码已复制')
+    } catch { message.error('复制失败，请选择代码后手动复制') }
 }
-
-const getImageUrl = (url: string) => {
-    if (url.startsWith('http') || url.startsWith('data:')) {
-        return url
-    }
-    const basePath = path.substring(0, path.lastIndexOf("/"))
-    const cleanUrl = url.startsWith('./') ? url.substring(2) : url
-    return `${import.meta.env.BASE_URL}${basePath}/${cleanUrl}`
-}
-
-const articelTextTotal = computed(() => {
-    if (!markdownContent.value) {
-        return '-'
-    }
-    return getArticleTextCount(markdownContent.value)
+onMounted(() => window.addEventListener('hashchange', scrollToSection))
+onUnmounted(() => {
+    persistReading()
+    document.querySelector('script[type="application/ld+json"]')?.remove()
+    for (const property of ['article:published_time', 'article:modified_time']) document.querySelector(`meta[property="${property}"]`)?.remove()
+    document.querySelector('meta[property="og:type"]')?.setAttribute('content', 'website')
+    window.removeEventListener('hashchange', scrollToSection)
+    document.title = 'Aurora Blog'
+    document.querySelector('link[rel="canonical"]')?.remove()
+    document.querySelector('meta[property="og:url"]')?.remove()
+    for (const name of ['description', 'og:description']) document.querySelector(`meta[${name.startsWith('og:') ? 'property' : 'name'}="${name}"]`)?.setAttribute('content', 'Aurora 的个人博客，记录前端开发、AI 学习与生活思考。')
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', 'Aurora Blog')
 })
-
-const primaryTitleIndex = computed(() => {
-    if (!markdownContent.value) {
-        return -1
-    }
-    return markdownContent.value.findIndex((item: any) => item.type === 'h1')
-})
-
-const readingTime = computed(() => {
-    if (typeof articelTextTotal.value !== 'number') {
-        return '-'
-    }
-    return `${Math.max(1, Math.ceil(articelTextTotal.value / 400))} 分钟`
-})
-
-const articleInfoList = computed(() => [
-    {
-        icon: 'CalendarClockIcon',
-        value: markdownInfo.value.lastModified || '-',
-        tooltip: '最近更新时间',
-    },
-    {
-        icon: 'NotebookTabsIcon',
-        value: articelTextTotal.value,
-        tooltip: '全文字数统计',
-    },
-    {
-        icon: 'BookOpenTextIcon',
-        value: readingTime.value,
-        tooltip: '大概阅读时长',
-    },
-])
-
 </script>
 
 <template>
-    <div class="relative w-full h-full overflow-hidden">
-        <template v-if="markdownLoading">
-            ...
-        </template>
-        <!-- 文章内容 -->
-        <ScrollArea ref="scrollAreaRootRef" class="w-full h-full text-4 pr-[350px]" v-else>
-            <template v-for="(item, index) in markdownContent" :key="'md' + index">
-                <template v-if="item.type === 'h1'">
-                    <h1 :class="`md_${item.type} mb-3 text-4xl font-extrabold text-balance`" :id="renderTitleId(item)">
-                        {{ item.content.trim().replace(/#/g, "") }}</h1>
-                    <div v-if="showInfo && index === primaryTitleIndex"
-                        class="mb-4 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
-                        <Tooltip v-for="info in articleInfoList" :key="info.tooltip" :content="info.tooltip">
-                            <span class="inline-flex items-center gap-1 rounded-md border bg-muted/40 px-2 py-1">
-                                <Icon :name="info.icon" size="4" />
-                                <span>{{ info.value }}</span>
-                            </span>
-                        </Tooltip>
-                    </div>
-                </template>
-                <template v-else-if="item.type === 'h2'">
-                    <h2 :class="`md_${item.type} my-6 scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0`"
-                        :id="renderTitleId(item)">{{ item.content.trim().replace(/#/g, "") }}</h2>
-                </template>
-                <template v-else-if="item.type === 'h3'">
-                    <h3 :class="`md_${item.type} my-4 scroll-m-20 text-2xl font-semibold tracking-tight`"
-                        :id="renderTitleId(item)">{{ item.content.trim().replace(/#/g, "") }}</h3>
-                </template>
-                <template v-else-if="item.type === 'h4'">
-                    <h4 :class="`md_${item.type} my-2 scroll-m-20 text-xl font-semibold tracking-tight`"
-                        :id="renderTitleId(item)">{{ item.content.trim().replace(/#/g, "") }}</h4>
-                </template>
-                <template v-else-if="item.type === 'h5'">
-                    <h5 :class="`md_${item.type} my-2 scroll-m-20 text-lg font-semibold tracking-tight`"
-                        :id="renderTitleId(item)">{{ item.content.trim().replace(/#/g, "") }}</h5>
-                </template>
-                <template v-else-if="item.type === 'h6'">
-                    <h6 :class="`md_${item.type} my-2 scroll-m-20 text-lg font-semibold tracking-tight`"
-                        :id="renderTitleId(item)">{{ item.content.trim().replace(/#/g, "") }}</h6>
-                </template>
-                <template v-else-if="item.type === 'divider'">
-                    <div class="w-full my-4 h-[2px] bg-muted"></div>
-                </template>
-                <!-- 引用 -->
-                <template v-else-if="item.type === 'quote'">
-                    <blockquote class="my-4 border-l-4 pl-2 italic">
-                        <p class="text-4 leading-8 my-2" v-html="item.content"></p>
-                    </blockquote>
-                </template>
-                <!-- 超链接 -->
-                <template v-else-if="item.type === 'link'">
-                    <Tooltip :content="item.content[2]">
-                        <div class="flex justify-start items-center w-fit px-0 py-0 font-bold cursor-pointer hover:underline underline-offset-2" @click="openTab(item.content[2])">
-                            <LinkIcon class="size-4" />
-                            <span class="ml-1">{{ item.content[1] }}</span>
-                        </div>
-                    </Tooltip>
-                </template>
-                <!-- 图片 -->
-                <template v-else-if="item.type === 'img'">
-                    <div class="w-fit my-4 flex flex-col justify-start items-center">
-                        <img :src="getImageUrl(item.content[2])" :alt="item.content[1]" :class="`rounded-md`" :style="{
-                            width: (Number(item.content[3]) > 0) ? `${item.content[3]}px` : item.content[3],
-                            height: (Number(item.content[4]) > 0) ? `${item.content[4]}px` : item.content[4]
-                        }">
-                        <p class="my-2 w-full text-center" :title="item.content[1]">{{ item.content[1] }}</p>
-                    </div>
-                </template>
-                <!-- 无序列表 -->
-                <template v-else-if="item.type === 'unorderList'">
-                    <div class="flex justify-start items-center my-2">
-                        <Badge class="size-2 p-0"></Badge>
-                        <span class="text-4 ml-2" v-html="item.content"></span>
-                    </div>
-                </template>
-                <!-- 有序列表 -->
-                <template v-else-if="item.type === 'orderList'">
-                    <div class="flex justify-start items-center my-2">
-                        <Badge class="size-4 p-0">
-                            {{ item.content[0] }}
-                        </Badge>
-                        <span class="text-4 ml-2" v-html="item.content[1]"></span>
-                    </div>
-                </template>
-                <!-- 待办事项 -->
-                <template v-else-if="item.type === 'todo'">
-                    <p v-for="(t, t_index) in item.content" :key="'todo' + t_index">
-                        <n-checkbox :checked="t.finished">
-                            {{ t.label }}
-                        </n-checkbox>
-                    </p>
-                </template>
-                <!-- 代码片段 -->
-                <template v-else-if="item.type === 'code'">
-                    <pre
-                        class="p-4 my-4 rounded-md bg-muted text-sm font-semibold whitespace-break-spaces"><code :class="`language-${item.lang || 'javascript'}`" v-html="renderCode(item.content, item.lang || 'javascript')"></code></pre>
-                </template>
-                <template v-else-if="item.type === 'text'">
-                    <p class="text-4 leading-8" v-html="item.content"></p>
-                </template>
-                <template v-else>
-                    <p>{{ item.content }}</p>
-                </template>
-            </template>
+    <div class="relative h-full w-full overflow-hidden" @scroll.capture="rememberScroll">
+        <Loading v-if="loading" description="文章加载中..." />
+        <div v-else-if="error" role="alert" class="flex flex-col items-center gap-4 p-6"><p>{{ error }}</p><Button variant="outline" @click="reloadKey++">重试</Button></div>
+        <ScrollArea v-else ref="scrollRoot" class="h-full w-full pt-14 lg:pt-0" :class="{ 'lg:pr-[330px]': props.showGuide && guideVisible }">
+            <div v-if="props.showInfo && documentData" class="mb-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
+                <span v-if="published">发布于 {{ published }}</span><span v-if="dateSource === 'file'">日期来自文件时间</span>
+                <span v-if="lastModified">更新于 {{ lastModified }}</span>
+                <span>{{ documentData.textCount }} 字</span><span>{{ Math.max(1, Math.ceil(documentData.textCount / 400)) }} 分钟</span>
+            </div>
+            <article ref="articleRoot" class="markdown-body" @click="copyCode" v-html="documentData?.html || ''" />
         </ScrollArea>
-        <!-- 目录 -->
-        <div class="absolute top-2 right-2" v-if="showGuide">
-            <Card class="w-[300px] gap-4 py-4">
-                <CardHeader>
-                    <CardTitle>文章目录</CardTitle>
-                    <CardDescription>
-                        共 <span class="text-sm font-bold">{{ markdownNavCount }}</span> 个章节
-                    </CardDescription>
-                    <CardAction>
-                        <Tooltip :content="guideVisible ? '收起目录' : '展开目录'">
-                            <Button size="sm" variant="secondary" @click="toggleGuideVisible">
-                                <ChevronsUpIcon class="size-4" v-if="guideVisible" />
-                                <ChevronsDownIcon class="size-4" v-else />
-                            </Button>
-                        </Tooltip>
-                    </CardAction>
+        <div v-if="props.showGuide && documentData?.headings.length" class="absolute right-2 top-2 max-w-[calc(100%-1rem)]">
+            <Card class="max-w-full gap-4 py-4" :class="guideVisible ? 'w-[300px]' : 'w-fit'">
+                <CardHeader><CardTitle v-if="guideVisible">文章目录</CardTitle><CardDescription v-if="guideVisible">共 {{ documentData.headings.length }} 个章节</CardDescription>
+                    <CardAction><Button size="sm" variant="secondary" aria-label="切换文章目录" :aria-expanded="guideVisible" @click="guideVisible = !guideVisible"><ChevronsUpIcon v-if="guideVisible" /><ChevronsDownIcon v-else /></Button></CardAction>
                 </CardHeader>
-                <CardContent class="mh-[400px] overflow-hidden" v-show="guideVisible">
-                    <Tree :data="markdown_nav" v-model:currentKey="currentNavKey" />
-                </CardContent>
+                <CardContent v-show="guideVisible" class="max-h-[60dvh] overflow-auto"><Tree :data="headings" v-model:currentKey="currentNavKey" /></CardContent>
             </Card>
         </div>
-        <!-- 回到顶部 -->
-        <div class="absolute bottom-2 right-2 p-2 border text-xs rounded-md bg-muted">
-            <Tooltip content="回到顶部">
-                <Icon name="ArrowUpIcon" size="4" class="cursor-pointer" @click="scrollToTop" />
-            </Tooltip>
-        </div>
+        <Button class="absolute bottom-2 right-2" size="icon" variant="secondary" aria-label="回到顶部" @click="scrollToTop"><ArrowUpIcon /></Button>
     </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style>
+.markdown-body { overflow-wrap: anywhere; line-height: 1.8; }
+.markdown-body h1 { font-size: 2.25rem; font-weight: 800; margin: 0 0 1rem; line-height: 1.3; }
+.markdown-body h2 { font-size: 1.875rem; font-weight: 700; margin: 1.5rem 0 1rem; line-height: 1.4; }
+.markdown-body h3 { font-size: 1.5rem; font-weight: 600; margin: 1.25rem 0 .75rem; }
+.markdown-body h4, .markdown-body h5, .markdown-body h6 { font-size: 1.125rem; font-weight: 600; margin: 1rem 0 .5rem; }
+.markdown-body p { margin: .75rem 0; }
+.markdown-body ul { list-style: disc; padding-left: 1.5rem; margin: .5rem 0; }
+.markdown-body ol { list-style: decimal; padding-left: 1.5rem; margin: .5rem 0; }
+.markdown-body .contains-task-list { list-style: none; }
+.markdown-body input[type=checkbox] { margin-right: .5rem; }
+.markdown-body blockquote { border-left: 4px solid var(--border); padding-left: 1rem; margin: 1rem 0; color: var(--muted-foreground); }
+.markdown-body a { text-decoration: underline; text-underline-offset: 3px; }
+.markdown-body img { max-width: 100%; height: auto; border-radius: .5rem; }
+.markdown-body .markdown-table { overflow-x: auto; margin: 1rem 0; }
+.markdown-body table { border-collapse: collapse; width: 100%; }
+.markdown-body th, .markdown-body td { border: 1px solid var(--border); padding: .5rem .75rem; min-width: 6rem; }
+.markdown-body th { background: var(--muted); font-weight: 600; }
+.markdown-body .markdown-code { margin: 1rem 0; border: 1px solid var(--border); border-radius: .5rem; overflow: hidden; background: var(--muted); }
+.markdown-body .markdown-code-toolbar { display: flex; align-items: center; justify-content: space-between; padding: .5rem .75rem; border-bottom: 1px solid var(--border); font-size: .75rem; }
+.markdown-body button[data-copy-code] { cursor: pointer; padding: .25rem .5rem; border-radius: .25rem; background: var(--secondary); color: var(--secondary-foreground); }
+.markdown-body button[data-copy-code]:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.markdown-body pre { overflow-x: auto; white-space: pre; padding: 1rem; font-size: .875rem; line-height: 1.6; }
+.markdown-body :not(pre) > code { border-radius: .25rem; background: var(--muted); padding: .15rem .3rem; font-size: .9em; }
+.markdown-body .hljs-keyword, .markdown-body .hljs-title { font-weight: 700; }
+.markdown-body .hljs-comment, .markdown-body .hljs-string { color: var(--muted-foreground); }
+.markdown-body hr { border-top: 1px solid var(--border); margin: 1.5rem 0; }
+.markdown-body .footnotes { border-top: 1px solid var(--border); margin-top: 2rem; padding-top: 1rem; font-size: .875rem; }
+</style>

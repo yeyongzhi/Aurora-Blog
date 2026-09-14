@@ -1,10 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="icon" href="%BASE_URL%favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aurora Blog</title>
+    <meta name="description" content="Aurora 的个人博客，记录前端开发、AI 学习、技术笔记与生活思考。" />
+    <meta property="og:title" content="Aurora Blog" />
+    <meta property="og:description" content="技术笔记、学习记录与生活思考" />
+    <meta property="og:type" content="website" />
     <script>
       // 从 404.html 重定向中恢复目标路径
       (function() {
@@ -16,7 +20,8 @@
         }
       })();
     </script>
-  </head>
+    <link rel="alternate" type="application/rss+xml" title="Aurora Blog RSS" href="%BASE_URL%rss.xml">
+</head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>

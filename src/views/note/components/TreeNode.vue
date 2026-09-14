@@ -56,7 +56,7 @@ if (expandControl) {
 
 <template>
     <!-- 叶子节点：渲染为可点击的文章条目 -->
-    <div
+    <button type="button"
         v-if="isLeafNode(node)"
         :class="[
             'flex items-center gap-2 px-2 py-2 text-sm rounded-md cursor-pointer transition-all duration-200 border-l-2',
@@ -68,7 +68,7 @@ if (expandControl) {
     >
         <FileTextIcon class="size-4 shrink-0" />
         <span class="truncate">{{ node.label }}</span>
-    </div>
+    </button>
 
     <!-- 非叶子节点：渲染为可折叠分类，递归渲染子节点 -->
     <Collapsible v-else v-model:open="isFolderOpen">

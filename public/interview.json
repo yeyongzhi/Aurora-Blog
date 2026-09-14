@@ -25,7 +25,8 @@
         "children": [
             {
                 "key": "react",
-                "label": "React"
+                "label": "React",
+                "published": false
             },
             {
                 "key": "vue3",
@@ -35,6 +36,7 @@
     },
     {
         "key": "interview",
-        "label": "面试真实总结"
+        "label": "面试真实总结",
+        "published": false
     }
 ]
