@@ -14,6 +14,11 @@ test('standard and legacy task syntax renders disabled checkboxes', () => {
     assert.equal((html.match(/checked=""/g) || []).length, 1)
     assert.equal((html.match(/disabled=""/g) || []).length, 3)
 })
+test('legacy strong labels render when text follows the closing marker immediately', () => {
+    const { html } = renderMarkdown('- **【CPU】**Intel i5-12400F')
+    assert.match(html, /<strong>【CPU】<\/strong>Intel i5-12400F/)
+    assert.equal(renderInline('`**【CPU】**Intel`'), '<code>**【CPU】**Intel</code>')
+})
 test('code fences retain language, raw code and unfinished blocks', () => {
     const source = '```python\n# title\n- [] code\n```'
     const article = renderMarkdown(source)

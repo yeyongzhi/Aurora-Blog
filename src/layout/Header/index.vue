@@ -14,7 +14,6 @@ import { SunIcon, MoonIcon, Laptop, ClockIcon } from 'lucide-vue-next'
 import useAppStore from '@/store/app'
 
 const appStore = useAppStore()
-const base = import.meta.env.BASE_URL
 
 </script>
 
@@ -24,7 +23,6 @@ const base = import.meta.env.BASE_URL
         <div class="flex justify-center items-center gap-2 flex-wrap">
             <Menu />
             <ArticleSearch />
-            <Button as-child size="sm" variant="outline"><a :href="`${base}rss.xml`">RSS</a></Button>
             <Popover>
                 <PopoverTrigger asChild>
                     <Button size="icon" variant="outline" aria-label="主题模式">

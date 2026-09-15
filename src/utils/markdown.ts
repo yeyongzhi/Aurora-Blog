@@ -16,6 +16,24 @@ const md = new MarkdownIt({ html: false, linkify: true, breaks: false }).use(foo
 const defaultValidate = md.validateLink.bind(md)
 md.validateLink = url => defaultValidate(url) && Boolean(safeUrl(url, 'https://aurora.invalid/'))
 
+// Keep historical labels such as `**【CPU】**Intel` compatible with the old renderer.
+// CommonMark treats the closing marker as plain text when another word starts immediately after it.
+md.inline.ruler.before('emphasis', 'legacy_adjacent_strong', (state, silent) => {
+    const start = state.pos
+    if (!state.src.startsWith('**', start) || state.src[start + 2] === '*') return false
+    const end = state.src.indexOf('**', start + 2)
+    if (end <= start + 2 || !state.src[end + 2] || /\s/.test(state.src[end + 2]!)) return false
+    if (!silent) {
+        const open = state.push('strong_open', 'strong', 1)
+        open.markup = '**'
+        state.md.inline.parse(state.src.slice(start + 2, end), state.md, state.env, state.tokens)
+        const close = state.push('strong_close', 'strong', -1)
+        close.markup = '**'
+    }
+    state.pos = end + 2
+    return true
+})
+
 // The only supported raw HTML syntax is an attribute-free underline with escaped contents.
 md.inline.ruler.before('html_inline', 'safe_underline', (state, silent) => {
     if (!state.src.startsWith('<u>', state.pos)) return false
@@ -75,7 +93,7 @@ function codeBlock(tokens: Token[], index: number, env: RenderEnvironment): stri
     let html = md.utils.escapeHtml(token.content)
     if (env.options.highlight) html = env.options.highlight(token.content, language)
     const button = env.options.interactive === false ? '' : `<button type="button" data-copy-code="${codeIndex}" aria-label="复制第 ${codeIndex + 1} 个代码块">复制代码</button>`
-    return `<div class="markdown-code"><div class="markdown-code-toolbar"><span>${md.utils.escapeHtml(language)}</span>${button}</div><pre><code class="language-${md.utils.escapeHtml(language)}">${html}</code></pre></div>\n`
+    return `<div class="markdown-code"><div class="markdown-code-toolbar"><span class="markdown-code-language">${md.utils.escapeHtml(language)}</span>${button}</div><pre><code class="language-${md.utils.escapeHtml(language)}">${html}</code></pre></div>\n`
 }
 md.renderer.rules.fence = (tokens, index, _options, env) => codeBlock(tokens, index, env as RenderEnvironment)
 md.renderer.rules.code_block = md.renderer.rules.fence!
