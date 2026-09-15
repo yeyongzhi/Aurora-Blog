@@ -1,1 +1,0 @@
-import{Gt as e,_t as t,bt as n,et as r,it as i,qt as a,z as o}from"./utils-D0knN-ye.js";var s=i({__name:`CardAction`,props:{class:{type:[Boolean,null,String,Object,Array]}},setup(i){let s=i;return(i,c)=>(t(),r(`div`,{"data-slot":`card-action`,class:a(e(o)(`col-start-2 row-span-2 row-start-1 self-start justify-self-end`,s.class))},[n(i.$slots,`default`)],2))}});export{s as t};

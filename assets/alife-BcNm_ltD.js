@@ -1,1 +1,0 @@
-import{_t as e,et as t,it as n,nt as r}from"./utils-D0knN-ye.js";import{t as i}from"./MarkDown-BZaCBAGQ.js";var a={class:`w-full h-full p-4 overflow-hidden`},o=n({__name:`index`,setup(n){return(n,o)=>(e(),t(`div`,a,[r(i,{path:`./article/alife//alife.md`})]))}});export{o as default};

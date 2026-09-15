@@ -1,0 +1,1 @@
+import{Rt as e,X as t,v as n}from"./utils-DupZz1Dc.js";function r(){let r=e();return{primitiveElement:r,currentElement:t(()=>[`#text`,`#comment`].includes(r.value?.$el.nodeName)?r.value?.$el.nextElementSibling:n(r))}}export{r as t};
