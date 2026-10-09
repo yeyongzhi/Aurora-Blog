@@ -19,9 +19,10 @@ const props = withDefaults(defineProps<TooltipProps>(), {
 </script>
 
 <template>
-    <TooltipProvider>
+    <slot v-if="props.disabled || !props.content" />
+    <TooltipProvider v-else>
         <Tooltip>
-            <TooltipTrigger ref="triggerRef" as-child>
+            <TooltipTrigger as-child>
                 <slot />
             </TooltipTrigger>
             <TooltipContent class="max-w-80 whitespace-pre-line break-words">

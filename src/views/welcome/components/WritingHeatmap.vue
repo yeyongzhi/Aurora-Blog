@@ -177,15 +177,15 @@ onMounted(() => {
                     </CardDescription>
                 </div>
                 <div class="flex flex-wrap items-center justify-end gap-2">
-                    <Button variant="outline" size="icon-sm" @click="handleMonthChange(-1)">
+                    <Tooltip content="上个月"><Button aria-label="上个月" variant="outline" size="icon-sm" @click="handleMonthChange(-1)">
                         <ChevronLeftIcon class="size-4" />
-                    </Button>
+                    </Button></Tooltip>
                     <Button variant="secondary" size="sm" :disabled="isCurrentMonth" @click="handleBackToday">
                         本月
                     </Button>
-                    <Button variant="outline" size="icon-sm" @click="handleMonthChange(1)">
+                    <Tooltip content="下个月"><Button aria-label="下个月" variant="outline" size="icon-sm" @click="handleMonthChange(1)">
                         <ChevronRightIcon class="size-4" />
-                    </Button>
+                    </Button></Tooltip>
                 </div>
             </div>
         </CardHeader>

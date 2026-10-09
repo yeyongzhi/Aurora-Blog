@@ -3,12 +3,13 @@ import { computed, nextTick, onMounted, onUnmounted, ref, shallowRef, watch } fr
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
-import { ChevronsUpIcon, ChevronsDownIcon, ArrowUpIcon } from 'lucide-vue-next'
+import { EyeIcon, EyeOffIcon, ArrowUpIcon } from 'lucide-vue-next'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import Loading from '@/components/self/Loading/index.vue'
 import Tree from '@/components/self/Tree/index.vue'
+import Tooltip from '@/components/self/Tooltip/index.vue'
 import { readPosition, savePosition } from '@/utils/readingPosition'
 import { fetchJson } from '@/utils/request'
 import type { SearchArticle } from '@/utils/search'
@@ -194,14 +195,15 @@ onUnmounted(() => {
             <article ref="articleRoot" class="markdown-body" @click="copyCode" v-html="documentData?.html || ''" />
         </ScrollArea>
         <div v-if="props.showGuide && documentData?.headings.length" class="absolute right-2 top-2 max-w-[calc(100%-1rem)]">
-            <Card class="max-w-full gap-4 py-4" :class="guideVisible ? 'w-[300px]' : 'w-fit'">
+            <Card v-if="guideVisible" class="w-[300px] max-w-full gap-4 py-4">
                 <CardHeader><CardTitle v-if="guideVisible">文章目录</CardTitle><CardDescription v-if="guideVisible">共 {{ documentData.headings.length }} 个章节</CardDescription>
-                    <CardAction><Button size="sm" variant="secondary" aria-label="切换文章目录" :aria-expanded="guideVisible" @click="guideVisible = !guideVisible"><ChevronsUpIcon v-if="guideVisible" /><ChevronsDownIcon v-else /></Button></CardAction>
+                    <CardAction><Tooltip content="隐藏文章目录"><Button size="icon" variant="secondary" aria-label="隐藏文章目录" :aria-expanded="guideVisible" @click="guideVisible = false"><EyeOffIcon /></Button></Tooltip></CardAction>
                 </CardHeader>
                 <CardContent v-show="guideVisible" class="max-h-[60dvh] overflow-auto"><Tree :data="headings" v-model:currentKey="currentNavKey" /></CardContent>
             </Card>
+            <Tooltip v-else content="显示文章目录"><Button size="icon" variant="secondary" aria-label="显示文章目录" :aria-expanded="guideVisible" @click="guideVisible = true"><EyeIcon /></Button></Tooltip>
         </div>
-        <Button class="absolute bottom-2 right-2" size="icon" variant="secondary" aria-label="回到顶部" @click="scrollToTop"><ArrowUpIcon /></Button>
+        <Tooltip content="回到顶部"><Button class="absolute bottom-2 right-2" size="icon" variant="secondary" aria-label="回到顶部" @click="scrollToTop"><ArrowUpIcon /></Button></Tooltip>
     </div>
 </template>
 

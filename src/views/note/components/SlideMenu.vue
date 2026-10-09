@@ -59,7 +59,7 @@ const emits = defineEmits(['toggle'])
             <CardAction>
                 <TooltipProvider>
                     <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger as-child>
                             <Button size="sm" variant="secondary" @click="emits('toggle')">
                                 <ChevronsLeftIcon class="size-4" v-if="props.visible" />
                                 <ChevronsRightIcon class="size-4" v-else />

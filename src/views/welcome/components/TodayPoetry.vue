@@ -71,13 +71,13 @@ onMounted(() => {
                 </div>
                 <div class="flex items-center gap-x-2">
                     <Tooltip :content="poetry ? '复制' : '暂无可复制内容'">
-                        <Button variant="outline" size="icon-sm" @click="copyPoetry()">
+                        <Button variant="outline" size="icon-sm" aria-label="复制诗词" :disabled="!poetry" @click="copyPoetry()">
                             <CopyIcon class="size-4" />
                         </Button>
                     </Tooltip>
-                    <Button variant="outline" size="icon-sm" :disabled="loading" @click="fetchPoetry()">
+                    <Tooltip content="换一首诗词"><Button aria-label="换一首诗词" variant="outline" size="icon-sm" :disabled="loading" @click="fetchPoetry()">
                         <RefreshCwIcon :class="`size-4 ${loading ? 'animate-spin' : ''}`" />
-                    </Button>
+                    </Button></Tooltip>
                 </div>
             </div>
         </CardHeader>

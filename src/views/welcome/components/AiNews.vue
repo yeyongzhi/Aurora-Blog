@@ -1,6 +1,7 @@
 <script setup lang="ts" name="AiNews">
 import { computed, onMounted } from 'vue'
 import { BotIcon, ExternalLinkIcon, RefreshCwIcon } from 'lucide-vue-next'
+import Tooltip from '@/components/self/Tooltip/index.vue'
 import { Button } from '@/components/ui/button'
 import {
     Card,
@@ -61,9 +62,9 @@ onMounted(() => {
                     </CardTitle>
                     <CardDescription>{{ headerInfo || '' }}</CardDescription>
                 </div>
-                <Button variant="outline" size="icon-sm" :disabled="loading" @click="fetchNews(getTargetDate())">
+                <Tooltip content="刷新 AI 资讯"><Button aria-label="刷新 AI 资讯" variant="outline" size="icon-sm" :disabled="loading" @click="fetchNews(getTargetDate())">
                     <RefreshCwIcon :class="`size-4 ${loading ? 'animate-spin' : ''}`" />
-                </Button>
+                </Button></Tooltip>
             </div>
         </CardHeader>
         <CardContent class="flex-1 min-h-0 overflow-hidden">

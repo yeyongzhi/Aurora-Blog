@@ -53,7 +53,7 @@ const emits = defineEmits(['toggle'])
             </CardDescription>
             <CardAction>
                     <Tooltip :content="props.visible ? '收起' : '展开'">
-                        <Button size="sm" variant="secondary" @click="emits('toggle')">
+                        <Button size="sm" variant="secondary" :aria-label="props.visible ? '收起文章菜单' : '展开文章菜单'" @click="emits('toggle')">
                             <ChevronsLeftIcon class="size-4" v-if="props.visible" />
                             <ChevronsRightIcon class="size-4" v-else />
                         </Button>

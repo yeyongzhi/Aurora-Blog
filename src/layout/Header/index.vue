@@ -1,4 +1,5 @@
 <script setup lang="ts" name="Header">
+import { onUnmounted, ref } from 'vue'
 import ArticleSearch from '@/components/self/ArticleSearch.vue'
 import Menu from './components/Menu.vue'
 import Avatar from './components/Avatar.vue'
@@ -14,6 +15,20 @@ import { SunIcon, MoonIcon, Laptop, ClockIcon } from 'lucide-vue-next'
 import useAppStore from '@/store/app'
 
 const appStore = useAppStore()
+const themeOpen = ref(false)
+const timeOpen = ref(false)
+let closeTimer: ReturnType<typeof setTimeout> | undefined
+const cancelClose = () => { clearTimeout(closeTimer) }
+const openPanel = (panel: 'theme' | 'time') => {
+    cancelClose()
+    themeOpen.value = panel === 'theme'
+    timeOpen.value = panel === 'time'
+}
+const scheduleClose = () => {
+    cancelClose()
+    closeTimer = setTimeout(() => { themeOpen.value = false; timeOpen.value = false }, 180)
+}
+onUnmounted(cancelClose)
 
 </script>
 
@@ -23,13 +38,15 @@ const appStore = useAppStore()
         <div class="flex justify-center items-center gap-2 flex-wrap">
             <Menu />
             <ArticleSearch />
-            <Popover>
-                <PopoverTrigger asChild>
+            <Popover v-model:open="themeOpen">
+                <span class="inline-flex" @pointerenter="openPanel('theme')" @pointerleave="scheduleClose">
+                    <PopoverTrigger as-child>
                     <Button size="icon" variant="outline" aria-label="主题模式">
                         <SunIcon />
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent class="w-fit p-2" align="center">
+                </span>
+                <PopoverContent class="w-fit p-2" align="center" @pointerenter="cancelClose" @pointerleave="scheduleClose">
                     <div class="flex flex-col justify-center items-center gap-y-2">
                         <Button size="sm" variant="outline" @click="appStore.handleModeChange(item.value as any)"
                             v-for="item in appStore.themeOptions" :key="item.value">
@@ -41,13 +58,15 @@ const appStore = useAppStore()
                     </div>
                 </PopoverContent>
             </Popover>
-            <Popover>
-                <PopoverTrigger asChild>
+            <Popover v-model:open="timeOpen">
+                <span class="inline-flex" @pointerenter="openPanel('time')" @pointerleave="scheduleClose">
+                    <PopoverTrigger as-child>
                     <Button size="icon" variant="outline" aria-label="日期时间">
                         <ClockIcon />
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent class="w-fit p-2" align="end">
+                </span>
+                <PopoverContent class="w-fit p-2" align="end" @pointerenter="cancelClose" @pointerleave="scheduleClose">
                     <p class="mb-2 text-sm">当前日期时间</p>
                     <DateTime />
                 </PopoverContent>

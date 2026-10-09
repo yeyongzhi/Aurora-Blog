@@ -24,21 +24,21 @@ const goHome = () => {
 
 <template>
     <div class="flex justify-center items-center gap-x-4">
-        <img class="size-10 rounded-full cursor-pointer" :src="AvatarImg" @click="goHome" />
+        <button type="button" aria-label="返回首页" class="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-ring" @click="goHome"><img class="size-10 rounded-full" :src="AvatarImg" alt="Aurora 头像" /></button>
         <div class="font-bold text-base">{{ user.name }}</div>
         <div class="flex justify-center items-center gap-x-2">
             <Tooltip content="刷新">
-                <Button size="sm" variant="secondary" @click="appStore.handleRefresh">
+                <Button size="sm" variant="secondary" aria-label="刷新页面" @click="appStore.handleRefresh">
                     <RefreshCcwIcon />
                 </Button>
             </Tooltip>
-            <Tooltip content="上一级">
-                <Button size="sm" variant="secondary" @click="appStore.handleBack">
+            <Tooltip content="后退">
+                <Button size="sm" variant="secondary" aria-label="后退" @click="appStore.handleBack">
                     <ArrowLeftToLineIcon />
                 </Button>
             </Tooltip>
-            <Tooltip content="下一级">
-                <Button size="sm" variant="secondary" @click="appStore.handleForward">
+            <Tooltip content="前进">
+                <Button size="sm" variant="secondary" aria-label="前进" @click="appStore.handleForward">
                     <ArrowRightToLineIcon />
                 </Button>
             </Tooltip>

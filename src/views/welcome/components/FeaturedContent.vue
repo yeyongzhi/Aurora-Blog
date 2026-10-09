@@ -1,6 +1,7 @@
 <script setup lang="ts" name="FeaturedContent">
 import { onMounted, ref } from 'vue'
 import { ArrowUpRightIcon, SparklesIcon } from 'lucide-vue-next'
+import Tooltip from '@/components/self/Tooltip/index.vue'
 import { Button } from '@/components/ui/button'
 import {
     Card,
@@ -21,6 +22,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { getFetchData } from '@/utils'
 import { type NoteTreeItem } from '@/types/Note'
 import useAppStore from '@/store/app'
+import { isArticleTree, publishedTree } from '@/utils/articleTree'
 import { getPathFromKey } from '@/router/urlSync'
 
 interface FeaturedArticle {
@@ -37,13 +39,15 @@ interface FavoriteNode {
 
 const appStore = useAppStore()
 const featuredList = ref<FeaturedArticle[]>([])
+const loading = ref(false)
+const error = ref('')
 
 /** 递归遍历 note 树，收集所有 favorite: true 的节点及其路径 */
 const collectFavoriteNodes = (tree: NoteTreeItem[], parentPath: string[] = []): FavoriteNode[] => {
     const results: FavoriteNode[] = []
     for (const item of tree) {
         const currentPath = [...parentPath, item.key]
-        if (item.favorite) {
+        if (item.favorite && !item.children?.length) {
             results.push({ node: item, path: currentPath })
         }
         if (item.children && item.children.length > 0) {
@@ -54,18 +58,27 @@ const collectFavoriteNodes = (tree: NoteTreeItem[], parentPath: string[] = []): 
 }
 
 const getFeaturedData = async () => {
-    const noteTree = await getFetchData('/note.json') as NoteTreeItem[]
-    const favorites = collectFavoriteNodes(noteTree)
+    loading.value = true
+    error.value = ''
+    try {
+        const noteTree: unknown = await getFetchData('/note.json')
+        if (!isArticleTree(noteTree)) throw new Error('文章目录格式无效')
+        const favorites = collectFavoriteNodes(publishedTree(noteTree))
 
-    featuredList.value = favorites.map(({ node, path }) => {
-        const treePath = path.join('/')
-        return {
-            id: node.key,
-            title: node.label,
-            path: `/article/note/${treePath}.md`,
-            treePath,
-        }
-    })
+        featuredList.value = favorites.map(({ node, path }) => {
+            const treePath = path.join('/')
+            return {
+                id: node.key,
+                title: node.label,
+                path: `/article/note/${treePath}.md`,
+                treePath,
+            }
+        })
+    } catch {
+        error.value = '精选内容加载失败，请稍后重试'
+    } finally {
+        loading.value = false
+    }
 }
 
 /** 在应用内导航到笔记文章（深层链接） */
@@ -99,7 +112,10 @@ onMounted(() => {
             </div>
         </CardHeader>
         <CardContent class="flex-1 min-h-0 overflow-hidden">
-            <ScrollArea class="h-full">
+            <p v-if="loading" role="status" class="text-sm text-muted-foreground">精选内容加载中...</p>
+            <div v-else-if="error" role="alert" class="flex flex-col gap-3"><p>{{ error }}</p><Button variant="outline" @click="getFeaturedData">重试</Button></div>
+            <p v-else-if="!featuredList.length" role="status" class="text-sm text-muted-foreground">暂无精选文章</p>
+            <ScrollArea v-else class="h-full">
                 <div class="flex flex-col gap-y-4">
                     <div v-for="item in featuredList" :key="item.path">
                         <Item variant="outline">
@@ -110,9 +126,9 @@ onMounted(() => {
                                 </ItemDescription>
                             </ItemContent>
                             <ItemActions>
-                                <Button variant="outline" size="icon-sm" @click="goToNoteArticle(item.treePath)">
+                                <Tooltip :content="'阅读：' + item.title"><Button :aria-label="'阅读：' + item.title" variant="outline" size="icon-sm" @click="goToNoteArticle(item.treePath)">
                                     <ArrowUpRightIcon class="size-4" />
-                                </Button>
+                                </Button></Tooltip>
                             </ItemActions>
                         </Item>
                     </div>

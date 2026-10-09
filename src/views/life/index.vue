@@ -25,7 +25,7 @@ const { articleMissing, treeData, noteKey, mdFilePath, treeError, treeLoading, i
             <div class="mb-4" v-if="!slideMenuVisible" >
                 <TooltipProvider>
                     <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger as-child>
                             <Button size="sm" variant="secondary" aria-label="展开文章菜单" @click="toggleSlideMenu">
                                 <ChevronsRightIcon class="size-4"/>
                             </Button>

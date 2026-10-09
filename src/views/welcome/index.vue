@@ -25,7 +25,7 @@ const goNotes = () => {
 
 <template>
     <ScrollArea class="w-full h-full p-4">
-        <div class="w-full px-[10%] mt-4 flex flex-col gap-8">
+        <div class="mx-auto w-full max-w-[1600px] mt-4 flex flex-col gap-6 sm:px-4 xl:px-[5%]">
             <WelcomeHero
                 title="欢迎来到 Aurora Blog"
                 subtitle="这是一个可以承载站点导览、最新内容、个人动态和精选作品的起始页面。"
@@ -36,18 +36,18 @@ const goNotes = () => {
                 <TodayCalendar />
                 <Weather />
             </div>
-            <div class="grid grid-cols-2 gap-8 max-xl:grid-cols-1 h-[500px] overflow-hidden">
+            <div class="grid grid-cols-2 gap-8 max-xl:grid-cols-1 xl:h-[500px] xl:overflow-hidden max-xl:[&>*]:min-h-[400px]">
                 <WritingHeatmap />
                 <FeaturedContent />
             </div>
-            <div class="grid grid-cols-2 gap-8 max-xl:grid-cols-1 h-[460px] overflow-hidden">
+            <div class="grid grid-cols-2 gap-8 max-xl:grid-cols-1 xl:h-[460px] xl:overflow-hidden max-xl:[&>*]:min-h-[400px]">
                 <div class="flex flex-col gap-8 h-full overflow-hidden">
                     <TodayPoetry class="flex-1" />
                     <QuoteCard class="flex-1" />
                 </div>
                 <DailyNews />
             </div>
-            <div class="grid grid-cols-2 gap-8 max-xl:grid-cols-1 h-[400px] overflow-hidden">
+            <div class="grid grid-cols-2 gap-8 max-xl:grid-cols-1 xl:h-[400px] xl:overflow-hidden max-xl:[&>*]:min-h-[400px]">
                 <AiNews />
                 <TodayInHistory />
             </div>

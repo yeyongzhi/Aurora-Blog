@@ -58,13 +58,13 @@ onMounted(() => {
                 </div>
                 <div class="flex items-center gap-2">
                     <Tooltip content="图片查看">
-                        <Button variant="outline" size="icon-sm" @click="openImageViewer()">
+                        <Button variant="outline" size="icon-sm" aria-label="查看新闻图片" @click="openImageViewer()">
                             <ImageIcon class="size-4" />
                         </Button>
                     </Tooltip>
-                    <Button variant="outline" size="icon-sm" :disabled="loading" @click="fetchNews()">
+                    <Tooltip content="刷新每日新闻"><Button aria-label="刷新每日新闻" variant="outline" size="icon-sm" :disabled="loading" @click="fetchNews()">
                         <RefreshCwIcon :class="`size-4 ${loading ? 'animate-spin' : ''}`" />
-                    </Button>
+                    </Button></Tooltip>
                 </div>
             </div>
         </CardHeader>

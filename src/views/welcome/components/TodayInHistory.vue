@@ -1,6 +1,7 @@
 <script setup lang="ts" name="TodayInHistory">
 import { computed, onMounted } from 'vue'
 import { CalendarClockIcon, ExternalLinkIcon, RefreshCwIcon } from 'lucide-vue-next'
+import Tooltip from '@/components/self/Tooltip/index.vue'
 import { Button } from '@/components/ui/button'
 import {
     Card,
@@ -64,9 +65,9 @@ onMounted(() => {
                         <Badge variant="secondary">共 {{ historyData ? historyData.items.length : '-' }} 条</Badge>
                     </CardDescription>
                 </div>
-                <Button variant="outline" size="icon-sm" :disabled="loading" @click="fetchHistory()">
+                <Tooltip content="刷新历史上的今天"><Button aria-label="刷新历史上的今天" variant="outline" size="icon-sm" :disabled="loading" @click="fetchHistory()">
                     <RefreshCwIcon :class="`size-4 ${loading ? 'animate-spin' : ''}`" />
-                </Button>
+                </Button></Tooltip>
             </div>
         </CardHeader>
         <CardContent class="flex-1 min-h-0 overflow-hidden">

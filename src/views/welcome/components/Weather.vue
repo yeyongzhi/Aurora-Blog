@@ -2,6 +2,7 @@
 import { computed, onMounted } from 'vue'
 import { CloudSunIcon, DropletsIcon, MapPinIcon, RefreshCwIcon, SunriseIcon, SunsetIcon, ThermometerIcon, WindIcon } from 'lucide-vue-next'
 import { Badge } from '@/components/ui/badge'
+import Tooltip from '@/components/self/Tooltip/index.vue'
 import { Button } from '@/components/ui/button'
 import {
     Card,
@@ -79,9 +80,9 @@ onMounted(() => {
                         {{ getAreaName() }}
                     </CardDescription>
                 </div>
-                <Button variant="outline" size="icon-sm" :disabled="weatherLoading" @click="fetchWeather()">
+                <Tooltip content="刷新天气"><Button aria-label="刷新天气" variant="outline" size="icon-sm" :disabled="weatherLoading" @click="fetchWeather()">
                     <RefreshCwIcon :class="`size-4 ${weatherLoading ? 'animate-spin' : ''}`" />
-                </Button>
+                </Button></Tooltip>
             </div>
         </CardHeader>
         <CardContent>

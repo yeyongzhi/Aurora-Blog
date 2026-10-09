@@ -92,7 +92,7 @@ watch(settingInfo, () => {
 <template>
     <div>
         <Tooltip content="系统设置">
-            <Button size="icon" variant="outline" @click="dialogOpen = true">
+            <Button size="icon" variant="outline" aria-label="系统设置" @click="dialogOpen = true">
                 <Settings />
             </Button>
         </Tooltip>

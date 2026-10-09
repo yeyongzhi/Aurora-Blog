@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { SearchIcon } from 'lucide-vue-next'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { fetchJson } from '@/utils/request'
@@ -24,7 +25,7 @@ const navigate = (article: SearchArticle) => {
 </script>
 <template>
     <Dialog v-model:open="open">
-        <DialogTrigger as-child><Button size="icon" variant="outline" aria-label="搜索文章"><SearchIcon /></Button></DialogTrigger>
+        <TooltipProvider><Tooltip><DialogTrigger as-child><TooltipTrigger as-child><Button size="icon" variant="outline" aria-label="搜索文章"><SearchIcon /></Button></TooltipTrigger></DialogTrigger><TooltipContent>搜索文章</TooltipContent></Tooltip></TooltipProvider>
         <DialogContent class="sm:max-w-xl">
             <DialogHeader><DialogTitle>搜索文章</DialogTitle><DialogDescription>搜索标题与全文，多个关键词用空格分隔。</DialogDescription></DialogHeader>
             <label for="article-search" class="sr-only">搜索关键词</label><Input id="article-search" v-model="query" placeholder="输入关键词，例如 Vue 状态管理" />

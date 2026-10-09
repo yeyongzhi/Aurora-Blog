@@ -4,7 +4,10 @@
         "version": "1.0.0",
         "date": "2026-03",
         "content": [
-            { "type": "feature", "text": "初始版本V 1.0.0 正式上线" }
+            {
+                "type": "feature",
+                "text": "初始版本V 1.0.0 正式上线"
+            }
         ]
     },
     {
@@ -12,8 +15,14 @@
         "version": "1.0.1",
         "date": "2026-04-10",
         "content": [
-            { "type": "feature", "text": "新增菜单记忆功能" },
-            { "type": "feature", "text": "新增主题配置功能" }
+            {
+                "type": "feature",
+                "text": "新增菜单记忆功能"
+            },
+            {
+                "type": "feature",
+                "text": "新增主题配置功能"
+            }
         ]
     },
     {
@@ -21,9 +30,60 @@
         "version": "1.1.0",
         "date": "2026-07-09",
         "content": [
-            { "type": "feature", "text": "新增首页模块（包含天气，写作日历图、咨询等模块" },
-            { "type": "style", "text": "优化笔记页面的展示样式" },
-            { "type": "feature", "text": "全局的路由机制优化，方便跳转" }
+            {
+                "type": "feature",
+                "text": "新增首页模块，包含天气、写作热力图、资讯等内容"
+            },
+            {
+                "type": "style",
+                "text": "优化笔记页面的展示样式"
+            },
+            {
+                "type": "feature",
+                "text": "全局的路由机制优化，方便跳转"
+            }
+        ]
+    },
+    {
+        "type": "feature",
+        "version": "1.2.0",
+        "date": "2026-09-15",
+        "content": [
+            {
+                "type": "feature",
+                "text": "新增文章全文搜索，支持标题、正文和多关键词检索"
+            },
+            {
+                "type": "feature",
+                "text": "记录文章阅读进度，支持章节定位、字数统计和阅读时长展示"
+            },
+            {
+                "type": "feature",
+                "text": "完善内容发布流程，支持草稿过滤、文章索引、RSS 和静态文章页面"
+            },
+            {
+                "type": "fix",
+                "text": "修复文章加载、Markdown 强调语法及历史图片尺寸兼容问题"
+            }
+        ]
+    },
+    {
+        "type": "style",
+        "version": "1.2.1",
+        "date": "2026-10-09",
+        "content": [
+            {
+                "type": "style",
+                "text": "优化文章目录收缩样式，使用眼睛图标并补充操作提示"
+            },
+            {
+                "type": "style",
+                "text": "统一常用图标按钮提示，改进版本记录和首页卡片的移动端布局"
+            },
+            {
+                "type": "fix",
+                "text": "完善版本记录和精选内容的加载提示与重试，过滤精选草稿，修复按钮嵌套与 Tooltip 禁用行为"
+            }
         ]
     }
 ]
